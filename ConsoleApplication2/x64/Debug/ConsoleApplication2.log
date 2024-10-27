@@ -1,0 +1,3 @@
+﻿  main.cpp
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(75,20): warning C4244: инициализация: преобразование "sf::Int64" в "float", возможна потеря данных
+  ConsoleApplication2.vcxproj -> C:\Dev\game\ConsoleApplication2\x64\Debug\ConsoleApplication2.exe
