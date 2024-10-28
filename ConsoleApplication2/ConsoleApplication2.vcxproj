@@ -132,18 +132,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Person.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Consts.h" />
     <ClInclude Include="Enemy.h" />
-    <ClInclude Include="main.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="Person.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />

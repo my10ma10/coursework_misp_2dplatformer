@@ -1,12 +1,15 @@
 #include "Person.h"
 
-Person::Person(Texture* texture, Vector2f size, Vector2f position) :
-	widht(widht), height(height), speedX(0), speedY(0)
+Person::Person(Vector2f size, Vector2f position) : speedX(0), speedY(0)
 {
 	body.setSize(Vector2f(size));
 	body.setOrigin(body.getSize() / 2.0f);
-	body.setTexture(texture);
 	body.setPosition(position);
+}
+
+Person::Person(Texture* texture, Vector2f size, Vector2f position)	: Person(size, position)
+{
+	body.setTexture(texture);
 }
 
 
@@ -40,11 +43,6 @@ Collider Person::getCollider() {
 Vector2f Person::getSize() const
 {
 	return body.getSize();
-}
-
-void Person::setSize(Vector2f size) {
-	widht = size.x;
-	height = size.y;
 }
 
 

@@ -1,6 +1,12 @@
 #include "Player.h"
 
-Player::Player(Texture* texture, Vector2f size, Vector2f position): Person(texture, size, position), canJump(false) {}
+Player::Player(Vector2f size, Vector2f position) : Person(size, position), canJump(false)
+{
+}
+
+Player::Player(Texture* texture, Vector2f size, Vector2f position): Person(texture, size, position), canJump(false) 
+{
+}
 
 void Player::update(float time)
 {
@@ -26,9 +32,11 @@ void Player::OnCollition(Vector2f direction)
 {
 	if (direction.x < 0.0f) { // collition on the left
 		velocity.x = 0.0f;
+		canJump = false;
 	}
 	else if (direction.x > 0.0f) { // collition on the right
 		velocity.x = 0.0f;
+		canJump = false;
 	}
 	if (direction.y < 0.0f) { // collition on the bottom
 		velocity.y = 0.0f;
@@ -36,7 +44,13 @@ void Player::OnCollition(Vector2f direction)
 	}
 	else if (direction.y > 0.0f) { // collition on the top
 		velocity.y = 0.0f;
+		canJump = false;
 	}
+}
+
+void Player::draw(RenderWindow& window)
+{
+	window.draw(body);
 }
 
 Vector2f Player::getOrigin() const

@@ -97,8 +97,6 @@ void Collider::levelCollision(Collider playerCollider, Vector2f levelCenter, Vec
 		levelHalfSize.y - playerColliderHalfSize.y - abs(delta.y));
 
 
-	//std::cout << delta.x << " " << delta.y << std::endl;
-	//std::cout << intersect.x << " " << intersect.y << std::endl;
 	if (intersect.x < 0.0f || intersect.y < 0.0f) {
 		if (intersect.x < intersect.y) {
 			if (delta.x > 0.0f) { //right

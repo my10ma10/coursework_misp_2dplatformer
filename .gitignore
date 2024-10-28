@@ -1,6 +1,6 @@
 # Prerequisites
 *.d
-
+*.gitignore
 # Compiled Object files
 *.slo
 *.lo
@@ -32,3 +32,5 @@
 *.app
 *.vsidx
 *.opendb
+*.suo
+*.db

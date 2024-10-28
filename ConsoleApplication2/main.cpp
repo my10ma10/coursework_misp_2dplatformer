@@ -1,4 +1,6 @@
-﻿#include "Consts.h"
+﻿#include "Animation.h"
+#include "Consts.h"
+#include "Object.h"
 #include "Player.h"
 #include "Platform.h"
 #include "View.h"
@@ -6,30 +8,58 @@
 #include <cmath>
 
 
+
 int main()
 {
-    RenderWindow window(VideoMode(widht, height), L"Тест", Style::Default);
+    RenderWindow window(VideoMode(widht, height), L"Игра", Style::Default);
 
     Image icon;
     if (!icon.loadFromFile("Image\\icon.png")) {
         return 1;
     }
     window.setIcon(512, 512, icon.getPixelsPtr());
-    
+
+    //Time
+    Clock clock;
+    float timePlayer;
+    float coinTime;
+
     Texture back;
     back.loadFromFile("Image\\a78a2b.jpg");
     RectangleShape backgroundShape(Vector2f(widht, height));
     backgroundShape.setTexture(&back);
     backgroundShape.setPosition(Vector2f(0,0));
-    //backgroundShape.setOrigin(widht / 2.0f, height / 2.0f);
     Collider backCollider(backgroundShape);
     Vector2f levelCenter(widht / 2.0f, height / 2.0f);
 
-    //Time
-    Clock clock;
-    float timePlayer;
 
-    
+    // pylmen
+    //Sprite pylmen;
+    //Texture pylmenSheet;
+    //if (!pylmenSheet.loadFromFile("Image\\pylmen-sheet.png")) {
+    //    return 1;
+    //}
+    //Vector2u pylmenSize = pylmenSheet.getSize();
+    ////pylmenTextureSize.x /= 8;
+    //pylmen.setPosition(145, 450);
+    //pylmen.setTextureRect(IntRect(0, 0, pylmenSize.x, pylmenSize.y));
+
+
+    //coin
+
+    Texture cointexture;
+    if (!cointexture.loadFromFile("Image\\coin-Sheet.png")) {
+        return 1;
+    }
+    //Object coinobj(&cointexture);
+    //coinobj.setAnimation(Vector2u(8, 1), 0.1f);
+    Sprite coin;
+    coin.setTexture(cointexture);
+    coin.setPosition(200, 430);
+
+    Animation coinAnimation(&cointexture, Vector2u(8, 1), 0.1f);
+
+
     //player
     Texture playerTexture;
     playerTexture.loadFromFile("Image\\rectangle_test.png");
@@ -45,20 +75,7 @@ int main()
     platforms.push_back(Platform(&platTexture, Vector2f(widht, 40), Vector2f(widht / 2 + 18, height / 1.5f)));
     platforms.push_back(Platform(&platTexture, Vector2f(32, 16), Vector2f(190, (height / 1.5f) - 44)));
     platforms.push_back(Platform(&platTexture, Vector2f(16, 32), Vector2f(240, (height / 1.5f) - 52)));
-
-
-
-    //coin
-    Texture cointexture;
-    if (!cointexture.loadFromFile("Image\\coin-Sheet.png")) {
-        return 1;
-    }
-    const int coinsize = 32;
-    RectangleShape sheetcoin(Vector2f(coinsize*8, coinsize));
-    Sprite coin;
-    coin.setTextureRect(IntRect(0, 0, coinsize, coinsize));
-    coin.setTexture(cointexture);
-    coin.setPosition(200, 230);
+    platforms.push_back(Platform(&platTexture, Vector2f(32, 16), Vector2f(190, (height / 1.5f) - 80)));
 
     
     // view shape
@@ -74,6 +91,7 @@ int main()
     {
         float time = clock.getElapsedTime().asMicroseconds(); 
         timePlayer = time / 1000;
+        coinTime = clock.restart().asSeconds();
         clock.restart();
         Event event;
 
@@ -95,7 +113,9 @@ int main()
                 break;
             }
         }
-        //std::cout << backgroundShape.getPosition().x - player.getPosition().x << " " << backgroundShape.getPosition().y - player.getPosition().y << std::endl;
+        coinAnimation.updateAnimation(0, coinTime);
+        //coinobj.updateAnimation(0, coinTime);
+        coin.setTextureRect(coinAnimation.getCurrentRect());
 
         player.update(timePlayer);
         //collider
@@ -109,7 +129,7 @@ int main()
         Vector2f velocity_level_collide;
         viewCollider.viewCollision(player.getCollider());
         backCollider.levelCollision(player.getCollider(), levelCenter, velocity_level_collide);
-        std::cout << player.getPosition().x << " " << player.getPosition().y << std::endl;
+        //std::cout << player.getPosition().x << " " << player.getPosition().y << std::endl;
 
         window.clear(Color::White);
 
@@ -121,7 +141,9 @@ int main()
             window.draw(platform.getBody());
         }
         window.draw(coin);
-        window.draw(player.getBody());
+        player.draw(window);
+        
+        //window.draw(pylmen);
         window.display();
     }
     return 0;
