@@ -1,5 +1,7 @@
 #pragma once
 #include "Animation.h"
+#include <iostream>
+
 class Object
 {
 private:
@@ -13,17 +15,12 @@ public:
 	
 	void setAnimation(Vector2u imageCount, float switchTime);
 	void setTextureRect(const IntRect& rectangle);
+	void setPosition(Vector2f position);
+	void setPosition(float x, float y);
 
 	void updateAnimation(int row, float time);
 	Sprite getSprite() const;
+	IntRect getCurrentRect() const;
 };
 
 
-//Object createObject(std::string path) {
-//	Texture texture = Texture();
-//	Object object;
-//	if (texture.loadFromFile("Image\\coin-Sheet.png")) {
-//		object = Object(&texture);
-//	}
-//	return object;
-//}

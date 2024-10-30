@@ -9,6 +9,9 @@ class Person
 public:
 	Person(Vector2f size, Vector2f position);
 	Person(Texture* texture, Vector2f size, Vector2f position);
+
+	virtual void update(float time) = 0;
+
 	const Texture* getTexture() const;
 	RectangleShape getBody() const;
 	Vector2f getPosition() const;

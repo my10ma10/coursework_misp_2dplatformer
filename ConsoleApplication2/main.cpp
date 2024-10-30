@@ -51,13 +51,14 @@ int main()
     if (!cointexture.loadFromFile("Image\\coin-Sheet.png")) {
         return 1;
     }
-    //Object coinobj(&cointexture);
-    //coinobj.setAnimation(Vector2u(8, 1), 0.1f);
-    Sprite coin;
-    coin.setTexture(cointexture);
-    coin.setPosition(200, 430);
+    Object coinobj(&cointexture);
+    coinobj.setAnimation(Vector2u(8, 1), 0.1f);
+    coinobj.setPosition(200, 430);
+    //Sprite coin;
+    //coin.setTexture(cointexture);
+    //coin.setPosition(200, 430);
 
-    Animation coinAnimation(&cointexture, Vector2u(8, 1), 0.1f);
+    //Animation coinAnimation(&cointexture, Vector2u(8, 1), 0.1f);
 
 
     //player
@@ -113,9 +114,10 @@ int main()
                 break;
             }
         }
-        coinAnimation.updateAnimation(0, coinTime);
-        //coinobj.updateAnimation(0, coinTime);
-        coin.setTextureRect(coinAnimation.getCurrentRect());
+        //coinAnimation.updateAnimation(0, coinTime);
+        coinobj.updateAnimation(0, coinTime);
+        //coin.setTextureRect(coinAnimation.getCurrentRect());
+        coinobj.setTextureRect(coinobj.getCurrentRect());
 
         player.update(timePlayer);
         //collider
@@ -140,7 +142,8 @@ int main()
         for (Platform& platform : platforms) {
             window.draw(platform.getBody());
         }
-        window.draw(coin);
+        //window.draw(coin);
+        coinobj.draw(window);
         player.draw(window);
         
         //window.draw(pylmen);
