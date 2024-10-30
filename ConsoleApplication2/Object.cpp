@@ -1,6 +1,6 @@
 #include "Object.h"
 
-Object::Object()
+Object::Object() : Entity()
 {
 }
 
@@ -33,6 +33,10 @@ void Object::setPosition(Vector2f position)
 void Object::setPosition(float x, float y)
 {
 	sprite.setPosition(x, y);
+}
+
+void Object::update(float time)
+{
 }
 
 void Object::updateAnimation(int row, float time)

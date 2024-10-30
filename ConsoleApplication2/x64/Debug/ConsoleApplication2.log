@@ -1,26 +1,2 @@
-﻿  Enemy.cpp
-  Person.cpp
-  Player.cpp
-  main.cpp
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(93,20): warning C4244: инициализация: преобразование "sf::Int64" в "float", возможна потеря данных
-  Создание кода...
-sfml-graphics-s-d.lib(GLCheck.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(GLCheck.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-graphics-s-d.lib(Image.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(Image.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-graphics-s-d.lib(ImageLoader.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(ImageLoader.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-graphics-s-d.lib(RenderTarget.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(RenderTarget.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-graphics-s-d.lib(Shader.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(Shader.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-graphics-s-d.lib(Texture.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(Texture.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-graphics-s-d.lib(Shape.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(Shape.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-graphics-s-d.lib(VertexArray.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(VertexArray.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-graphics-s-d.lib(RenderTextureImplFBO.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(RenderTextureImplFBO.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-window-s-d.lib(GlContext.obj) : warning LNK4099: "" PDB не найден с "sfml-window-s-d.lib(GlContext.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-window-s-d.lib(JoystickManager.obj) : warning LNK4099: "" PDB не найден с "sfml-window-s-d.lib(JoystickManager.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-window-s-d.lib(VideoMode.obj) : warning LNK4099: "" PDB не найден с "sfml-window-s-d.lib(VideoMode.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-window-s-d.lib(WindowImpl.obj) : warning LNK4099: "" PDB не найден с "sfml-window-s-d.lib(WindowImpl.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-window-s-d.lib(JoystickImpl.obj) : warning LNK4099: "" PDB не найден с "sfml-window-s-d.lib(JoystickImpl.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-window-s-d.lib(VideoModeImpl.obj) : warning LNK4099: "" PDB не найден с "sfml-window-s-d.lib(VideoModeImpl.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-window-s-d.lib(VulkanImplWin32.obj) : warning LNK4099: "" PDB не найден с "sfml-window-s-d.lib(VulkanImplWin32.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-window-s-d.lib(WindowImplWin32.obj) : warning LNK4099: "" PDB не найден с "sfml-window-s-d.lib(WindowImplWin32.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-window-s-d.lib(WglContext.obj) : warning LNK4099: "" PDB не найден с "sfml-window-s-d.lib(WglContext.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
-sfml-system-s-d.lib(String.obj) : warning LNK4099: "" PDB не найден с "sfml-system-s-d.lib(String.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
+﻿  Entity.cpp
   ConsoleApplication2.vcxproj -> C:\Dev\game\ConsoleApplication2\x64\Debug\ConsoleApplication2.exe

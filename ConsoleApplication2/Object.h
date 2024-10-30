@@ -1,13 +1,8 @@
 #pragma once
-#include "Animation.h"
-#include <iostream>
+#include "Entity.h"
 
-class Object
+class Object : public Entity
 {
-private:
-	Animation animation;
-	Texture texture;
-	Sprite sprite;
 public:
 	Object();
 	Object(Texture* texture);
@@ -18,9 +13,14 @@ public:
 	void setPosition(Vector2f position);
 	void setPosition(float x, float y);
 
+	void update(float time);
 	void updateAnimation(int row, float time);
 	Sprite getSprite() const;
 	IntRect getCurrentRect() const;
+private:
+	Animation animation;
+	Texture texture;
+	Sprite sprite;
 };
 
 

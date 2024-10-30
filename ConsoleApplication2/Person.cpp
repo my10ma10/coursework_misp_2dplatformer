@@ -1,15 +1,11 @@
 #include "Person.h"
 
-Person::Person(Vector2f size, Vector2f position) : speedX(0), speedY(0)
+Person::Person(Vector2f size, Vector2f position) : Entity(size, position)
 {
-	body.setSize(Vector2f(size));
-	body.setOrigin(body.getSize() / 2.0f);
-	body.setPosition(position);
 }
 
-Person::Person(Texture* texture, Vector2f size, Vector2f position)	: Person(size, position)
+Person::Person(Texture* texture, Vector2f size, Vector2f position)	: Entity(texture, size, position)
 {
-	body.setTexture(texture);
 }
 
 
@@ -45,22 +41,6 @@ Vector2f Person::getSize() const
 	return body.getSize();
 }
 
-
-void Person::setTexture(Texture& texture)
-{
-	texture = texture;
-}
-
-void Person::setPosition(Vector2f position)
-{
-	body.setPosition(position);
-}
-
-//void Person::setDirection(int direction)
-//{
-//	dir = direction;
-//}
-
 const Texture* Person::getTexture() const {
 	return &texture;
 }
@@ -80,8 +60,3 @@ Vector2f Person::getSpeed() const
 	return Vector2f(speedX, speedY);
 }
 
-void Person::setSpeed(float _speedX, float _speedY)
-{
-	speedX = _speedX;
-	speedY = _speedY;
-}
