@@ -1,6 +1,7 @@
 #include "Collider.h"
 #include "Consts.h"
 #include <iostream>
+
 Collider::Collider(RectangleShape& body) : body(body) {}
 
 void Collider::Move(float dx, float dy) {
@@ -65,7 +66,6 @@ void Collider::viewCollision(Collider playerCollider) {
 	Vector2f intersect(thisHalfSize.x - playerColliderHalfSize.x - abs(delta.x), \
 					   thisHalfSize.y - playerColliderHalfSize.y - abs(delta.y));
 
-	//std::cout << intersect.x << " " << intersect.y << std::endl;
 	if (intersect.x < 0.0f || intersect.y < 0.0f) {
 		if (intersect.x < intersect.y) {
 			if (delta.x > 0.0f) { //right

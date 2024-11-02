@@ -4,36 +4,13 @@ Object::Object() : Entity()
 {
 }
 
-Object::Object(Texture* texture) : texture(*texture)
+Object::Object(Texture* texture, Vector2f size, Vector2f position) : Entity(texture, size, position)
 {
 	Vector2f textureSize(texture->getSize().x, texture->getSize().y);
 	sprite.setTextureRect(IntRect(0, 0, textureSize.x, textureSize.y));
+	this->texture = Texture(*texture);
 }
 
-void Object::draw(RenderWindow& window)
-{
-	window.draw(sprite);
-}
-
-void Object::setAnimation(Vector2u imageCount, float switchTime)
-{
-	animation = Animation(&texture, imageCount, switchTime);
-}
-
-void Object::setTextureRect(const IntRect& rectangle)
-{
-	sprite.setTextureRect(rectangle);
-}
-
-void Object::setPosition(Vector2f position)
-{
-	sprite.setPosition(position);
-}
-
-void Object::setPosition(float x, float y)
-{
-	sprite.setPosition(x, y);
-}
 
 void Object::update(float time)
 {
@@ -42,6 +19,7 @@ void Object::update(float time)
 void Object::updateAnimation(int row, float time)
 {
 	animation.updateAnimation(row, time);
+	std::cout << this->sprite.getPosition().x << " " << sprite.getPosition().y << std::endl;
 }
 
 Sprite Object::getSprite() const
@@ -54,12 +32,12 @@ IntRect Object::getCurrentRect() const
 	return animation.getCurrentRect();
 }
 
-static Object createObject(std::string path)
-{
-	Texture texture;
-	Object object;
-	if (texture.loadFromFile("Image\\coin-Sheet.png")) {
-		object = Object(&texture);
-	}
-	return object;
-}
+//static Object createObject(std::string path)
+//{
+//	Texture texture;
+//	Object object;
+//	if (texture.loadFromFile("Image\\coin-Sheet.png")) {
+//		object = Object(&texture, Vector2f(0, 0), Vector2f(0, 0));
+//	}
+//	return object;
+//}

@@ -8,11 +8,13 @@ Person::Person(Texture* texture, Vector2f size, Vector2f position)	: Entity(text
 {
 }
 
-
-
-
-
-
+//Person::Person(Image& image, Vector2f size, Vector2f position) : Entity(image, size, position)
+//{
+//}
+void Person::updateAnimation(int row, float time)
+{
+	animation.updateAnimation(row, time);
+}
 //void Person::setImage(std::string fileName) {
 //	std::string filePath = fileName;
 //	try {
@@ -57,6 +59,6 @@ Vector2f Person::getPosition() const
 
 Vector2f Person::getSpeed() const
 {
-	return Vector2f(speedX, speedY);
+	return Vector2f(speed.x, speed.y);
 }
 

@@ -46,25 +46,36 @@ int main()
 
 
     //coin
-
     Texture cointexture;
     if (!cointexture.loadFromFile("Image\\coin-Sheet.png")) {
-        return 1;
+        std::cerr << "Can't load an image";
     }
-    Object coinobj(&cointexture);
+    Object coinobj(&cointexture, Vector2f(16, 16), Vector2f(200, 430));
+    coinobj.setTexture(cointexture);
     coinobj.setAnimation(Vector2u(8, 1), 0.1f);
-    coinobj.setPosition(200, 430);
-    //Sprite coin;
-    //coin.setTexture(cointexture);
-    //coin.setPosition(200, 430);
 
-    //Animation coinAnimation(&cointexture, Vector2u(8, 1), 0.1f);
+
+
 
 
     //player
+    Image playerImage;
+    if (!playerImage.loadFromFile("Image\\rectangle_test.png")) {
+    //if (!playerImage.loadFromFile("Image\\dark_ghost-Sheet.png")) {
+        return 1;
+    }
     Texture playerTexture;
-    playerTexture.loadFromFile("Image\\rectangle_test.png");
+    playerTexture.loadFromImage(playerImage);
+
     Player player(&playerTexture, Vector2f(16, 16), Vector2f(120, 488));
+    //player.setAnimation(Vector2u(8, 5), 0.1f);
+
+
+    Entity newobj(&playerTexture, Vector2f(64, 32), Vector2f(180, 480));
+
+
+
+
 
 
     //platforms
@@ -78,7 +89,6 @@ int main()
     platforms.push_back(Platform(&platTexture, Vector2f(16, 32), Vector2f(240, (height / 1.5f) - 52)));
     platforms.push_back(Platform(&platTexture, Vector2f(32, 16), Vector2f(190, (height / 1.5f) - 80)));
 
-    
     // view shape
     RectangleShape viewShape(Vector2f(48.0f, 48.0f));
     viewShape.setFillColor(Color::Magenta);
@@ -86,6 +96,8 @@ int main()
     viewShape.setPosition(Vector2f(player.getPosition().x, player.getPosition().y));
     Collider viewCollider(viewShape);
     
+
+
 
 
     while (window.isOpen())
@@ -114,10 +126,11 @@ int main()
                 break;
             }
         }
-        //coinAnimation.updateAnimation(0, coinTime);
-        coinobj.updateAnimation(0, coinTime);
         //coin.setTextureRect(coinAnimation.getCurrentRect());
+
+        //coinAnimation.updateAnimation(0, coinTime);
         coinobj.setTextureRect(coinobj.getCurrentRect());
+        coinobj.updateAnimation(0, coinTime);
 
         player.update(timePlayer);
         //collider
@@ -131,7 +144,6 @@ int main()
         Vector2f velocity_level_collide;
         viewCollider.viewCollision(player.getCollider());
         backCollider.levelCollision(player.getCollider(), levelCenter, velocity_level_collide);
-        //std::cout << player.getPosition().x << " " << player.getPosition().y << std::endl;
 
         window.clear(Color::White);
 
@@ -144,9 +156,11 @@ int main()
         }
         //window.draw(coin);
         coinobj.draw(window);
+        //newobj.draw(window);
+        
         player.draw(window);
         
-        //window.draw(pylmen);
+
         window.display();
     }
     return 0;

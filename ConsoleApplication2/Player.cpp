@@ -8,6 +8,10 @@ Player::Player(Texture* texture, Vector2f size, Vector2f position): Person(textu
 {
 }
 
+//Player::Player(Image& image, Vector2f size, Vector2f position) : Person(image, size, position), canJump(false)
+//{
+//}
+
 void Player::update(float time)
 {
 	velocity.x = 0.0f;
