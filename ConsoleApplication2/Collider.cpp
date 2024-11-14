@@ -2,10 +2,13 @@
 #include "Consts.h"
 #include <iostream>
 
-Collider::Collider(RectangleShape& body) : body(body) {}
+Collider::Collider(Sprite& sprite) : sprite(sprite)
+{
+}
+
 
 void Collider::Move(float dx, float dy) {
-	body.move(dx, dy);
+	sprite.move(dx, dy);
 }
 
 bool Collider::checkCollision(Collider other, Vector2f& direction, float push)
@@ -19,6 +22,7 @@ bool Collider::checkCollision(Collider other, Vector2f& direction, float push)
 	Vector2f intersect(abs(delta.x) - (otherHalfSize.x + thisHalfSize.x), \
 					   abs(delta.y) - (otherHalfSize.y + thisHalfSize.y));
 
+	std::cout << intersect.x << " " << intersect.y << std::endl;
 	if (intersect.x < 0.0f && intersect.y < 0.0f) {
 		//push
 		if (intersect.x > intersect.y) { // push out by x 
@@ -29,6 +33,7 @@ bool Collider::checkCollision(Collider other, Vector2f& direction, float push)
 				other.Move(-intersect.x * push, 0.0f); 
 				direction.x = 1.0f;
 				direction.y = 0.0f;
+
 			}
 			else { //colliding on the left
 				Move(-intersect.x * (1.0f - push), 0.0f);
@@ -38,17 +43,19 @@ bool Collider::checkCollision(Collider other, Vector2f& direction, float push)
 			}
 		}
 		else {// push out by y
-			if (delta.y > 0.0f) {//colliding on the bottom
+			if (delta.y > 0.0f) {//colliding on the top
 				Move(0.0f, intersect.y * (1.0f - push));
 				other.Move(0.0f, -intersect.y * push);
 				direction.x = 0.0f;
 				direction.y = 1.0f;
+
 			}
-			else {//colliding on a top
+			else {//colliding on a bottom
 				Move(0.0f, -intersect.y * (1.0f - push));
 				other.Move(0.0f, intersect.y * push);
 				direction.x = 0.0f;
 				direction.y = -1.0f;
+
 			}
 		}
 		return true;
@@ -86,7 +93,7 @@ void Collider::viewCollision(Collider playerCollider) {
 	}
 }
 
-void Collider::levelCollision(Collider playerCollider, Vector2f levelCenter, Vector2f& velocity) {
+bool Collider::levelCollisionWithPlayer(Collider playerCollider, Vector2f levelCenter) {
 	Vector2f playerColliderPos = playerCollider.getPosition();
 	Vector2f playerColliderHalfSize = playerCollider.getHalfSize();
 
@@ -101,37 +108,62 @@ void Collider::levelCollision(Collider playerCollider, Vector2f levelCenter, Vec
 		if (intersect.x < intersect.y) {
 			if (delta.x > 0.0f) { //right
 				playerCollider.Move(intersect.x, 0.0f);
-				velocity.x = 1.0f;
-				velocity.y = 0.0f;
 			}
 			else {//left
 				playerCollider.Move(-intersect.x, 0.0f);
-				velocity.x = 1.0f;
-				velocity.y = 0.0f;
 			}
 		}
 		else {
 			if (delta.y > 0.0f) {//down
 				playerCollider.Move(0.0f, intersect.y);
-				velocity.x = 1.0f;
-				velocity.y = 0.0f;
 			}
 			else {//up
 				playerCollider.Move(0.0f, -intersect.y);
-				velocity.x = 1.0f;
-				velocity.y = 0.0f;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+void Collider::levelCollisionWithView(Collider viewCollider, Vector2f levelCenter, Vector2f tempViewCenter, View& view) {
+	Vector2f viewColliderPos = viewCollider.getPosition();
+	Vector2f viewColliderHalfSize = viewCollider.getHalfSize();
+	Vector2f levelHalfSize = Vector2f(widht / 2.0f, height / 2.0f);
+
+	Vector2f delta(levelCenter.x - viewColliderPos.x, levelCenter.y - viewColliderPos.y);
+	Vector2f intersect(levelHalfSize.x - (abs(delta.x) + viewColliderHalfSize.x), \
+		levelHalfSize.y - (abs(delta.y) + viewColliderHalfSize.y));
+
+
+	if (intersect.x < 0.0f || intersect.y < 0.0f) {
+		if (intersect.x < intersect.y) {
+			if (delta.x > 0.0f) { //right
+				//view.move(intersect.x, 0.0f);
+				view.setCenter(tempViewCenter);
+			}
+			else {//left
+				//view.move(-intersect.x, 0.0f);
+				view.setCenter(tempViewCenter);
+			}
+		}
+		else {
+			if (delta.y > 0.0f) {//down
+				view.move(0.0f, intersect.y);
+			}
+			else {//up
+				view.move(0.0f, -intersect.y);
 			}
 		}
 	}
 }
 
-
 Vector2f Collider::getPosition() {
-	return body.getPosition();
+	return sprite.getPosition();
 }
 
 Vector2f Collider::getHalfSize() {
-	return body.getSize() / 2.0f;
+	return Vector2f(sprite.getGlobalBounds().getSize()) / 2.0f;
 }
 
 

@@ -5,12 +5,9 @@ class Object : public Entity
 {
 public:
 	Object();
-	Object(Texture* newtexture, Vector2f size, Vector2f position);
+	Object(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime);
 
 	void update(float time);
-	void updateAnimation(int row, float time);
-	Sprite getSprite() const;
-	IntRect getCurrentRect() const;
 private:
 };
 

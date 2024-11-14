@@ -4,22 +4,27 @@
 class Person : public Entity
 {
 public:
-	Person(Vector2f size, Vector2f position);
-	Person(Texture* texture, Vector2f size, Vector2f position);
-	//Person(Image& image, Vector2f size, Vector2f position);
+	Person();
+	Person(Vector2f position);
+	Person(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime);
 
-	void updateAnimation(int row, float time);
 
-	const Texture* getTexture() const;
-	RectangleShape getBody() const;
-	Vector2f getPosition() const;
-	Vector2f getSpeed() const;
-	Collider getCollider();
-	Vector2f getSize() const;
+	void updateAnimation(int row, float time, bool faceRight);
+	void takeDamage(int amount);
+	void update(float time) override;
+
+	Vector2f getOrigin() const;
+	Vector2f getVelocity() const;
 
 protected:
-	bool attackType; // 0 - ближний, 1 - дальний
 	int health;
 	int energy;
+	int attackPower;
+	bool faceRight;
+
+	const float personSpeed = 0.1f;
+	Vector2f velocity;
+	const float gravity = 0.001f;
 };
 
+class Enemy;

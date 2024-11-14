@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "Platform.h"
 #include "View.h"
-#include <vector>
+#include "Level.h"
 #include <cmath>
 
 
@@ -19,83 +19,60 @@ int main()
     }
     window.setIcon(512, 512, icon.getPixelsPtr());
 
+
+    Level level("Image\\platform_test.png", "Image\\coin-Sheet.png", \
+        "Image\\rectangle_test.png", "Image\\a78a2b.jpg", 1);
+
+
     //Time
     Clock clock;
     float timePlayer;
-    float coinTime;
-
-    Texture back;
-    back.loadFromFile("Image\\a78a2b.jpg");
-    RectangleShape backgroundShape(Vector2f(widht, height));
-    backgroundShape.setTexture(&back);
-    backgroundShape.setPosition(Vector2f(0,0));
-    Collider backCollider(backgroundShape);
-    Vector2f levelCenter(widht / 2.0f, height / 2.0f);
-
-
-    // pylmen
-    //Sprite pylmen;
-    //Texture pylmenSheet;
-    //if (!pylmenSheet.loadFromFile("Image\\pylmen-sheet.png")) {
-    //    return 1;
-    //}
-    //Vector2u pylmenSize = pylmenSheet.getSize();
-    ////pylmenTextureSize.x /= 8;
-    //pylmen.setPosition(145, 450);
-    //pylmen.setTextureRect(IntRect(0, 0, pylmenSize.x, pylmenSize.y));
+    float animationTime;
 
 
     //coin
-    Texture cointexture;
-    if (!cointexture.loadFromFile("Image\\coin-Sheet.png")) {
+    //Texture cointexture;
+    //if (!cointexture.loadFromFile("Image\\coin-Sheet.png")) {
+    //    std::cerr << "Can't load an image";
+    //}
+    //Object coinobj(&cointexture, Vector2f(16, 16), Vector2f(200, 430));
+    //coinobj.setTexture(cointexture);
+    //coinobj.setAnimation(Vector2u(8, 1), 0.1f);
+
+
+    Texture darkGhostTexture;
+
+    if (!darkGhostTexture.loadFromFile("Image\\dark_ghost-Sheet.png")) {
         std::cerr << "Can't load an image";
     }
-    Object coinobj(&cointexture, Vector2f(16, 16), Vector2f(200, 430));
-    coinobj.setTexture(cointexture);
-    coinobj.setAnimation(Vector2u(8, 1), 0.1f);
-
-
-
-
+    Object darkGhost(&darkGhostTexture, Vector2f(140, 410), Vector2u(8, 4), 0.1f);
+    darkGhost.setTexture(darkGhostTexture);
 
     //player
-    Image playerImage;
-    if (!playerImage.loadFromFile("Image\\rectangle_test.png")) {
-    //if (!playerImage.loadFromFile("Image\\dark_ghost-Sheet.png")) {
+    Texture playerTexture;
+    if (!playerTexture.loadFromFile("Image\\rectangle_test.png")) {
         return 1;
     }
-    Texture playerTexture;
-    playerTexture.loadFromImage(playerImage);
-
-    Player player(&playerTexture, Vector2f(16, 16), Vector2f(120, 488));
-    //player.setAnimation(Vector2u(8, 5), 0.1f);
-
-
-    Entity newobj(&playerTexture, Vector2f(64, 32), Vector2f(180, 480));
+    Player player(&playerTexture, Vector2f(120, 480), Vector2u(1, 1), 0.0f);
 
 
 
+    view.setCenter(player.getPosition());
 
-
-
-    //platforms
-    Texture platTexture;
-    platTexture.loadFromFile("Image\\platform_test.png");
-
-    std::vector<Platform> platforms; // size, position
-    platforms.push_back(Platform(&platTexture, Vector2f(32, 64), Vector2f(80, 80)));
-    platforms.push_back(Platform(&platTexture, Vector2f(widht, 40), Vector2f(widht / 2 + 18, height / 1.5f)));
-    platforms.push_back(Platform(&platTexture, Vector2f(32, 16), Vector2f(190, (height / 1.5f) - 44)));
-    platforms.push_back(Platform(&platTexture, Vector2f(16, 32), Vector2f(240, (height / 1.5f) - 52)));
-    platforms.push_back(Platform(&platTexture, Vector2f(32, 16), Vector2f(190, (height / 1.5f) - 80)));
+    //level
 
     // view shape
-    RectangleShape viewShape(Vector2f(48.0f, 48.0f));
-    viewShape.setFillColor(Color::Magenta);
-    viewShape.setOrigin(player.getBody().getSize() * (viewShape.getSize().x / (player.getSize().y * 2.0f)));
-    viewShape.setPosition(Vector2f(player.getPosition().x, player.getPosition().y));
-    Collider viewCollider(viewShape);
+    //Sprite playerLimitViewShape;
+    //playerLimitViewShape.setPosition(player.getPosition());
+    //playerLimitViewShape.setOrigin(player.getBody().getSize() * (playerLimitViewShape.getSize().x / (player.getSize().y * 2.0f)));
+    Collider playerLimitViewCollider(player.getSprite());
     
+    // view level collide
+    //IntRect levelLimitViewShape(view.getCenter().x - view.getSize().x / 2.0f, view.getCenter().y - view.getSize().y / 2.0f, view.getSize().x, view.getSize().y);
+    //Sprite levelSprite;
+    //levelSprite.setTextureRect(levelLimitViewShape);
+    //Collider levelLimitViewCollider(levelSprite);
+
 
 
 
@@ -104,7 +81,7 @@ int main()
     {
         float time = clock.getElapsedTime().asMicroseconds(); 
         timePlayer = time / 1000;
-        coinTime = clock.restart().asSeconds();
+        animationTime = clock.restart().asSeconds();
         clock.restart();
         Event event;
 
@@ -116,48 +93,46 @@ int main()
                 window.close();
                 break;
             case Event::Resized:
-                resizeView(window, view);
+                changeViewAspectRatio(window, view);
                 break;
             case Event::KeyPressed:
-                changeView(view);
-                setViewBorders(view, player);
+                changeViewZoom(view);
                 break;
             default:
                 break;
             }
         }
-        //coin.setTextureRect(coinAnimation.getCurrentRect());
-
-        //coinAnimation.updateAnimation(0, coinTime);
-        coinobj.setTextureRect(coinobj.getCurrentRect());
-        coinobj.updateAnimation(0, coinTime);
+        darkGhost.updateAnimation(animationTime, true);
+        //coinobj.setTextureRect(coinobj.getCurrentRect());
+        //coinobj.updateAnimation(animationTime, false);
 
         player.update(timePlayer);
         //collider
-        Vector2f direction_collide_with_platforms;
-        for (Platform& platform : platforms) {
+        Vector2f direction_collide_with_platforms(0.0f, 0.0f);
+        for (Platform& platform : level.getPlatforms()) {
             if (platform.getCollider().checkCollision(player.getCollider(), direction_collide_with_platforms, 1.0f)) {
                 player.OnCollition(direction_collide_with_platforms);
             }
         }
 
-        Vector2f velocity_level_collide;
-        viewCollider.viewCollision(player.getCollider());
-        backCollider.levelCollision(player.getCollider(), levelCenter, velocity_level_collide);
+
+
+        //Vector2f tempViewCenter(view.getCenter());
+        //levelLimitViewShape.setPosition(view.getCenter());
+        //levelLimitViewShape.setSize(view.getSize());
+        //backCollider.levelCollisionWithPlayer(player.getCollider(), levelCenter);
+        //backCollider.levelCollisionWithView(levelLimitViewCollider, levelCenter, tempViewCenter, view);
+
+
+        //playerLimitViewCollider.viewCollision(player.getCollider());
+        //view.setCenter(playerLimitViewShape.getPosition());
+        view.setCenter(player.getPosition());
+
 
         window.clear(Color::White);
-
-        view.setCenter(viewShape.getPosition());
         window.setView(view);
-        window.draw(backgroundShape);
-
-        for (Platform& platform : platforms) {
-            window.draw(platform.getBody());
-        }
-        //window.draw(coin);
-        coinobj.draw(window);
-        //newobj.draw(window);
-        
+        level.draw(window);
+        darkGhost.draw(window);
         player.draw(window);
         
 

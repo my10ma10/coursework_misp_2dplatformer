@@ -1,27 +1,28 @@
 #include "Platform.h"
-#include <iostream>
+
 Platform::Platform(Vector2f size, Vector2f position) {
-    body.setSize(size);
-    body.setOrigin(size / 2.0f);
-    body.setPosition(position);
+    sprite.setOrigin(size / 2.0f);
+    sprite.setPosition(position);
 }
 
-Platform::Platform(Texture* texture, Vector2f size, Vector2f position) : Platform(size, position)
+Platform::Platform(Texture texture, Vector2f size, Vector2f position) : Platform(size, position)
 {
-    body.setTexture(texture);
+    this->texture = texture;
+    sprite.setTexture(this->texture);
+    sprite.setTextureRect(IntRect(0, 0, size.x, size.y));
 }
 
 
-RectangleShape Platform::getBody() const {
-    return body;
+Sprite& Platform::getSprite() {
+    return sprite;
 }
 
 void Platform::draw(RenderWindow& window)
 {
-    window.draw(body);
+    window.draw(sprite);
 }
 
 Collider Platform::getCollider()
 {
-    return Collider(body);
+    return Collider(sprite);
 }

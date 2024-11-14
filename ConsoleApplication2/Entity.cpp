@@ -1,33 +1,29 @@
 #include "Entity.h"
 
-Entity::Entity() : life(1)
+Entity::Entity() : life(1), row(0), speed(0, 0)
 {
-	speed.x = 0;
-	speed.y = 0;
 }
 
-Entity::Entity(Vector2f size, Vector2f position) : Entity()
+Entity::Entity(Vector2f position) : Entity()
 {
-	body.setSize(Vector2f(size));
-	body.setOrigin(body.getSize() / 2.0f);
-	body.setPosition(position);
 	sprite.setPosition(position);
 }
 
-Entity::Entity(Texture* texture, Vector2f size, Vector2f position) : Entity(size, position)
+Entity::Entity(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime) : Entity(position)
 {
-	body.setTexture(texture);
 	sprite.setTexture(*texture);
+	this->sheetTexture = *texture;
+	Vector2f spriteSheetSize(sheetTexture.getSize());
+
+	sprite.setOrigin(spriteSheetSize.x / (imageCount.x * 2.0f), spriteSheetSize.y / (imageCount.y * 2.0f));
+	setAnimation(imageCount, switchTime);
 }
 
-//Entity::Entity(Image& image, Vector2f size, Vector2f position) : Entity(size, position)
-//{
-//	Texture tex;
-//	if (!tex.loadFromImage(image)) {
-//		std::cerr << "Failed to load PNG image." << std::endl;
-//	}
-//	body.setTexture(&texture);
-//}
+void Entity::updateAnimation(float time, bool faceRight)
+{
+	setTextureRect(this->getCurrentRect());
+	animation.updateAnimation(this->row, time, faceRight);
+}
 
 void Entity::draw(RenderWindow& window)
 {
@@ -36,7 +32,7 @@ void Entity::draw(RenderWindow& window)
 
 void Entity::setAnimation(Vector2u imageCount, float switchTime)
 {
-	animation = Animation(&texture, imageCount, switchTime);
+	animation = Animation(&sheetTexture, imageCount, switchTime);
 }
 
 void Entity::setTextureRect(const IntRect& rectangle)
@@ -47,7 +43,6 @@ void Entity::setTextureRect(const IntRect& rectangle)
 void Entity::setPosition(Vector2f position)
 {
 	sprite.setPosition(position);
-	body.setPosition(position);
 }
 
 void Entity::setPosition(float x, float y)
@@ -68,10 +63,50 @@ void Entity::setSpeed(float speedX, float speedY)
 
 void Entity::setTexture(Texture& texture)
 {
-	this->texture = texture;
+	this->sheetTexture = texture;
 }
 
-Sprite Entity::getSprite() const
+void Entity::setRow(unsigned int row)
+{
+	this->row = row;
+}
+
+Sprite& Entity::getSprite()
 {
 	return sprite;
+}
+
+const Texture* Entity::getTexture() const
+{
+	return &sheetTexture;;
+}
+
+Collider Entity::getCollider()
+{
+	return Collider(sprite);
+}
+
+IntRect Entity::getCurrentRect() const
+{
+	return animation.getCurrentRect();
+}
+
+bool Entity::getLife() const
+{
+	return life;
+}
+
+Vector2f Entity::getPosition() const
+{
+	return sprite.getPosition();
+}
+
+Vector2f Entity::getSize() const
+{
+	return sprite.getGlobalBounds().getSize();
+}
+
+Vector2f Entity::getSpeed() const
+{
+	return speed;
 }

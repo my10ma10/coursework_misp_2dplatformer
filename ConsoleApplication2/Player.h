@@ -1,25 +1,27 @@
 #pragma once
 #include "Person.h"
-
+#include "Object.h"
 
 class Player : public Person
 {
 public:
-	Player(Vector2f size, Vector2f position);
-	Player(Texture* texture, Vector2f size, Vector2f position);
+	Player();
+	Player(Vector2f position);
+	Player(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime);
 	//Player(Image& image, Vector2f size, Vector2f position);
-	void update(float time);
-	void OnCollition(Vector2f direction);
-	void draw(RenderWindow& window);
 
-	Vector2f getOrigin() const;
-	Vector2f getVelocity() const;
+	void attack(Enemy& enemy);
+	void collectCoin(Object& coin);
+	void applyBonus(Object& bonus);
+	void applyHeart(Object& heart);
+	void update(float time);
+
+	void OnCollition(Vector2f direction);
 
 private:
-	const float speed = 0.1f;
-	Vector2f velocity;
-	bool canJump;
-	float jumpHeight = 32.0f;
 	const float gravity = 0.001f;
+	bool canJump;
+	bool isBlocking;
+	float jumpHeight = 32.0f;
 };
 

@@ -1,64 +1,42 @@
 #include "Person.h"
 
-Person::Person(Vector2f size, Vector2f position) : Entity(size, position)
+Person::Person() : Entity(), \
+	faceRight(true), attackPower(0), energy(0), health(HEALTH_MAX)
 {
 }
 
-Person::Person(Texture* texture, Vector2f size, Vector2f position)	: Entity(texture, size, position)
+Person::Person(Vector2f position) : Entity(position), \
+	faceRight(true), attackPower(0), energy(0), health(HEALTH_MAX)
 {
 }
 
-//Person::Person(Image& image, Vector2f size, Vector2f position) : Entity(image, size, position)
-//{
-//}
-void Person::updateAnimation(int row, float time)
+Person::Person(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime) : \
+	Entity(texture, position, imageCount, switchTime), faceRight(true), attackPower(0), energy(0), health(HEALTH_MAX)
 {
-	animation.updateAnimation(row, time);
-}
-//void Person::setImage(std::string fileName) {
-//	std::string filePath = fileName;
-//	try {
-//		if (!image.loadFromFile(filePath)) {
-//			std::cout << "image - -\n";
-//		}
-//		else {
-//			image.loadFromFile(filePath);
-//			//image.createMaskFromColor(Color(255, 255, 255));
-//			texture.loadFromImage(image);
-//			sprite.setTexture(texture);
-//		}
-//	}
-//	catch (std::string err) {
-//		std::cout << "Exception error " << err.what() << std::endl;
-//	}
-//}
-
-
-Collider Person::getCollider() {
-	return Collider(body);
 }
 
-Vector2f Person::getSize() const
+void Person::updateAnimation(int row, float time, bool faceRight)
 {
-	return body.getSize();
+	animation.updateAnimation(row, time, faceRight);
 }
 
-const Texture* Person::getTexture() const {
-	return &texture;
-}
-
-RectangleShape Person::getBody() const
+void Person::takeDamage(int damageAmount)
 {
-	return body;
+	if (0/*персонаж атакуется*/) {
+		health -= damageAmount;
+	}
 }
 
-Vector2f Person::getPosition() const 
+void Person::update(float time)
 {
-	return body.getPosition();
 }
 
-Vector2f Person::getSpeed() const
+Vector2f Person::getOrigin() const
 {
-	return Vector2f(speed.x, speed.y);
+	return sprite.getOrigin();
 }
 
+Vector2f Person::getVelocity() const
+{
+	return velocity;
+}

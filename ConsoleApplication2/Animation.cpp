@@ -8,25 +8,38 @@ Animation::Animation(): \
 Animation::Animation(Texture* texture, Vector2u imageCount, float switchTime) : \
 	imageCount(imageCount), switchTime(switchTime), totalTime(0.0f)
 {
-	currentImage.x = 0;
+	currentFrame.x = 0;
 	currentRect.width = texture->getSize().x / static_cast<float>(imageCount.x);
 	currentRect.height = texture->getSize().y / static_cast<float>(imageCount.y);
 
 }
 
-void Animation::updateAnimation(int row, float time)
+void Animation::updateAnimation(int row, float time, bool faceRight)
 {
-	currentImage.y = row;
+	currentFrame.y = row;
 	totalTime += time;
-	if (totalTime >= switchTime) {
+	if (totalTime >= switchTime) 
+	{
 		totalTime -= switchTime;
-		currentImage.x++;
-		if (currentImage.x >= imageCount.x) {
-			currentImage.x = 0;
+		currentFrame.x++;
+		if (currentFrame.x >= imageCount.x) 
+		{
+			currentFrame.x = 0;
 		}
 	}
-	currentRect.left = currentImage.x * currentRect.width;
-	currentRect.top = currentImage.y * currentRect.height;
+	currentRect.top = currentFrame.y * currentRect.height;
+
+
+	if (faceRight) 
+	{
+		currentRect.left = currentFrame.x * currentRect.width;
+		currentRect.width = abs(currentRect.width);
+	}
+	else 
+	{
+		currentRect.left = (currentFrame.x + 1) * abs(currentRect.width);
+		currentRect.width = -abs(currentRect.width);
+	}
 }
 
 IntRect Animation::getCurrentRect() const
