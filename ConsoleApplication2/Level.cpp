@@ -23,7 +23,7 @@ Level::Level(const std::string filePathToPlatfomsTexture, const std::string file
     {
         std::cerr << "Can't load an image";
     }
-    coinSprite.setTextureRect(IntRect(Vector2i(coinSprite.getPosition().x, coinSprite.getPosition().y), \
+    coinSprite.setTextureRect(IntRect(Vector2i(coinSprite.getPosition().x, coinSprite.getPosition().y), 
         Vector2i(16, 16)));
     coinSprite.setTexture(coinTexture);
     coinSprite.setPosition(Vector2f(200, 430));
@@ -38,11 +38,14 @@ Level::Level(const std::string filePathToPlatfomsTexture, const std::string file
     {
         std::cerr << "Can't load an image";
     }
+    Vector2f BackGroundScale(static_cast<float>(WINDOW_WIDTH) / backGroundTexture.getSize().x, \
+        static_cast<float>(WINDOW_HEIGHT) / backGroundTexture.getSize().y);
     backGroundSprite.setTexture(backGroundTexture);
-    backGroundSprite.setTextureRect(IntRect(Vector2i(0, 0), size));
+    backGroundSprite.setScale(BackGroundScale);
 
     setPlatforms();
     setCoins();
+    setBonuses();
 }
 
 
@@ -51,6 +54,10 @@ void Level::update(float time)
     for (Object& coin : coins)
     {
         coin.updateAnimation(time, true);
+    }
+    for (Object& bonus : bonuses)
+    {
+        bonus.updateAnimation(time, true);
     }
 }
 
@@ -64,6 +71,10 @@ void Level::draw(RenderWindow& window)
     for (Object& coin : coins)
     {
         coin.draw(window);
+    }
+    for (Object& bonus : bonuses)
+    {
+        bonus.draw(window);
     }
 }
 
@@ -99,6 +110,27 @@ void Level::setCoins()
     case 1:
         coins.push_back(Object(&coinTexture, Vector2f(170, 436), Vector2u(8, 1), 0.1f));
         coins.push_back(Object(&coinTexture, Vector2f(200, 436), Vector2u(8, 1), 0.1f));
+        break;
+    case 2:
+        break;
+
+    case 3:
+        break;
+
+    case 4:
+        break;
+
+    case 5:
+        break;
+    }
+}
+
+void Level::setBonuses()
+{
+    switch (numberOfLevel)
+    {
+    case 1:
+        bonuses.push_back(Object(&bonusTexture, Vector2f(260, 400), Vector2u(8, 1), 0.1f));
         break;
     case 2:
         break;

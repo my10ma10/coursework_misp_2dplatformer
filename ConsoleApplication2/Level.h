@@ -17,6 +17,7 @@ public:
 	void draw(RenderWindow& window);
 	void setPlatforms();
 	void setCoins();
+	void setBonuses();
 
 	Sprite getBackGroundSprite() const;
 	std::vector<Platform>& getPlatforms();

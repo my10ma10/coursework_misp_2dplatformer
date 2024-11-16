@@ -8,7 +8,7 @@ public:
 	Object(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime);
 
 	void update(float time);
-	void draw(RenderWindow& window);
+	void draw(RenderWindow& window) override;
 	void setBonusIconSprite(std::string& path);
 private:
 	Texture bonusIconTexture;

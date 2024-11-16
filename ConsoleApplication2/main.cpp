@@ -20,15 +20,10 @@ int main()
     window.setIcon(512, 512, icon.getPixelsPtr());
 
 
-
-
-
     //Time
     Clock clock;
     float timePlayer;
     float animationTime;
-
-
 
     // darkGhost
     Texture darkGhostTexture;
@@ -37,15 +32,6 @@ int main()
         std::cerr << "Can't load an image";
     }
     Object darkGhost(&darkGhostTexture, Vector2f(140, 410), Vector2u(8, 4), 0.1f);
-
-    // coin
-    //Texture coinTexture;
-    //if (!coinTexture.loadFromFile("Image\\coin-Sheet.png"))
-    //{
-    //    std::cerr << "Can't load an image";
-    //}
-    //Object coin1(&coinTexture, Vector2f(170, 436), Vector2u(8, 1), 0.1f);
-    //Object coin2(&coinTexture, Vector2f(200, 436), Vector2u(8, 1), 0.1f);
 
     //player
     Texture playerTexture;
@@ -57,11 +43,8 @@ int main()
 
     //level
     Level level("Image\\platform_test.png", "Image\\coin-Sheet.png", \
-        "Image\\rectangle_test.png", "Image\\a78a2b.jpg", 1);
+        "Image\\potion-Sheet.png", "Image\\a78a2b.jpg", 1);
     FloatRect levelBounds(0, 0, level.getSize().x, level.getSize().y); // ОК
-
-
-
 
 
     
@@ -70,12 +53,14 @@ int main()
         Vector2i(VIEW_HEIGHT / 4, VIEW_HEIGHT / 4));// ОК
     Sprite playerAndViewCollideSprite; 
     playerAndViewCollideSprite.setTextureRect(viewRectBounds);
-
     Collider playerColliderForView(playerAndViewCollideSprite);
     view.setCenter(player.getPosition());
 
 
-
+    // level collide
+    Vector2f levelCenter(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
+    Sprite levelLimitViewShape;
+    Collider backCollider(levelLimitViewShape);
 
 
     while (window.isOpen())
@@ -104,8 +89,6 @@ int main()
             }
         }
         darkGhost.updateAnimation(animationTime, true);
-        //coin1.updateAnimation(animationTime, false);
-        //coin2.updateAnimation(animationTime, false);
         level.update(animationTime);
         player.update(timePlayer);
 
@@ -119,11 +102,10 @@ int main()
         
         playerColliderForView.viewCollision(player.getCollider());
         
-        //Vector2f tempViewCenter(view.getCenter());
-        //levelLimitViewShape.setPosition(view.getCenter());
-        //levelLimitViewShape.setSize(view.getSize());
-        //backCollider.levelCollisionWithPlayer(player.getCollider(), levelCenter);
-        //backCollider.levelCollisionWithView(levelLimitViewCollider, levelCenter, tempViewCenter, view);
+        levelLimitViewShape.setPosition(view.getCenter());
+        levelLimitViewShape.setTextureRect(IntRect(Vector2i(view.getCenter().x, view.getCenter().y),\
+            Vector2i(view.getSize().x, view.getSize().y)));
+        backCollider.levelCollisionWithPlayer(player.getCollider(), levelCenter);
 
 
         view.setCenter(playerAndViewCollideSprite.getPosition());

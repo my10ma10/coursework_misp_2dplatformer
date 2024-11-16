@@ -1,5 +1,7 @@
 #pragma once
 #include "SFML\Graphics.hpp"
+#include "Consts.h"
+
 using namespace sf;
 
 class Collider

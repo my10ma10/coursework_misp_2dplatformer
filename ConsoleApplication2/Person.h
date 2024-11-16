@@ -22,8 +22,8 @@ protected:
 	int attackPower;
 	bool faceRight;
 
-	const float personSpeed = 0.1f;
 	Vector2f velocity;
+	const float personSpeed = 0.1f;
 	const float gravity = 0.001f;
 };
 

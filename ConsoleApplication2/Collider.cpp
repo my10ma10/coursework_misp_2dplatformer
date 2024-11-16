@@ -1,7 +1,4 @@
 #include "Collider.h"
-#include "Consts.h"
-#include <iostream>
-
 Collider::Collider(Sprite& sprite) : sprite(sprite) {}
 
 void Collider::Move(float dx, float dy) {
