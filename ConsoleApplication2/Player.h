@@ -11,6 +11,7 @@ public:
 	//Player(Image& image, Vector2f size, Vector2f position);
 
 	void attack(Enemy& enemy);
+	//void superattack(&атакуемый враг)
 	void collectCoin(Object& coin);
 	void applyBonus(Object& bonus);
 	void applyHeart(Object& heart);

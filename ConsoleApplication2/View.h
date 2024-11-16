@@ -1,6 +1,6 @@
 #pragma once
 //view
-View view(Vector2f(0.0f, 0.0f), Vector2f(view_height, view_height));
+View view(Vector2f(0.0f, 0.0f), Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
 
 
 void changeViewZoom(View& view) {
@@ -15,7 +15,7 @@ void changeViewZoom(View& view) {
 void changeViewAspectRatio(const RenderWindow& window, View& view)
 {
     float aspect_ratio = float(window.getSize().x) / float(window.getSize().y);
-    view.setSize(aspect_ratio * view_height, view_height);
+    view.setSize(aspect_ratio * VIEW_HEIGHT, VIEW_HEIGHT);
 }
 
 

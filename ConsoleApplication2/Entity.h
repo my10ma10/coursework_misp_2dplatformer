@@ -14,8 +14,7 @@ public:
 	virtual void update(float time) = 0;
 	void updateAnimation(float time, bool faceRight);
 
-	//void superattack(&атакуемый враг)
-	void draw(RenderWindow& window);
+	virtual void draw(RenderWindow& window);
 
 	void setAnimation(Vector2u imageCount, float switchTime);
 	void setTextureRect(const IntRect& rectangle);

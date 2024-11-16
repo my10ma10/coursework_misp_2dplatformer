@@ -5,10 +5,10 @@ Platform::Platform(Vector2f size, Vector2f position) {
     sprite.setPosition(position);
 }
 
-Platform::Platform(Texture texture, Vector2f size, Vector2f position) : Platform(size, position)
+Platform::Platform(Texture* texture, Vector2f size, Vector2f position) : Platform(size, position)
 {
-    this->texture = texture;
-    sprite.setTexture(this->texture);
+    sprite.setTexture(*texture);
+    this->texture = *texture;
     sprite.setTextureRect(IntRect(0, 0, size.x, size.y));
 }
 

@@ -63,7 +63,7 @@ void Player::update(float time)
 	}
 	if (velocity.x == 0.0f) 
 	{
-		//row = 0;
+		row = 0;
 	}
 	else 
 	{
@@ -96,10 +96,6 @@ void Player::update(float time)
 	sprite.setTextureRect(animation.getCurrentRect());
 	velocity.y += gravity * time; // gravity
 	sprite.move(velocity * time);
-	if (canJump)
-	{
-		velocity.y = 0.0f;
-	}
 }
 
 void Player::OnCollition(Vector2f direction)
@@ -122,6 +118,10 @@ void Player::OnCollition(Vector2f direction)
 	else if (direction.y > 0.0f) 
 	{ // collition on the top
 		velocity.y = 0.0f;
+		canJump = false;
+	}
+	if (direction.x != 0.0f)
+	{
 		canJump = false;
 	}
 

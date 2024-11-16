@@ -4,16 +4,37 @@ Object::Object() : Entity()
 {
 }
 
-Object::Object(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime) : Entity(texture, position, imageCount, switchTime)
+Object::Object(Texture* sheetTexture, Vector2f position, Vector2u imageCount, float switchTime) : Entity(sheetTexture, position, imageCount, switchTime)
 {
-	Vector2f textureSize(texture->getSize().x, texture->getSize().y);
-	//sprite.setTextureRect(IntRect(0, 0, textureSize.x, textureSize.y));
-	this->sheetTexture = Texture(*texture);
+	Vector2f textureSize(sheetTexture->getSize().x, sheetTexture->getSize().y);
+	this->sheetTexture = Texture(*sheetTexture);
+
+}
+
+Object::~Object()
+{
+	delete bonusIconTexture;
 }
 
 
 void Object::update(float time)
 {
+}
+
+void Object::draw(RenderWindow& window)
+{
+	Image image;
+	window.draw(sprite);
+	window.draw(bonusIconSprite);
+}
+
+void Object::setBonusIconSprite(std::string& path)
+{
+	if (!bonusIconTexture->loadFromFile(path))
+	{
+		std::cerr << "Can't load an image";
+	}
+	bonusIconSprite.setTexture(*bonusIconTexture);
 }
 
 
@@ -22,10 +43,10 @@ void Object::update(float time)
 
 //static Object createObject(std::string path)
 //{
-//	Texture texture;
+//	Texture* texture;
 //	Object object;
-//	if (texture.loadFromFile("Image\\coin-Sheet.png")) {
-//		object = Object(&texture, Vector2f(0, 0), Vector2f(0, 0));
+//	if (texture->loadFromFile("Image\\coin-Sheet.png")) {
+//		object = Object(texture, Vector2f(0, 0), Vector2u(0, 0), 0.0f);
 //	}
 //	return object;
 //}

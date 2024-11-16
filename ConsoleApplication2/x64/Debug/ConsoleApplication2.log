@@ -1,48 +1,13 @@
-﻿  Collider.cpp
-  Enemy.cpp
-  Entity.cpp
-  Level.cpp
-  Object.cpp
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,63): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,63): warning C4244:         with
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,63): warning C4244:         [
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,63): warning C4244:             T=unsigned int
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,63): warning C4244:         ]
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,63): warning C4244:         and
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,63): warning C4244:         [
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,63): warning C4244:             T=float
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,63): warning C4244:         ]
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,41): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,41): warning C4244:         with
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,41): warning C4244:         [
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,41): warning C4244:             T=unsigned int
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,41): warning C4244:         ]
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,41): warning C4244:         and
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,41): warning C4244:         [
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,41): warning C4244:             T=float
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp(9,41): warning C4244:         ]
-  Person.cpp
-  Platform.cpp
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,53): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,53): warning C4244:         with
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,53): warning C4244:         [
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,53): warning C4244:             T=float
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,53): warning C4244:         ]
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,53): warning C4244:         and
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,53): warning C4244:         [
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,53): warning C4244:             T=int
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,53): warning C4244:         ]
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,45): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,45): warning C4244:         with
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,45): warning C4244:         [
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,45): warning C4244:             T=float
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,45): warning C4244:         ]
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,45): warning C4244:         and
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,45): warning C4244:         [
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,45): warning C4244:             T=int
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Platform.cpp(12,45): warning C4244:         ]
-  Player.cpp
-  main.cpp
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(82,20): warning C4244: инициализация: преобразование "sf::Int64" в "float", возможна потеря данных
-  Создание кода...
+﻿  main.cpp
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(62,47): warning C4244: аргумент: преобразование "float" в "T", возможна потеря данных
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(62,47): warning C4244:         with
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(62,47): warning C4244:         [
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(62,47): warning C4244:             T=int
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(62,47): warning C4244:         ]
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(62,30): warning C4244: аргумент: преобразование "float" в "T", возможна потеря данных
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(62,30): warning C4244:         with
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(62,30): warning C4244:         [
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(62,30): warning C4244:             T=int
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(62,30): warning C4244:         ]
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(71,20): warning C4244: инициализация: преобразование "sf::Int64" в "float", возможна потеря данных
   ConsoleApplication2.vcxproj -> C:\Dev\game\ConsoleApplication2\x64\Debug\ConsoleApplication2.exe

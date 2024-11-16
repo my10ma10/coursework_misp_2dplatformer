@@ -20,6 +20,8 @@ public:
 	Sprite getBackGroundSprite() const;
 	void setIntRectToBackGroundSprite(IntRect);
 	std::vector<Platform>& getPlatforms();
+	Vector2f getSize() const;
+	Vector2f getCenter() const;
 
 private:
 	bool isComplete;
@@ -37,7 +39,7 @@ private:
 	Texture bonusTexture;
 	Texture backGroundTexture;
 
-
+	Vector2f size;
 	Vector2f position;
 	int numberOfLevel;
 };
