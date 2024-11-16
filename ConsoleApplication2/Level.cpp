@@ -8,6 +8,7 @@ Level::Level(const std::string filePathToPlatfomsTexture, const std::string file
     const std::string filePathToBonusTexture, const std::string filePathToBackGroundTexture, int numberOfLevel) \
     : isComplete(false), numberOfLevel(numberOfLevel)
 {
+    size = Vector2i(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 
     if (!platformTexture.loadFromFile(filePathToPlatfomsTexture))
@@ -22,6 +23,8 @@ Level::Level(const std::string filePathToPlatfomsTexture, const std::string file
     {
         std::cerr << "Can't load an image";
     }
+    coinSprite.setTextureRect(IntRect(Vector2i(coinSprite.getPosition().x, coinSprite.getPosition().y), \
+        Vector2i(16, 16)));
     coinSprite.setTexture(coinTexture);
     coinSprite.setPosition(Vector2f(200, 430));
 
@@ -36,10 +39,20 @@ Level::Level(const std::string filePathToPlatfomsTexture, const std::string file
         std::cerr << "Can't load an image";
     }
     backGroundSprite.setTexture(backGroundTexture);
-    size = Vector2f(backGroundSprite.getGlobalBounds().getSize());
+    backGroundSprite.setTextureRect(IntRect(Vector2i(0, 0), size));
+
     setPlatforms();
+    setCoins();
 }
 
+
+void Level::update(float time)
+{
+    for (Object& coin : coins)
+    {
+        coin.updateAnimation(time, true);
+    }
+}
 
 void Level::draw(RenderWindow& window)
 {
@@ -48,7 +61,10 @@ void Level::draw(RenderWindow& window)
     {
         platform.draw(window);
     }
-    //window.draw(coinSprite);
+    for (Object& coin : coins)
+    {
+        coin.draw(window);
+    }
 }
 
 void Level::setPlatforms()
@@ -76,6 +92,28 @@ void Level::setPlatforms()
     }
 }
 
+void Level::setCoins()
+{
+    switch (numberOfLevel)
+    {
+    case 1:
+        coins.push_back(Object(&coinTexture, Vector2f(170, 436), Vector2u(8, 1), 0.1f));
+        coins.push_back(Object(&coinTexture, Vector2f(200, 436), Vector2u(8, 1), 0.1f));
+        break;
+    case 2:
+        break;
+
+    case 3:
+        break;
+
+    case 4:
+        break;
+
+    case 5:
+        break;
+    }
+}
+
 Sprite Level::getBackGroundSprite() const
 {
     return backGroundSprite;
@@ -86,7 +124,7 @@ std::vector<Platform>& Level::getPlatforms()
     return platforms;
 }
 
-Vector2f Level::getSize() const
+Vector2i Level::getSize() const
 {
     return size;
 }

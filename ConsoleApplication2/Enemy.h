@@ -17,6 +17,6 @@ public:
 
 private:
 	std::string name;
-	bool attackType; // 0 - ближний, 1 - дальний
+	bool attackRange; // 0 - ближний, 1 - дальний
 };
 

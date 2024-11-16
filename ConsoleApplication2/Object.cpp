@@ -11,11 +11,6 @@ Object::Object(Texture* sheetTexture, Vector2f position, Vector2u imageCount, fl
 
 }
 
-Object::~Object()
-{
-	delete bonusIconTexture;
-}
-
 
 void Object::update(float time)
 {
@@ -30,11 +25,11 @@ void Object::draw(RenderWindow& window)
 
 void Object::setBonusIconSprite(std::string& path)
 {
-	if (!bonusIconTexture->loadFromFile(path))
+	if (!bonusIconTexture.loadFromFile(path))
 	{
 		std::cerr << "Can't load an image";
 	}
-	bonusIconSprite.setTexture(*bonusIconTexture);
+	bonusIconSprite.setTexture(bonusIconTexture);
 }
 
 

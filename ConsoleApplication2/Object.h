@@ -6,13 +6,12 @@ class Object : public Entity
 public:
 	Object();
 	Object(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime);
-	~Object();
 
 	void update(float time);
 	void draw(RenderWindow& window);
 	void setBonusIconSprite(std::string& path);
 private:
-	Texture* bonusIconTexture;
+	Texture bonusIconTexture;
 	Sprite bonusIconSprite;
 
 };

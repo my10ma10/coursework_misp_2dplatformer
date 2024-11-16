@@ -30,7 +30,7 @@ int main()
 
 
 
-
+    // darkGhost
     Texture darkGhostTexture;
 
     if (!darkGhostTexture.loadFromFile("Image\\dark_ghost-Sheet.png")) {
@@ -38,13 +38,21 @@ int main()
     }
     Object darkGhost(&darkGhostTexture, Vector2f(140, 410), Vector2u(8, 4), 0.1f);
 
+    // coin
+    //Texture coinTexture;
+    //if (!coinTexture.loadFromFile("Image\\coin-Sheet.png"))
+    //{
+    //    std::cerr << "Can't load an image";
+    //}
+    //Object coin1(&coinTexture, Vector2f(170, 436), Vector2u(8, 1), 0.1f);
+    //Object coin2(&coinTexture, Vector2f(200, 436), Vector2u(8, 1), 0.1f);
 
     //player
     Texture playerTexture;
     if (!playerTexture.loadFromFile("Image\\rectangle_test.png")) {
         std::cerr << "Can't load an image";
     }
-    Player player(&playerTexture, Vector2f(0, 0), Vector2u(1, 1), 0.0f);
+    Player player(&playerTexture, Vector2f(120, 470), Vector2u(1, 1), 0.0f);
 
 
     //level
@@ -59,12 +67,16 @@ int main()
     
     // view collide
     IntRect viewRectBounds(Vector2i(player.getPosition()),\
-        Vector2i(VIEW_HEIGHT / 5, VIEW_HEIGHT / 5));// ОК
+        Vector2i(VIEW_HEIGHT / 4, VIEW_HEIGHT / 4));// ОК
     Sprite playerAndViewCollideSprite; 
     playerAndViewCollideSprite.setTextureRect(viewRectBounds);
 
     Collider playerColliderForView(playerAndViewCollideSprite);
     view.setCenter(player.getPosition());
+
+
+
+
 
     while (window.isOpen())
     {
@@ -92,10 +104,11 @@ int main()
             }
         }
         darkGhost.updateAnimation(animationTime, true);
-        //coinobj.setTextureRect(coinobj.getCurrentRect());
-        //coinobj.updateAnimation(animationTime, false);
-
+        //coin1.updateAnimation(animationTime, false);
+        //coin2.updateAnimation(animationTime, false);
+        level.update(animationTime);
         player.update(timePlayer);
+
         //collider
         Vector2f direction_collide_with_platforms(0.0f, 0.0f);
         for (Platform& platform : level.getPlatforms()) {
@@ -106,10 +119,6 @@ int main()
         
         playerColliderForView.viewCollision(player.getCollider());
         
-        
-        
-        
-        
         //Vector2f tempViewCenter(view.getCenter());
         //levelLimitViewShape.setPosition(view.getCenter());
         //levelLimitViewShape.setSize(view.getSize());
@@ -118,15 +127,13 @@ int main()
 
 
         view.setCenter(playerAndViewCollideSprite.getPosition());
-        //view.setCenter(player.getPosition());
 
 
-        window.clear(Color::White);
-        window.setView(view);
-        level.draw(window);
+        window.clear(Color::White); // basic
+        window.setView(view); // basic
+        level.draw(window); // basic
         darkGhost.draw(window);
-        player.draw(window);
-        window.draw(playerAndViewCollideSprite);
+        player.draw(window); //пока непонятно, может потом в level
 
         window.display();
     }

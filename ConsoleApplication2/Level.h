@@ -16,11 +16,11 @@ public:
 	void update(float time);
 	void draw(RenderWindow& window);
 	void setPlatforms();
+	void setCoins();
 
 	Sprite getBackGroundSprite() const;
-	void setIntRectToBackGroundSprite(IntRect);
 	std::vector<Platform>& getPlatforms();
-	Vector2f getSize() const;
+	Vector2i getSize() const;
 	Vector2f getCenter() const;
 
 private:
@@ -39,7 +39,7 @@ private:
 	Texture bonusTexture;
 	Texture backGroundTexture;
 
-	Vector2f size;
+	Vector2i size;
 	Vector2f position;
 	int numberOfLevel;
 };
