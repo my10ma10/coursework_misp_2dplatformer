@@ -1,12 +1,11 @@
 ﻿#include "Animation.h"
 #include "Consts.h"
+#include "Enemy.h"
+#include "Level.h"
 #include "Object.h"
 #include "Player.h"
 #include "Platform.h"
 #include "View.h"
-#include "Level.h"
-#include <cmath>
-
 
 
 int main()
@@ -25,20 +24,19 @@ int main()
     float timePlayer;
     float animationTime;
 
-    // darkGhost
-    Texture darkGhostTexture;
-
-    if (!darkGhostTexture.loadFromFile("Image\\dark_ghost-Sheet.png")) {
-        std::cerr << "Can't load an image";
-    }
-    Object darkGhost(&darkGhostTexture, Vector2f(140, 410), Vector2u(8, 4), 0.1f);
-
     //player
     Texture playerTexture;
     if (!playerTexture.loadFromFile("Image\\rectangle_test.png")) {
         std::cerr << "Can't load an image";
     }
     Player player(&playerTexture, Vector2f(120, 470), Vector2u(1, 1), 0.0f);
+
+    // darkGhost
+    Texture darkGhostTexture;
+    if (!darkGhostTexture.loadFromFile("Image\\dark_ghost-Sheet.png")) {
+        std::cerr << "Can't load an image";
+    }
+    Enemy darkGhost(&darkGhostTexture, Vector2f(140, 410), Vector2u(8, 4), 0.1f, EnemyName::Ghost, &player);
 
 
     //level
@@ -88,20 +86,29 @@ int main()
                 break;
             }
         }
-        darkGhost.updateAnimation(animationTime, true);
+        // game.update(time1, time2)
+        darkGhost.update(animationTime);
         level.update(animationTime);
         player.update(timePlayer);
 
         //collider
         Vector2f direction_collide_with_platforms(0.0f, 0.0f);
-        for (Platform& platform : level.getPlatforms()) {
-            if (platform.getCollider().checkCollision(player.getCollider(), direction_collide_with_platforms, 1.0f)) {
+        for (Platform& platform : level.getPlatforms()) 
+        {
+            if (platform.getCollider().checkCollision(player.getCollider(), direction_collide_with_platforms, 1.0f)) 
+            {
                 player.OnCollition(direction_collide_with_platforms);
             }
         }
-        
+        if (darkGhost.intersects(player.getSprite().getGlobalBounds()))
+        {
+            darkGhost.setRow(2);
+            darkGhost.attack();
+        }
+        std::cout << player.getHealth() << std::endl;
+
+        // в структуру коллайдеров в Гейме?
         playerColliderForView.viewCollision(player.getCollider());
-        
         levelLimitViewShape.setPosition(view.getCenter());
         levelLimitViewShape.setTextureRect(IntRect(Vector2i(view.getCenter().x, view.getCenter().y),\
             Vector2i(view.getSize().x, view.getSize().y)));

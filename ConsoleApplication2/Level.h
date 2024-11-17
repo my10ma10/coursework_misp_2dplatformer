@@ -1,5 +1,6 @@
 #pragma once
 #include "Consts.h"
+#include "Enemy.h"
 #include "Platform.h"
 #include "Object.h"
 #include <vector>
@@ -21,6 +22,7 @@ public:
 
 	Sprite getBackGroundSprite() const;
 	std::vector<Platform>& getPlatforms();
+	//std::vector<Enemy>& getEnemies();
 	Vector2i getSize() const;
 	Vector2f getCenter() const;
 

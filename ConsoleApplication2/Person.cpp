@@ -15,16 +15,10 @@ Person::Person(Texture* texture, Vector2f position, Vector2u imageCount, float s
 {
 }
 
-void Person::updateAnimation(int row, float time, bool faceRight)
-{
-	animation.updateAnimation(row, time, faceRight);
-}
 
 void Person::takeDamage(int damageAmount)
 {
-	if (0/*персонаж атакуется*/) {
-		health -= damageAmount;
-	}
+	health -= damageAmount;
 }
 
 void Person::update(float time)
@@ -39,4 +33,9 @@ Vector2f Person::getOrigin() const
 Vector2f Person::getVelocity() const
 {
 	return velocity;
+}
+
+int Person::getHealth() const
+{
+	return health;
 }

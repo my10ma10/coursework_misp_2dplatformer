@@ -11,7 +11,6 @@ Object::Object(Texture* sheetTexture, Vector2f position, Vector2u imageCount, fl
 
 }
 
-
 void Object::update(float time)
 {
 }
@@ -31,17 +30,3 @@ void Object::setBonusIconSprite(std::string& path)
 	}
 	bonusIconSprite.setTexture(bonusIconTexture);
 }
-
-
-
-
-
-//static Object createObject(std::string path)
-//{
-//	Texture* texture;
-//	Object object;
-//	if (texture->loadFromFile("Image\\coin-Sheet.png")) {
-//		object = Object(texture, Vector2f(0, 0), Vector2u(0, 0), 0.0f);
-//	}
-//	return object;
-//}

@@ -16,6 +16,8 @@ Entity::Entity(Texture* texture, Vector2f position, Vector2u imageCount, float s
 	Vector2f spriteSheetSize(sheetTexture.getSize());
 
 	sprite.setOrigin(spriteSheetSize.x / (imageCount.x * 2.0f), spriteSheetSize.y / (imageCount.y * 2.0f));
+	sprite.setTextureRect(IntRect(Vector2i(getPosition().x, getPosition().y),\
+		Vector2i(getSize().x / imageCount.x, getSize().y / imageCount.y)));
 	setAnimation(imageCount, switchTime);
 }
 

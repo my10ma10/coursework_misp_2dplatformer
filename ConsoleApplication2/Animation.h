@@ -11,6 +11,8 @@ public:
 	void updateAnimation(int row, float time, bool faceRight);
 
 	IntRect getCurrentRect() const;
+	unsigned int getCurrentFrame() const;
+	void changeRow();
 
 private:
 	IntRect currentRect;
@@ -18,5 +20,6 @@ private:
 	Vector2u imageCount;
 	float totalTime;
 	float switchTime;
+	bool isNewRow;
 };
 

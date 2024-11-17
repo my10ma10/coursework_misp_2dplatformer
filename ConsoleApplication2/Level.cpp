@@ -83,11 +83,10 @@ void Level::setPlatforms()
     switch (numberOfLevel) 
     {
         case 1:
-            platforms.push_back(Platform(&platformTexture, Vector2f(32, 64), Vector2f(80, 80)));
             platforms.push_back(Platform(&platformTexture, Vector2f(WINDOW_WIDTH, 40), Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.5f)));
             platforms.push_back(Platform(&platformTexture, Vector2f(32, 16), Vector2f(190, (WINDOW_HEIGHT / 1.5f) - 44)));
             platforms.push_back(Platform(&platformTexture, Vector2f(16, 32), Vector2f(240, (WINDOW_HEIGHT / 1.5f) - 52)));
-            platforms.push_back(Platform(&platformTexture, Vector2f(64, 16), Vector2f(156, (WINDOW_HEIGHT / 1.5f) - 80)));
+            platforms.push_back(Platform(&platformTexture, Vector2f(112, 16), Vector2f(130, (WINDOW_HEIGHT / 1.5f) - 80)));
             break;
         case 2:
             break;
@@ -156,6 +155,11 @@ std::vector<Platform>& Level::getPlatforms()
     return platforms;
 }
 
+//std::vector<Enemy>& Level::getEnemies()
+//{
+//    return enemies;
+//}
+
 Vector2i Level::getSize() const
 {
     return size;
@@ -165,5 +169,6 @@ Vector2f Level::getCenter() const
 {
     return backGroundSprite.getGlobalBounds().getSize() / 2.0f;
 }
+
 
 

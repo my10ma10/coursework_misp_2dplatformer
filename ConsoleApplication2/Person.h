@@ -9,12 +9,13 @@ public:
 	Person(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime);
 
 
-	void updateAnimation(int row, float time, bool faceRight);
+	//void updateAnimation(int row, float time, bool faceRight);
 	void takeDamage(int amount);
 	void update(float time) override;
 
 	Vector2f getOrigin() const;
 	Vector2f getVelocity() const;
+	int getHealth() const;
 
 protected:
 	int health;
