@@ -1,17 +1,8 @@
 #include "Person.h"
 
-Person::Person() : Entity(), \
-	faceRight(true), attackPower(0), energy(0), health(HEALTH_MAX)
-{
-}
-
-Person::Person(Vector2f position) : Entity(position), \
-	faceRight(true), attackPower(0), energy(0), health(HEALTH_MAX)
-{
-}
-
 Person::Person(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime) : \
-	Entity(texture, position, imageCount, switchTime), faceRight(true), attackPower(0), energy(0), health(HEALTH_MAX)
+	Entity(texture, position, imageCount, switchTime), faceRight(true), attackPower(0), energy(0), health(HEALTH_MAX),\
+	canJump(false)
 {
 }
 
@@ -23,6 +14,34 @@ void Person::takeDamage(int damageAmount)
 
 void Person::update(float time)
 {
+}
+
+void Person::OnCollition(Vector2f direction)
+{
+	if (direction.x < 0.0f)
+	{ // collition on the left
+		velocity.x = 0.0f;
+		canJump = false;
+	}
+	else if (direction.x > 0.0f)
+	{ // collition on the right
+		velocity.x = 0.0f;
+		canJump = false;
+	}
+	if (direction.y < 0.0f)
+	{ // collition on the bottom
+		velocity.y = 0.0f;
+		canJump = true;
+	}
+	else if (direction.y > 0.0f)
+	{ // collition on the top
+		velocity.y = 0.0f;
+		canJump = false;
+	}
+	if (direction.x != 0.0f)
+	{
+		canJump = false;
+	}
 }
 
 Vector2f Person::getOrigin() const

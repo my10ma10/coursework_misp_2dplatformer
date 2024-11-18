@@ -16,10 +16,8 @@ public:
 	void applyHeart(Object& heart);
 	void update(float time);
 
-	void OnCollition(Vector2f direction);
 
 private:
-	bool canJump;
 	bool isBlocking;
 	float jumpHeight = 32.0f;
 };

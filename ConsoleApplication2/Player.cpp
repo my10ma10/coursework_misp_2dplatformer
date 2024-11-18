@@ -1,16 +1,8 @@
 #include "Player.h"
 #include "Enemy.h"
 
-Player::Player() : Player(Vector2f(0.0f, 0.0f))
-{
-}
-
-Player::Player(Vector2f position) : Person(position), canJump(false), isBlocking(false)
-{
-}
-
 Player::Player(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime): \
-	Person(texture, position, imageCount, switchTime), canJump(false), isBlocking(false)
+	Person(texture, position, imageCount, switchTime), isBlocking(false)
 {
 	sprite.setTextureRect(animation.getCurrentRect());
 }
@@ -96,34 +88,5 @@ void Player::update(float time)
 	sprite.setTextureRect(animation.getCurrentRect());
 	velocity.y += gravity * time; // gravity
 	sprite.move(velocity * time);
-}
-
-void Player::OnCollition(Vector2f direction)
-{
-	if (direction.x < 0.0f) 
-	{ // collition on the left
-		velocity.x = 0.0f;
-		canJump = false;
-	}
-	else if (direction.x > 0.0f) 
-	{ // collition on the right
-		velocity.x = 0.0f;
-		canJump = false;
-	}
-	if (direction.y < 0.0f) 
-	{ // collition on the bottom
-		velocity.y = 0.0f;
-		canJump = true;
-	}
-	else if (direction.y > 0.0f) 
-	{ // collition on the top
-		velocity.y = 0.0f;
-		canJump = false;
-	}
-	if (direction.x != 0.0f)
-	{
-		canJump = false;
-	}
-
 }
 

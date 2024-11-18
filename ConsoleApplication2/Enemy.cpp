@@ -5,7 +5,6 @@ Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, float swi
 {
 	this->name = name;
 	this->player = player;
-	setattackRange(name);
 }
 
 void Enemy::update(float time)
@@ -13,6 +12,35 @@ void Enemy::update(float time)
 	player->getPosition().x > this->getPosition().x ? faceRight = true : faceRight = false;
 	updateAnimation(time, faceRight);
 	setRow(0);
+
+	if (getPosition().x > 120)
+	{
+		velocity.x -= personSpeed * 3000 * time;
+	}
+	if (getPosition().x < 140)
+	{
+		velocity.x += personSpeed * 3000 * time;
+	}
+	if (velocity.x == 0.0f)
+	{
+		row = 0;
+	}
+	else
+	{
+		row = 1;
+		if (velocity.x > 0.0f)
+		{
+			faceRight = true;
+		}
+		else
+		{
+			faceRight = false;
+		}
+	}
+	velocity.y += gravity * 10000 * time; // gravity
+	sprite.move(velocity * time);
+	setattackRange(name);
+
 }
 
 bool Enemy::intersects(const FloatRect& rectangel) const

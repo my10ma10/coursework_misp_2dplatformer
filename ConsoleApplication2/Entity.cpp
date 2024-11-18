@@ -29,7 +29,10 @@ void Entity::updateAnimation(float time, bool faceRight)
 
 void Entity::draw(RenderWindow& window)
 {
-	window.draw(sprite);
+	if (life)
+	{
+		window.draw(sprite);
+	}
 }
 
 void Entity::setAnimation(Vector2u imageCount, float switchTime)

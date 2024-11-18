@@ -36,8 +36,8 @@ int main()
     if (!darkGhostTexture.loadFromFile("Image\\dark_ghost-Sheet.png")) {
         std::cerr << "Can't load an image";
     }
-    Enemy darkGhost(&darkGhostTexture, Vector2f(140, 410), Vector2u(8, 4), 0.1f, EnemyName::Ghost, &player);
-
+    Enemy darkGhost(&darkGhostTexture, Vector2f(140, 390), Vector2u(8, 4), 0.1f, EnemyName::Ghost, &player);
+    
 
     //level
     Level level("Image\\platform_test.png", "Image\\coin-Sheet.png", \
@@ -89,7 +89,7 @@ int main()
         // game.update(time1, time2)
         darkGhost.update(animationTime);
         level.update(animationTime);
-        player.update(timePlayer);
+        player.update(timePlayer); // может в level.update
 
         //collider
         Vector2f direction_collide_with_platforms(0.0f, 0.0f);
@@ -99,13 +99,19 @@ int main()
             {
                 player.OnCollition(direction_collide_with_platforms);
             }
+            if (platform.getCollider().checkCollision(darkGhost.getCollider(), direction_collide_with_platforms, 1.0f))
+            {
+                darkGhost.OnCollition(direction_collide_with_platforms);
+            }
         }
+
+
         if (darkGhost.intersects(player.getSprite().getGlobalBounds()))
         {
+            std::cout << "check\n";
             darkGhost.setRow(2);
             darkGhost.attack();
         }
-        std::cout << player.getHealth() << std::endl;
 
         // в структуру коллайдеров в Гейме?
         playerColliderForView.viewCollision(player.getCollider());

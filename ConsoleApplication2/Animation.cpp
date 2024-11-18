@@ -16,6 +16,7 @@ Animation::Animation(Texture* texture, Vector2u imageCount, float switchTime) : 
 
 void Animation::updateAnimation(int row, float time, bool faceRight)
 {
+	isLoopDone = false;
 	currentFrame.y = row;
 	totalTime += time;
 
@@ -39,6 +40,10 @@ void Animation::updateAnimation(int row, float time, bool faceRight)
 	{
 		currentRect.left = (currentFrame.x + 1) * abs(currentRect.width);
 		currentRect.width = -abs(currentRect.width);
+	}
+	if (currentFrame.x == 8)
+	{
+		isLoopDone = true;
 	}
 	if (isNewRow)
 	{

@@ -2,7 +2,6 @@
 #include "Person.h"
 #include "Player.h"
 
-
 enum class EnemyName {Skeleton, Wizard, Tank, Dragon, Ghost, darkKnight};
 
 class Enemy : public Person

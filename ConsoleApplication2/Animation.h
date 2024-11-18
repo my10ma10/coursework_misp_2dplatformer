@@ -21,5 +21,6 @@ private:
 	float totalTime;
 	float switchTime;
 	bool isNewRow;
+	bool isLoopDone;
 };
 
