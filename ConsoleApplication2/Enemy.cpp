@@ -1,7 +1,7 @@
 #include "Enemy.h"
 
 Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime, EnemyName name, Player* player) : \
-	Person(texture, position, imageCount, switchTime)
+	Person(texture, position, imageCount, switchTime), attackType(0)
 {
 	this->name = name;
 	this->player = player;
@@ -13,13 +13,13 @@ void Enemy::update(float time)
 	updateAnimation(time, faceRight);
 	setRow(0);
 
-	if (getPosition().x > 120)
+	if (!faceRight)
 	{
-		velocity.x -= personSpeed * 3000 * time;
+		velocity.x -= personSpeed * 200 * time;
 	}
-	if (getPosition().x < 140)
+	else
 	{
-		velocity.x += personSpeed * 3000 * time;
+		velocity.x += personSpeed * 200 * time;
 	}
 	if (velocity.x == 0.0f)
 	{
@@ -74,6 +74,7 @@ void Enemy::setattackRange(EnemyName name)
 			attackType = 1;
 			break;
 		case EnemyName::Ghost:
+			attackPower = 20.0f;
 			attackType = 1;
 			attackRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * sizeDiff, \
 				getPosition().y - getSize().y / 2.0f),\
@@ -93,7 +94,4 @@ FloatRect Enemy::getAttackRange() const
 	return attackRange;
 }
 
-unsigned int Enemy::getCurrentFrame() const
-{
-	return animation.getCurrentFrame();
-}
+

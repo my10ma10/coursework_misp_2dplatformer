@@ -17,7 +17,6 @@ public:
 	//анимация смерти
 	//
 	FloatRect getAttackRange() const;
-	unsigned int getCurrentFrame() const;
 
 private:
 	EnemyName name;

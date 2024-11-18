@@ -59,7 +59,7 @@ void Player::update(float time)
 	}
 	else 
 	{
-		row = 1;
+		row = 5;
 		if (velocity.x > 0.0f)
 		{
 			faceRight = true;
@@ -79,13 +79,15 @@ void Player::update(float time)
 		canJump = false;
 		velocity.y = -sqrtf(2.0f * gravity * jumpHeight);
 	}
-	if (Keyboard::isKeyPressed(Keyboard::Down)) 
+	if (Keyboard::isKeyPressed(Keyboard::Down) or Keyboard::isKeyPressed(Keyboard::S))
 	{
 		isBlocking = true;
+		setRow(6);
+		velocity.x = 0.0f;
 		// block
 	}
-	animation.updateAnimation(row, time, faceRight);
-	sprite.setTextureRect(animation.getCurrentRect());
+	updateAnimation(time / 1000, faceRight);
+	//sprite.setTextureRect(animation.getCurrentRect());
 	velocity.y += gravity * time; // gravity
 	sprite.move(velocity * time);
 }

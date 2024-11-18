@@ -83,10 +83,14 @@ void Level::setPlatforms()
     switch (numberOfLevel) 
     {
         case 1:
-            platforms.push_back(Platform(&platformTexture, Vector2f(WINDOW_WIDTH, 40), Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.5f)));
-            platforms.push_back(Platform(&platformTexture, Vector2f(32, 16), Vector2f(190, (WINDOW_HEIGHT / 1.5f) - 44)));
-            platforms.push_back(Platform(&platformTexture, Vector2f(16, 32), Vector2f(240, (WINDOW_HEIGHT / 1.5f) - 52)));
-            platforms.push_back(Platform(&platformTexture, Vector2f(112, 16), Vector2f(130, (WINDOW_HEIGHT / 1.5f) - 80)));
+            platforms.push_back(Platform(&platformTexture, \
+                Vector2f(WINDOW_WIDTH, 40), Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.5f)));
+            platforms.push_back(Platform(&platformTexture, \
+                Vector2f(32, 16), Vector2f(190, (WINDOW_HEIGHT / 1.5f) - 54)));
+            platforms.push_back(Platform(&platformTexture, \
+                Vector2f(16, 32), Vector2f(240, (WINDOW_HEIGHT / 1.5f) - 72)));
+            platforms.push_back(Platform(&platformTexture, \
+                Vector2f(112, 16), Vector2f(130, (WINDOW_HEIGHT / 1.5f) - 96)));
             break;
         case 2:
             break;

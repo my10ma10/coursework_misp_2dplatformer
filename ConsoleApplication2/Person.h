@@ -11,6 +11,7 @@ public:
 	void update(float time) override;
 	void OnCollition(Vector2f direction);
 
+	unsigned int getCurrentFrame() const;
 	Vector2f getOrigin() const;
 	Vector2f getVelocity() const;
 	int getHealth() const;
@@ -18,12 +19,12 @@ public:
 protected:
 	int health;
 	int energy;
-	int attackPower;
+	float attackPower;
 	bool faceRight;
 	bool canJump;
 
 	Vector2f velocity;
-	const float personSpeed = 0.1f;
+	const float personSpeed = 0.07f;
 	const float gravity = 0.001f;
 };
 

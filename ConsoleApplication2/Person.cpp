@@ -1,7 +1,7 @@
 #include "Person.h"
 
 Person::Person(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime) : \
-	Entity(texture, position, imageCount, switchTime), faceRight(true), attackPower(0), energy(0), health(HEALTH_MAX),\
+	Entity(texture, position, imageCount, switchTime), faceRight(true), attackPower(0.0f), energy(0), health(HEALTH_MAX),\
 	canJump(false)
 {
 }
@@ -42,6 +42,10 @@ void Person::OnCollition(Vector2f direction)
 	{
 		canJump = false;
 	}
+}
+unsigned int Person::getCurrentFrame() const
+{
+	return animation.getCurrentFrame();
 }
 
 Vector2f Person::getOrigin() const

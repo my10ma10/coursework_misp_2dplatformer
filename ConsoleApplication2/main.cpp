@@ -26,29 +26,27 @@ int main()
 
     //player
     Texture playerTexture;
-    if (!playerTexture.loadFromFile("Image\\rectangle_test.png")) {
+    if (!playerTexture.loadFromFile("Image\\player-Sheet.png")) {
         std::cerr << "Can't load an image";
     }
-    Player player(&playerTexture, Vector2f(120, 470), Vector2u(1, 1), 0.0f);
+    Player player(&playerTexture, Vector2f(180, 340), Vector2u(12, 7), 0.1f);
 
     // darkGhost
     Texture darkGhostTexture;
     if (!darkGhostTexture.loadFromFile("Image\\dark_ghost-Sheet.png")) {
         std::cerr << "Can't load an image";
     }
-    Enemy darkGhost(&darkGhostTexture, Vector2f(140, 390), Vector2u(8, 4), 0.1f, EnemyName::Ghost, &player);
-    
+    Enemy darkGhost(&darkGhostTexture, Vector2f(280, 470), Vector2u(8, 4), 0.1f, EnemyName::Ghost, &player);
 
     //level
     Level level("Image\\platform_test.png", "Image\\coin-Sheet.png", \
         "Image\\potion-Sheet.png", "Image\\a78a2b.jpg", 1);
     FloatRect levelBounds(0, 0, level.getSize().x, level.getSize().y); // ОК
 
-
     
     // view collide
     IntRect viewRectBounds(Vector2i(player.getPosition()),\
-        Vector2i(VIEW_HEIGHT / 4, VIEW_HEIGHT / 4));// ОК
+        Vector2i(VIEW_HEIGHT * 1.5f, VIEW_HEIGHT * 1.0f));// ОК
     Sprite playerAndViewCollideSprite; 
     playerAndViewCollideSprite.setTextureRect(viewRectBounds);
     Collider playerColliderForView(playerAndViewCollideSprite);
@@ -92,36 +90,40 @@ int main()
         player.update(timePlayer); // может в level.update
 
         //collider
-        Vector2f direction_collide_with_platforms(0.0f, 0.0f);
+        Vector2f collideDirection(0.0f, 0.0f);
         for (Platform& platform : level.getPlatforms()) 
         {
-            if (platform.getCollider().checkCollision(player.getCollider(), direction_collide_with_platforms, 1.0f)) 
+            //std::cout << view.getCenter().x << std::endl;
+            if (platform.getCollider().externalCollider(player.getCollider(), collideDirection, \
+                Vector2f(7.0f, 22.0f))) 
             {
-                player.OnCollition(direction_collide_with_platforms);
+                player.OnCollition(collideDirection);
             }
-            if (platform.getCollider().checkCollision(darkGhost.getCollider(), direction_collide_with_platforms, 1.0f))
+            if (platform.getCollider().externalCollider(darkGhost.getCollider(), collideDirection, \
+                Vector2f(16.0f, 16.0f)))
             {
-                darkGhost.OnCollition(direction_collide_with_platforms);
+                darkGhost.OnCollition(collideDirection);
             }
         }
-
+        //std::cout << player.getHealth() << " " << player.getCurrentFrame() << std::endl;
 
         if (darkGhost.intersects(player.getSprite().getGlobalBounds()))
         {
-            std::cout << "check\n";
             darkGhost.setRow(2);
             darkGhost.attack();
         }
 
         // в структуру коллайдеров в Гейме?
-        playerColliderForView.viewCollision(player.getCollider());
+        playerColliderForView.internalCollider(player.getCollider());
         levelLimitViewShape.setPosition(view.getCenter());
         levelLimitViewShape.setTextureRect(IntRect(Vector2i(view.getCenter().x, view.getCenter().y),\
             Vector2i(view.getSize().x, view.getSize().y)));
-        backCollider.levelCollisionWithPlayer(player.getCollider(), levelCenter);
+        backCollider.levelCollision(player.getCollider(), Vector2f(16.0f, 16.0f));
+        backCollider.levelCollision(darkGhost.getCollider(), Vector2f(16.0f, 16.0f));
 
 
         view.setCenter(playerAndViewCollideSprite.getPosition());
+        //view.setCenter(player.getPosition());
 
 
         window.clear(Color::White); // basic

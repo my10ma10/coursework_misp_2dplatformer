@@ -14,11 +14,11 @@ public:
 	void collectCoin(Object& coin);
 	void applyBonus(Object& bonus);
 	void applyHeart(Object& heart);
-	void update(float time);
+	void update(float time) override;
 
 
 private:
 	bool isBlocking;
-	float jumpHeight = 32.0f;
+	float jumpHeight = 44.0f;
 };
 

@@ -1,14 +1,17 @@
 #include "Collider.h"
+#include <iostream>
+
 Collider::Collider(Sprite& sprite) : sprite(sprite) {}
 
 void Collider::Move(float dx, float dy) {
 	sprite.move(dx, dy);
 }
 
-bool Collider::checkCollision(Collider other, Vector2f& direction, float push)
+bool Collider::externalCollider(Collider other, Vector2f& direction, Vector2f bodySize, float push)
 {
+
 	Vector2f otherPos = other.getPosition();
-	Vector2f otherHalfSize = other.getHalfSize();
+	Vector2f otherHalfSize = bodySize / 2.0f;
 	Vector2f thisPos = getPosition();
 	Vector2f thisHalfSize = getHalfSize();
 
@@ -62,7 +65,7 @@ bool Collider::checkCollision(Collider other, Vector2f& direction, float push)
 	return false;
 }
 
-void Collider::viewCollision(Collider playerCollider) 
+void Collider::internalCollider(Collider playerCollider) 
 {
 	Vector2f playerColliderPos = playerCollider.getPosition();
 	Vector2f playerColliderHalfSize = playerCollider.getHalfSize();
@@ -100,14 +103,14 @@ void Collider::viewCollision(Collider playerCollider)
 	}
 }
 
-bool Collider::levelCollisionWithPlayer(Collider playerCollider, Vector2f levelCenter) 
+bool Collider::levelCollision(Collider playerCollider, Vector2f bodySize) 
 {
 	Vector2f playerColliderPos = playerCollider.getPosition();
-	Vector2f playerColliderHalfSize = playerCollider.getHalfSize();
+	Vector2f playerColliderHalfSize = bodySize / 2.0f;
 
 	Vector2f levelHalfSize = Vector2f(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
 
-	Vector2f delta(playerColliderPos.x - levelCenter.x, playerColliderPos.y - levelCenter.y);
+	Vector2f delta(playerColliderPos.x - levelHalfSize.x, playerColliderPos.y - levelHalfSize.y);
 	Vector2f intersect(levelHalfSize.x - playerColliderHalfSize.x - abs(delta.x), \
 		levelHalfSize.y - playerColliderHalfSize.y - abs(delta.y));
 
