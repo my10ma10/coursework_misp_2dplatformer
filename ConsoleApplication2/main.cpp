@@ -95,7 +95,7 @@ int main()
         {
             //std::cout << view.getCenter().x << std::endl;
             if (platform.getCollider().externalCollider(player.getCollider(), collideDirection, \
-                Vector2f(7.0f, 22.0f))) 
+                player.getSize())) 
             {
                 player.OnCollition(collideDirection);
             }
@@ -105,11 +105,9 @@ int main()
                 darkGhost.OnCollition(collideDirection);
             }
         }
-        //std::cout << player.getHealth() << " " << player.getCurrentFrame() << std::endl;
-
-        if (darkGhost.intersects(player.getSprite().getGlobalBounds()))
+        //std::cout << player.getHealth() << std::endl;
+        if (darkGhost.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, player.getSize())))
         {
-            darkGhost.setRow(2);
             darkGhost.attack();
         }
 

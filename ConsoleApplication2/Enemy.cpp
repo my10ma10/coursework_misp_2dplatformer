@@ -5,22 +5,29 @@ Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, float swi
 {
 	this->name = name;
 	this->player = player;
+	personSpeed = 15000.0f;
 }
 
 void Enemy::update(float time)
 {
 	player->getPosition().x > this->getPosition().x ? faceRight = true : faceRight = false;
-	updateAnimation(time, faceRight);
-	setRow(0);
-
-	if (!faceRight)
+	updateAnimation(time / 1.5f, faceRight);
+	if (moveRangeIntersect(FloatRect(player->getPosition() - player->getSize() / 2.0f, player->getSize())))
 	{
-		velocity.x -= personSpeed * 200 * time;
+		if (!faceRight)
+		{
+			velocity.x = -personSpeed * time;
+		}
+		else if (faceRight)
+		{
+			velocity.x = personSpeed * time;
+		}
 	}
 	else
 	{
-		velocity.x += personSpeed * 200 * time;
+		velocity.x = 0.0f;
 	}
+	
 	if (velocity.x == 0.0f)
 	{
 		row = 0;
@@ -37,29 +44,48 @@ void Enemy::update(float time)
 			faceRight = false;
 		}
 	}
+	if (velocity.x > personSpeed)
+	{
+		velocity.x = personSpeed;
+	}
+	if (velocity.x < -personSpeed)
+	{
+		velocity.x = -personSpeed;
+	}
 	velocity.y += gravity * 10000 * time; // gravity
 	sprite.move(velocity * time);
-	setattackRange(name);
-
+	setRanges(name);
 }
 
-bool Enemy::intersects(const FloatRect& rectangel) const
+bool Enemy::attackRangeIntersect(const FloatRect& rectangel) const
 {
 	return attackRange.intersects(rectangel);
 }
 
+bool Enemy::moveRangeIntersect(const FloatRect& rectangel) const
+{
+	return moveRange.intersects(rectangel);
+}
+
 void Enemy::attack()
 {
-	if (getCurrentFrame() == 5)
+	row = 2;
+	if (getCurrentFrame() == 5 and !isDamageTaking)
 	{
+		isDamageTaking = true;
 		player->takeDamage(attackPower);
+	}
+	if (getCurrentFrame() != 5)
+	{
+		isDamageTaking = false;
 	}
 	// анимация атаки
 }
 
-void Enemy::setattackRange(EnemyName name)
+void Enemy::setRanges(EnemyName name)
 {
-	float sizeDiff = 1.5f;
+	float attackSizeDiff = 2.0f; // разница между размером спрайта и области атаки
+	float moveSizeDiff = 3.0f; // разница между размером спрайта и области движения к игроку
 	switch (name) {
 		case EnemyName::Skeleton:
 			attackType = 0;
@@ -76,9 +102,14 @@ void Enemy::setattackRange(EnemyName name)
 		case EnemyName::Ghost:
 			attackPower = 20.0f;
 			attackType = 1;
-			attackRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * sizeDiff, \
-				getPosition().y - getSize().y / 2.0f),\
-				Vector2f(getSize().x * sizeDiff, getSize().y));
+
+			attackRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * attackSizeDiff, \
+				getPosition().y - getSize().y / 2.0f), \
+				Vector2f(getSize().x * attackSizeDiff, getSize().y));
+			moveRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * moveSizeDiff, \
+				getPosition().y - getSize().y / 2.0f), \
+				Vector2f(getSize().x * moveSizeDiff, getSize().y));
+			std::cout << attackRange.getSize().x << " " << attackRange.getSize().y << std::endl;
 			break;
 		case EnemyName::darkKnight:
 			attackType = 0;

@@ -22,10 +22,11 @@ protected:
 	float attackPower;
 	bool faceRight;
 	bool canJump;
+	bool isDamageTaking;
 
 	Vector2f velocity;
-	const float personSpeed = 0.07f;
-	const float gravity = 0.001f;
+	float personSpeed = 1.0f;
+	float gravity = 0.001f;
 };
 
 class Enemy;

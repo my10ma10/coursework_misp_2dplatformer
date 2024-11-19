@@ -1,12 +1,12 @@
 #include "Animation.h"
 
 Animation::Animation(): \
-	imageCount(Vector2u(0,0)), switchTime(0.0f), totalTime(0.0f), isNewRow(0)
+	imageCount(Vector2u(0,0)), switchTime(0.0f), totalTime(0.0f), isLoopDone(false)
 {
 }
 
 Animation::Animation(Texture* texture, Vector2u imageCount, float switchTime) : \
-	imageCount(imageCount), switchTime(switchTime), totalTime(0.0f), isNewRow(0)
+	imageCount(imageCount), switchTime(switchTime), totalTime(0.0f), isLoopDone(false)
 {
 	currentFrame.x = 0;
 	currentRect.width = texture->getSize().x / static_cast<float>(imageCount.x);
@@ -14,10 +14,22 @@ Animation::Animation(Texture* texture, Vector2u imageCount, float switchTime) : 
 
 }
 
-void Animation::updateAnimation(int row, float time, bool faceRight)
+bool Animation::updateAnimation(int row, float time, bool faceRight)
 {
-	isLoopDone = false;
-	currentFrame.y = row;
+	if (currentFrame.y != row) 
+	{
+		currentFrame.y = row;
+		currentFrame.x = 0;
+	}
+	if (currentFrame.x == imageCount.x - 1)
+	{
+		isLoopDone = true;
+
+	}
+	else
+	{
+		isLoopDone = false;
+	}
 	totalTime += time;
 
 	if (totalTime >= switchTime)
@@ -41,15 +53,12 @@ void Animation::updateAnimation(int row, float time, bool faceRight)
 		currentRect.left = (currentFrame.x + 1) * abs(currentRect.width);
 		currentRect.width = -abs(currentRect.width);
 	}
-	if (currentFrame.x == 8)
+	if (isLoopDone and row == 3)
 	{
-		isLoopDone = true;
+		std::cout << "usulully\n";
+		return true;
 	}
-	if (isNewRow)
-	{
-		currentFrame.x = 0;
-		isNewRow = false;
-	}
+	return false;
 }
 
 IntRect Animation::getCurrentRect() const
@@ -60,11 +69,4 @@ IntRect Animation::getCurrentRect() const
 unsigned int Animation::getCurrentFrame() const
 {
 	return currentFrame.x;
-}
-
-void Animation::changeRow()
-{
-	isNewRow = true;
-	
-
 }

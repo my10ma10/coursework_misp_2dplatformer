@@ -4,6 +4,9 @@
 #include "Animation.h"
 #include <iostream>
 
+enum class KeyBoardKeys {
+};
+
 class Entity
 {
 public:
@@ -12,7 +15,7 @@ public:
 	Entity(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime);
 
 	virtual void update(float time) = 0;
-	void updateAnimation(float time, bool faceRight);
+	bool updateAnimation(float time, bool faceRight);
 
 	virtual void draw(RenderWindow& window);
 
@@ -43,7 +46,7 @@ protected:
 	Texture spriteTexture;
 	bool life;
 	unsigned int row;
-
+	// FloatRect body; как внедрить?
 
 };
 

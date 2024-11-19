@@ -10,9 +10,10 @@ public:
 	Enemy(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime, EnemyName name, Player* player);
 
 	void update(float time);
-	bool intersects(const FloatRect& rectangel) const;
+	bool attackRangeIntersect(const FloatRect& rectangel) const;
+	bool moveRangeIntersect(const FloatRect& rectangel) const;
 	void attack();
-	void setattackRange(EnemyName name);
+	void setRanges(EnemyName name);
 	//анимация атаки
 	//анимация смерти
 	//
@@ -23,5 +24,7 @@ private:
 	bool attackType; // 0 - ближний, 1 - дальний
 	Player* player = nullptr;
 	FloatRect attackRange;
+	FloatRect moveRange;
+
 };
 

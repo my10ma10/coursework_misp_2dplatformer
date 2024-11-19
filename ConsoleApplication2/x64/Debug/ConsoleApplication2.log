@@ -1,3 +1,4 @@
-﻿  Player.cpp
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Player.cpp(13,19): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+﻿  Enemy.cpp
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Enemy.cpp(76,22): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Enemy.cpp(118,17): warning C4129: "_": нераспознанная escape-последовательность символов
   ConsoleApplication2.vcxproj -> C:\Dev\game\ConsoleApplication2\x64\Debug\ConsoleApplication2.exe

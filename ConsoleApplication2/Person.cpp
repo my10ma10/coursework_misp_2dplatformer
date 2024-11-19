@@ -2,7 +2,7 @@
 
 Person::Person(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime) : \
 	Entity(texture, position, imageCount, switchTime), faceRight(true), attackPower(0.0f), energy(0), health(HEALTH_MAX),\
-	canJump(false)
+	canJump(false), isDamageTaking(false)
 {
 }
 

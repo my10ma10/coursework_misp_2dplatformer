@@ -5,6 +5,7 @@ Player::Player(Texture* texture, Vector2f position, Vector2u imageCount, float s
 	Person(texture, position, imageCount, switchTime), isBlocking(false)
 {
 	sprite.setTextureRect(animation.getCurrentRect());
+	personSpeed = 0.05f;
 }
 
 
@@ -12,6 +13,11 @@ void Player::attack(Enemy& enemy)
 {
 	enemy.takeDamage(attackPower);
 	// анимация атаки
+}
+
+void Player::superattack(Enemy& enemy)
+{
+	// 3 анимации атаки подряд
 }
 
 void Player::collectCoin(Object& coin)
@@ -86,9 +92,22 @@ void Player::update(float time)
 		velocity.x = 0.0f;
 		// block
 	}
-	updateAnimation(time / 1000, faceRight);
-	//sprite.setTextureRect(animation.getCurrentRect());
+	if (Keyboard::isKeyPressed(Keyboard::Space))
+	{
+		setRow(3);
+		velocity.x = 0.0f;
+
+	}
+	if (updateAnimation(time / 1000, faceRight))
+	{
+		setRow(5);
+	}
 	velocity.y += gravity * time; // gravity
 	sprite.move(velocity * time);
+}
+
+Vector2f Player::getSize() const
+{
+	return Vector2f(7.0f, 22.0f);
 }
 

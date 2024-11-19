@@ -21,10 +21,14 @@ Entity::Entity(Texture* texture, Vector2f position, Vector2u imageCount, float s
 	setAnimation(imageCount, switchTime);
 }
 
-void Entity::updateAnimation(float time, bool faceRight)
+bool Entity::updateAnimation(float time, bool faceRight)
 {
 	setTextureRect(this->getCurrentRect());
-	animation.updateAnimation(this->row, time, faceRight);
+	if (animation.updateAnimation(this->row, time, faceRight))
+	{
+		return true;
+	}
+	return false;
 }
 
 void Entity::draw(RenderWindow& window)
