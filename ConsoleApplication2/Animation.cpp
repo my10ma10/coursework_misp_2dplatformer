@@ -20,6 +20,7 @@ bool Animation::updateAnimation(int row, float time, bool faceRight)
 	{
 		currentFrame.y = row;
 		currentFrame.x = 0;
+		animationCount = 0;
 	}
 	if (currentFrame.x == imageCount.x - 1)
 	{
@@ -39,6 +40,7 @@ bool Animation::updateAnimation(int row, float time, bool faceRight)
 		if (currentFrame.x >= imageCount.x)
 		{
 			currentFrame.x = 0;
+			animationCount++;
 		}
 	}
 	currentRect.top = currentFrame.y * currentRect.height;
@@ -53,7 +55,7 @@ bool Animation::updateAnimation(int row, float time, bool faceRight)
 		currentRect.left = (currentFrame.x + 1) * abs(currentRect.width);
 		currentRect.width = -abs(currentRect.width);
 	}
-	if (isLoopDone and row == 3)
+	if (isLoopDone)
 	{
 		return true;
 	}

@@ -21,9 +21,10 @@ int main()
 
     //Time
     Clock clock;
-    float timePlayer;
-    float animationTime;
-
+    const float timeStep = 1.0f / 60.0f;
+    float accumulator = 0.0f;
+    float timePlayer = 0.0f;
+    bool paused = false;
 
     //level
     Level level("Image\\coin-Sheet.png", \
@@ -35,7 +36,7 @@ int main()
     if (!playerTexture.loadFromFile("Image\\player-Sheet.png")) {
         std::cerr << "Can't load an image";
     }
-    Player player(&playerTexture, Vector2f(180, 340), Vector2u(12, 7), 0.1f);
+    Player player(&playerTexture, Vector2f(180, 480), Vector2u(12, 7), 0.1f);
 
     // darkGhost
     Texture darkGhostTexture;
@@ -48,12 +49,10 @@ int main()
     
     // view collide
     IntRect viewRectBounds(Vector2i(player.getPosition()),\
-        Vector2i(VIEW_HEIGHT * 1.5f, VIEW_HEIGHT * 1.0f));// ОК
+        Vector2i(VIEW_HEIGHT * 1.5f, VIEW_HEIGHT * 1.0f));
     Sprite playerAndViewCollideSprite; 
     playerAndViewCollideSprite.setTextureRect(viewRectBounds);
     Collider playerColliderForView(playerAndViewCollideSprite);
-    view.setCenter(player.getPosition());
-
 
     // level collide
     Vector2f levelCenter(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
@@ -63,12 +62,11 @@ int main()
 
     while (window.isOpen())
     {
-        float time = clock.getElapsedTime().asMicroseconds(); 
-        timePlayer = time / 1000;
-        animationTime = clock.restart().asSeconds();
-        clock.restart();
-        Event event;
+        Time elapsed = clock.restart();
+        accumulator += elapsed.asSeconds();
+        timePlayer = timeStep * 1000;
 
+        Event event;
         while (window.pollEvent(event))
         {
             switch (event.type)
@@ -86,43 +84,46 @@ int main()
                 break;
             }
         }
-        // game.update(time1, time2)
-        darkGhost.update(animationTime);
-        level.update(animationTime);
-        player.update(timePlayer); // может в level.update
 
-
-        //collider
-        Vector2f collideDirection(0.0f, 0.0f);
-        for (Platform& platform : level.getPlatforms()) 
+        while (accumulator >= timeStep)
         {
-            if (platform.getCollider().externalCollider(player.getCollider(), collideDirection, \
-                player.getSize())) 
+            // game.update(time1, time2)
+            darkGhost.update(timeStep);
+            level.update(timeStep);
+            player.update(timePlayer); // может в level.update
+
+
+            //collider
+            Vector2f collideDirection(0.0f, 0.0f);
+            for (Platform& platform : level.getPlatforms())
             {
-                player.OnCollition(collideDirection);
+                if (platform.getCollider().externalCollider(player.getCollider(), collideDirection, \
+                    player.getSize()))
+                {
+                    player.OnCollition(collideDirection);
+                }
+                if (platform.getCollider().externalCollider(darkGhost.getCollider(), collideDirection, \
+                    Vector2f(16.0f, 16.0f)))
+                {
+                    darkGhost.OnCollition(collideDirection);
+                }
             }
-            if (platform.getCollider().externalCollider(darkGhost.getCollider(), collideDirection, \
-                Vector2f(16.0f, 16.0f)))
+
+
+            if (darkGhost.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, player.getSize())))
             {
-                darkGhost.OnCollition(collideDirection);
+                darkGhost.attack();
             }
+
+            // в структуру коллайдеров в Гейме?
+            playerColliderForView.internalCollider(player.getCollider());
+            levelLimitViewShape.setPosition(view.getCenter());
+            levelLimitViewShape.setTextureRect(IntRect(Vector2i(view.getCenter().x, view.getCenter().y), \
+                Vector2i(view.getSize().x, view.getSize().y)));
+            backCollider.levelCollision(player.getCollider(), Vector2f(16.0f, 16.0f));
+            backCollider.levelCollision(darkGhost.getCollider(), Vector2f(16.0f, 16.0f));
+            accumulator -= timeStep;
         }
-
-
-        if (darkGhost.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, player.getSize())))
-        {
-            darkGhost.attack();
-        }
-
-        // в структуру коллайдеров в Гейме?
-        playerColliderForView.internalCollider(player.getCollider());
-        levelLimitViewShape.setPosition(view.getCenter());
-        levelLimitViewShape.setTextureRect(IntRect(Vector2i(view.getCenter().x, view.getCenter().y),\
-            Vector2i(view.getSize().x, view.getSize().y)));
-        backCollider.levelCollision(player.getCollider(), Vector2f(16.0f, 16.0f));
-        backCollider.levelCollision(darkGhost.getCollider(), Vector2f(16.0f, 16.0f));
-
-
         view.setCenter(playerAndViewCollideSprite.getPosition());
 
         window.clear(Color::White); // basic

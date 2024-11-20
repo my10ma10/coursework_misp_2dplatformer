@@ -130,3 +130,8 @@ Vector2f Player::getSize() const
 	return Vector2f(7.0f, 22.0f);
 }
 
+unsigned int Player::getAnimCount() const
+{
+	return animation.animationCount;
+}
+

@@ -13,6 +13,7 @@ public:
 	IntRect getCurrentRect() const;
 	unsigned int getCurrentFrame() const;
 
+	unsigned int animationCount = 0;
 private:
 	IntRect currentRect;
 	Vector2u currentFrame;
