@@ -7,6 +7,8 @@ class Player : public Person
 public:
 	Player(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime);
 
+	void draw(RenderWindow& window);
+
 	void attack(Enemy& enemy);
 	void superattack(Enemy& enemy);
 	void collectCoin(Object& coin);
@@ -18,6 +20,9 @@ public:
 
 private:
 	bool isBlocking;
+	bool blockBonus;
 	float jumpHeight = 44.0f;
+	Texture bubbleTexture;
+	Sprite bubble;
 };
 

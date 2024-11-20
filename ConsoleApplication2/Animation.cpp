@@ -55,7 +55,6 @@ bool Animation::updateAnimation(int row, float time, bool faceRight)
 	}
 	if (isLoopDone and row == 3)
 	{
-		std::cout << "usulully\n";
 		return true;
 	}
 	return false;

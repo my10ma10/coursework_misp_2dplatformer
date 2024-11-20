@@ -6,6 +6,24 @@ Player::Player(Texture* texture, Vector2f position, Vector2u imageCount, float s
 {
 	sprite.setTextureRect(animation.getCurrentRect());
 	personSpeed = 0.05f;
+	if (!bubbleTexture.loadFromFile("Image\\bubble.png"))
+	{
+		std::cerr << "Can't load an image";
+	}
+	Sprite bubble = Sprite(bubbleTexture);
+	bubble.setScale(Vector2f(1.5f, 1.5f));
+}
+
+void Player::draw(RenderWindow& window)
+{
+	if (life)
+	{
+		window.draw(sprite);
+	}
+	if (blockBonus)
+	{
+		//window.draw(bubble);
+	}
 }
 
 
@@ -50,6 +68,7 @@ void Player::applyHeart(Object& heart)
 
 void Player::update(float time)
 {
+	bubble.setPosition(getPosition() - Vector2f(24.0f, 25.0f));
 	velocity.x = 0.0f;
 	if (Keyboard::isKeyPressed(Keyboard::Left) or Keyboard::isKeyPressed(Keyboard::A)) 
 	{

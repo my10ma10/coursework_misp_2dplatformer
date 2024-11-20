@@ -5,7 +5,7 @@ Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, float swi
 {
 	this->name = name;
 	this->player = player;
-	personSpeed = 15000.0f;
+	personSpeed = 12500.0f;
 }
 
 void Enemy::update(float time)
@@ -109,7 +109,6 @@ void Enemy::setRanges(EnemyName name)
 			moveRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * moveSizeDiff, \
 				getPosition().y - getSize().y / 2.0f), \
 				Vector2f(getSize().x * moveSizeDiff, getSize().y));
-			std::cout << attackRange.getSize().x << " " << attackRange.getSize().y << std::endl;
 			break;
 		case EnemyName::darkKnight:
 			attackType = 0;
