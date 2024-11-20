@@ -1,23 +1,28 @@
 #include "Level.h"
 
-Level::Level(int numberOfLevel) : isComplete(false), numberOfLevel(numberOfLevel)
+Level::Level(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
+    const std::string filePathToBackGroundTexture, int numberOfLevel) : \
+    isComplete(false), numberOfLevel(numberOfLevel), tileSize(16, 16), tilesAmount(48, 48),\
+    mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y), levelSize(WINDOW_WIDTH, WINDOW_HEIGHT)
 {
-}
 
-Level::Level(const std::string filePathToPlatfomsTexture, const std::string filePathToCoinTexture, \
-    const std::string filePathToBonusTexture, const std::string filePathToBackGroundTexture, int numberOfLevel) \
-    : isComplete(false), numberOfLevel(numberOfLevel)
-{
-    size = Vector2i(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-
-    if (!platformTexture.loadFromFile(filePathToPlatfomsTexture))
+    tileLevel = setTileLevel();
+    std::cout << tileLevel.size() << std::endl;
+    for (int i = 0; i < tileLevel.size(); ++i)
     {
-        std::cerr << "Can't load an image";
+        div_t tileArr = div(i, 48);
+        Vector2f tilePosition(tileSize.x * tileArr.rem + tileSize.x / 2.0f, \
+            tileSize.y * tileArr.quot + tileSize.x / 2.0f);
+        if (tileLevel[i] == 0)
+            continue;
+        platforms.push_back(Platform(Vector2f(tileSize.x, tileSize.y), Vector2f(tilePosition.x, tilePosition.y)));
+    }
+    if (!map.load("Image\\test_tiles-Sheet.png", tileSize, tileLevel, tilesAmount.x, tilesAmount.y))
+    {
+        std::cout << "Can't load the level";
     }
 
-    platformSprite.setTexture(platformTexture);
-    platformSprite.setTextureRect(IntRect(0, 0, 64, 32));
+    platformSprite.setTextureRect(IntRect(0, 0, 16, 16));
 
     if (!coinTexture.loadFromFile(filePathToCoinTexture))
     {
@@ -43,7 +48,6 @@ Level::Level(const std::string filePathToPlatfomsTexture, const std::string file
     backGroundSprite.setTexture(backGroundTexture);
     backGroundSprite.setScale(BackGroundScale);
 
-    setPlatforms();
     setCoins();
     setBonuses();
 }
@@ -76,35 +80,50 @@ void Level::draw(RenderWindow& window)
     {
         bonus.draw(window);
     }
+    window.draw(map);
 }
 
-void Level::setPlatforms()
+std::vector<int> Level::setTileLevel()
 {
-    switch (numberOfLevel) 
-    {
-        case 1:
-            platforms.push_back(Platform(&platformTexture, \
-                Vector2f(WINDOW_WIDTH, 40), Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.5f)));
-            platforms.push_back(Platform(&platformTexture, \
-                Vector2f(32, 16), Vector2f(190, (WINDOW_HEIGHT / 1.5f) - 54)));
-            platforms.push_back(Platform(&platformTexture, \
-                Vector2f(16, 32), Vector2f(240, (WINDOW_HEIGHT / 1.5f) - 72)));
-            platforms.push_back(Platform(&platformTexture, \
-                Vector2f(112, 16), Vector2f(130, (WINDOW_HEIGHT / 1.5f) - 96)));
-            break;
-        case 2:
-            break;
-
-        case 3:
-            break;
-
-        case 4:
-            break;
-
-        case 5:
-            break;
+    std::ifstream tileStream("tileMapLevel" + std::to_string(numberOfLevel) + ".txt");
+    if (!tileStream) {
+        std::cerr << "Can't open a file";
     }
+
+    std::vector<int> vec;
+    std::string tempLine;
+    while (std::getline(tileStream, tempLine))
+    {
+        std::istringstream iss(tempLine);
+        int num;
+        while (iss >> num) {
+            vec.push_back(num);
+        }
+    }
+    tileStream.close();
+    return vec;
 }
+
+//void Level::setPlatforms()
+//{
+//    switch (numberOfLevel) 
+//    {
+//        case 1:
+//            break;
+//            
+//        case 2:
+//            break;
+//
+//        case 3:
+//            break;
+//
+//        case 4:
+//            break;
+//
+//        case 5:
+//            break;
+//    }
+//}
 
 void Level::setCoins()
 {
@@ -164,9 +183,9 @@ std::vector<Platform>& Level::getPlatforms()
 //    return enemies;
 //}
 
-Vector2i Level::getSize() const
+Vector2u Level::getSize() const
 {
-    return size;
+    return levelSize;
 }
 
 Vector2f Level::getCenter() const

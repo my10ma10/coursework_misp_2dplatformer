@@ -7,9 +7,6 @@
 #include "Platform.h"
 #include "Tilemap.h"
 #include "View.h"
-#include <fstream>
-#include <sstream>
-#include <cstdlib>
 
 int main()
 {
@@ -28,45 +25,8 @@ int main()
     float animationTime;
 
 
-    std::ifstream tileStream("tileMapLevel1.txt");
-    if (!tileStream) {
-        std::cerr << "Ошибка: не удалось открыть файл!" << std::endl;
-        return 1;
-    }
-
-    std::vector<int> tileLevel;
-    std::string tempLine;
-
-    while (std::getline(tileStream, tempLine))
-    {
-        std::istringstream iss(tempLine);
-        int num;
-        while (iss >> num) {
-            tileLevel.push_back(num);
-        }
-    }
-    tileStream.close();
-
-    Vector2u tileSize(16, 16);
-    Vector2u tilesAmount(48, 48);
-    Vector2u mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y); //768 768
-
-
-    TileMap map;
-    if (!map.load("Image\\test_tiles-Sheet.png", tileSize, tileLevel, tilesAmount.x, tilesAmount.y))
-    {
-        return -1;
-    }
-
-    for (int i = 0; i < tileLevel.size(); ++i)
-    {
-        div_t tileArr = div(i, 48);
-        Vector2f tilePosition(tileSize.x * tileArr.rem + tileSize.x / 2.0f, \
-            tileSize.y * tileArr.quot + tileSize.x / 2.0f);
-    }
-
     //level
-    Level level("Image\\platform_test.png", "Image\\coin-Sheet.png", \
+    Level level("Image\\coin-Sheet.png", \
         "Image\\potion-Sheet.png", "Image\\a78a2b.jpg", 1);
     FloatRect levelBounds(0, 0, level.getSize().x, level.getSize().y); // ОК
 
@@ -168,7 +128,6 @@ int main()
         window.clear(Color::White); // basic
         window.setView(view); // basic
         level.draw(window); // basic
-        window.draw(map);
         darkGhost.draw(window);
         player.draw(window); //пока непонятно, может потом в level
         window.display();
