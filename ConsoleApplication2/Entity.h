@@ -19,6 +19,7 @@ public:
 
 	virtual void draw(RenderWindow& window);
 
+	void kill();
 	void setAnimation(Vector2u imageCount, float switchTime);
 	void setTextureRect(const IntRect& rectangle);
 	void setPosition(Vector2f position);
@@ -30,7 +31,7 @@ public:
 
 	Collider getCollider();
 	IntRect getCurrentRect() const;
-	bool getLife() const;
+	bool alive() const;
 	Vector2f getPosition() const;
 	Vector2f getSize() const;
 	Vector2f getSpeed() const;

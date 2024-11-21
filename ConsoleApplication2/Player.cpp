@@ -1,11 +1,12 @@
 #include "Player.h"
 #include "Enemy.h"
 
-Player::Player(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime): \
-	Person(texture, position, imageCount, switchTime), isBlocking(false)
+Player::Player(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime) : \
+	Person(texture, position, imageCount, switchTime)
 {
+	wasJumpKeyPressed = isJumpKeyPressed = isBlocking = blockBonus = false;
 	sprite.setTextureRect(animation.getCurrentRect());
-	personSpeed = 0.05f;
+	personSpeed = 0.075f;
 	if (!bubbleTexture.loadFromFile("Image\\bubble.png"))
 	{
 		std::cerr << "Can't load an image";
@@ -49,7 +50,7 @@ void Player::collectCoin(Object& coin)
 
 void Player::applyBonus(Object& bonus)
 {
-	if (bonus.getLife()) 
+	if (bonus.alive()) 
 	{
 		// удалить бонус
 		// назначить бонус игроку (отдельный метод)
@@ -58,7 +59,7 @@ void Player::applyBonus(Object& bonus)
 
 void Player::applyHeart(Object& heart)
 {
-	if (heart.getLife())
+	if (heart.alive())
 	{
 		if (health <= HEALTH_MAX)
 		health += 20;
@@ -68,7 +69,10 @@ void Player::applyHeart(Object& heart)
 
 void Player::update(float time)
 {
-	bubble.setPosition(getPosition() - Vector2f(24.0f, 25.0f));
+	bubble.setPosition(getPosition() - Vector2f(24.0f, 25.0f)); // магия
+	isJumpKeyPressed = Keyboard::isKeyPressed(Keyboard::W) or \
+		Keyboard::isKeyPressed(Keyboard::Up);//убрать W
+
 	velocity.x = 0.0f;
 	if (Keyboard::isKeyPressed(Keyboard::Left) or Keyboard::isKeyPressed(Keyboard::A)) 
 	{
@@ -99,17 +103,19 @@ void Player::update(float time)
 		canJump = false;
 	}
 
-	if ((Keyboard::isKeyPressed(Keyboard::Up) or Keyboard::isKeyPressed(Keyboard::W)) && canJump) 
+
+
+	if (isJumpKeyPressed && !wasJumpKeyPressed)
 	{
-		canJump = false;
-		velocity.y = -sqrtf(2.0f * gravity * jumpHeight);
+		this->jump();
 	}
+	wasJumpKeyPressed = isJumpKeyPressed;
 	if (Keyboard::isKeyPressed(Keyboard::Down) or Keyboard::isKeyPressed(Keyboard::S))
 	{
 		isBlocking = true;
 		setRow(6);
 		velocity.x = 0.0f;
-		// block
+		// blockFunction
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Space))
 	{
@@ -121,8 +127,17 @@ void Player::update(float time)
 	{
 		setRow(5);
 	}
-	velocity.y += gravity * time; // gravity
+	velocity.y += gravity * time;
 	sprite.move(velocity * time);
+}
+
+void Player::jump()
+{
+	if ((Keyboard::isKeyPressed(Keyboard::Up) or Keyboard::isKeyPressed(Keyboard::W)) and canJump)
+	{
+		canJump = false;
+		velocity.y = -sqrtf(2.0f * gravity * jumpHeight);
+	}
 }
 
 Vector2f Player::getSize() const

@@ -9,7 +9,6 @@ void Collider::Move(float dx, float dy) {
 
 bool Collider::externalCollider(Collider other, Vector2f& direction, Vector2f bodySize, float push)
 {
-
 	Vector2f otherPos = other.getPosition();
 	Vector2f otherHalfSize = bodySize / 2.0f;
 	Vector2f thisPos = getPosition();
@@ -21,6 +20,7 @@ bool Collider::externalCollider(Collider other, Vector2f& direction, Vector2f bo
 
 	if (intersect.x < 0.0f && intersect.y < 0.0f) 
 	{
+		//std::cout << "Collision" << std::endl;
 		//push
 		if (intersect.x > intersect.y) 
 		{ // push out by x 
@@ -62,6 +62,7 @@ bool Collider::externalCollider(Collider other, Vector2f& direction, Vector2f bo
 		}
 		return true;
 	}
+	//std::cout << std::endl;
 	return false;
 }
 

@@ -10,7 +10,7 @@
 
 int main()
 {
-    RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), L"Игра", Style::Default);
+    RenderWindow window(VideoMode(1024, 1024), L"Игра", Style::Default);
 
     Image icon;
     if (!icon.loadFromFile("Image\\icon.png")) {
@@ -24,12 +24,13 @@ int main()
     const float timeStep = 1.0f / 60.0f;
     float accumulator = 0.0f;
     float timePlayer = 0.0f;
-    bool paused = false;
+    bool isFocusLost = false;
+    bool isPaused = false;
 
     //level
     Level level("Image\\coin-Sheet.png", \
         "Image\\potion-Sheet.png", "Image\\a78a2b.jpg", 1);
-    FloatRect levelBounds(0, 0, level.getSize().x, level.getSize().y); // ОК
+    FloatRect levelBounds(0, 0, level.getSize().x, level.getSize().y);
 
     //player
     Texture playerTexture;
@@ -43,7 +44,7 @@ int main()
     if (!darkGhostTexture.loadFromFile("Image\\dark_ghost-Sheet.png")) {
         std::cerr << "Can't load an image";
     }
-    Enemy darkGhost(&darkGhostTexture, Vector2f(280, 470), Vector2u(8, 4), 0.1f, EnemyName::Ghost, &player);
+    Enemy ghost(&darkGhostTexture, Vector2f(240, 470), Vector2u(8, 4), 0.1f, EnemyName::Ghost, &player);
 
 
     
@@ -78,59 +79,89 @@ int main()
                 changeViewAspectRatio(window, view);
                 break;
             case Event::KeyPressed:
+                if (event.key.code == Keyboard::Escape)
+                {
+                    isPaused = !isPaused;
+                    event.GainedFocus;
+                }
                 changeViewZoom(view);
+                break;
+            case Event::LostFocus:
+                isFocusLost = true;
+                break;
+            case Event::GainedFocus:
+                isFocusLost = false;
                 break;
             default:
                 break;
             }
         }
 
+        if (isPaused) {
+            // реализовать меню паузы
+        }
+
         while (accumulator >= timeStep)
         {
-            // game.update(time1, time2)
-            darkGhost.update(timeStep);
-            level.update(timeStep);
-            player.update(timePlayer); // может в level.update
-
-
-            //collider
-            Vector2f collideDirection(0.0f, 0.0f);
-            for (Platform& platform : level.getPlatforms())
+            if (!isFocusLost)
             {
-                if (platform.getCollider().externalCollider(player.getCollider(), collideDirection, \
-                    player.getSize()))
+                if (!isPaused)
                 {
-                    player.OnCollition(collideDirection);
+                    // game.update(time1, time2)
+                    ghost.update(timeStep); // точно в level.update
+                    level.update(timeStep);
+                    player.update(timePlayer); // может в level.update
+
+
+                    //collider
+                    Vector2f collideDirection(0.0f, 0.0f);
+                    for (Platform& platform : level.getPlatforms())
+                    {
+                        if (platform.getCollider().externalCollider(player.getCollider(), collideDirection, \
+                            player.getSize()))
+                        {
+                            player.OnCollition(collideDirection);
+                        }
+                        if (platform.getCollider().externalCollider(ghost.getCollider(), collideDirection, \
+                            Vector2f(16.0f, 16.0f)))
+                        {
+                            ghost.OnCollition(collideDirection);
+                        }
+                    }
+
+                    if (ghost.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, player.getSize())))
+                    {
+                        ghost.attack();
+                    }
+
+                    // в структуру коллайдеров в Гейме?
+                    playerColliderForView.internalCollider(player.getCollider());
+                    levelLimitViewShape.setPosition(view.getCenter());
+                    levelLimitViewShape.setTextureRect(IntRect(Vector2i(view.getCenter().x, view.getCenter().y), \
+                        Vector2i(view.getSize().x, view.getSize().y)));
+                    backCollider.levelCollision(player.getCollider(), Vector2f(16.0f, 16.0f));
+                    backCollider.levelCollision(ghost.getCollider(), Vector2f(16.0f, 16.0f));
                 }
-                if (platform.getCollider().externalCollider(darkGhost.getCollider(), collideDirection, \
-                    Vector2f(16.0f, 16.0f)))
-                {
-                    darkGhost.OnCollition(collideDirection);
-                }
+                accumulator -= timeStep;
             }
-
-
-            if (darkGhost.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, player.getSize())))
-            {
-                darkGhost.attack();
-            }
-
-            // в структуру коллайдеров в Гейме?
-            playerColliderForView.internalCollider(player.getCollider());
-            levelLimitViewShape.setPosition(view.getCenter());
-            levelLimitViewShape.setTextureRect(IntRect(Vector2i(view.getCenter().x, view.getCenter().y), \
-                Vector2i(view.getSize().x, view.getSize().y)));
-            backCollider.levelCollision(player.getCollider(), Vector2f(16.0f, 16.0f));
-            backCollider.levelCollision(darkGhost.getCollider(), Vector2f(16.0f, 16.0f));
-            accumulator -= timeStep;
+            
         }
         view.setCenter(playerAndViewCollideSprite.getPosition());
 
         window.clear(Color::White); // basic
         window.setView(view); // basic
         level.draw(window); // basic
-        darkGhost.draw(window);
+        ghost.draw(window);
         player.draw(window); //пока непонятно, может потом в level
+        if (isPaused) {
+            Font font;
+            if (font.loadFromFile("Fonts\\arial.ttf")) { // Убедитесь, что шрифт доступен
+                Text pauseText(L"Пауза", font, 10);
+                pauseText.setFillColor(Color::Green);
+                pauseText.setPosition(player.getPosition());
+                window.draw(pauseText);
+            }
+        }
         window.display();
     }
     return 0;

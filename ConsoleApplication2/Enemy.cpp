@@ -5,7 +5,7 @@ Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, float swi
 {
 	this->name = name;
 	this->player = player;
-	personSpeed = 12500.0f;
+	personSpeed = 1500.0f;
 }
 
 void Enemy::update(float time)

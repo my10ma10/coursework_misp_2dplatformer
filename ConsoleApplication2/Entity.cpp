@@ -39,6 +39,11 @@ void Entity::draw(RenderWindow& window)
 	}
 }
 
+void Entity::kill()
+{
+	life = 0;
+}
+
 void Entity::setAnimation(Vector2u imageCount, float switchTime)
 {
 	animation = Animation(&sheetTexture, imageCount, switchTime);
@@ -100,7 +105,7 @@ IntRect Entity::getCurrentRect() const
 	return animation.getCurrentRect();
 }
 
-bool Entity::getLife() const
+bool Entity::alive() const
 {
 	return life;
 }

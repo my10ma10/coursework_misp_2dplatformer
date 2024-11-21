@@ -15,13 +15,16 @@ public:
 	void applyBonus(Object& bonus);
 	void applyHeart(Object& heart);
 	void update(float time) override;
+	void jump();
 	Vector2f getSize() const;
 	unsigned int getAnimCount() const;
 
 private:
 	bool isBlocking;
 	bool blockBonus;
-	float jumpHeight = 32.0f;
+	bool isJumpKeyPressed;
+	bool wasJumpKeyPressed;
+	float jumpHeight = 36.0f;
 	Texture bubbleTexture;
 	Sprite bubble;
 };

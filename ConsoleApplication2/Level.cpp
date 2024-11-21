@@ -7,7 +7,6 @@ Level::Level(const std::string filePathToCoinTexture, const std::string filePath
 {
 
     tileLevel = setTileLevel();
-    std::cout << tileLevel.size() << std::endl;
     for (int i = 0; i < tileLevel.size(); ++i)
     {
         div_t tileArr = div(i, 48);
@@ -19,7 +18,7 @@ Level::Level(const std::string filePathToCoinTexture, const std::string filePath
     }
     if (!map.load("Image\\test_tiles-Sheet.png", tileSize, tileLevel, tilesAmount.x, tilesAmount.y))
     {
-        std::cout << "Can't load the level";
+        std::cerr << "Can't load the level";
     }
 
     platformSprite.setTextureRect(IntRect(0, 0, 16, 16));
