@@ -1,8 +1,8 @@
 #include "Person.h"
 
-Person::Person(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime) : \
-	Entity(texture, position, imageCount, switchTime), faceRight(true), attackPower(0.0f), energy(0), health(HEALTH_MAX),\
-	canJump(false), isDamageTaking(false)
+Person::Person(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime) : \
+	Entity(texture, position, size, imageCount, switchTime), faceRight(true), attackPower(0.0f), energy(0), \
+	health(HEALTH_MAX),	canJump(false), isDamageTaking(false)
 {
 }
 
@@ -12,9 +12,6 @@ void Person::takeDamage(int damageAmount)
 	health -= damageAmount;
 }
 
-void Person::update(float time)
-{
-}
 
 void Person::OnCollition(Vector2f direction)
 {

@@ -27,7 +27,7 @@ Level::Level(const std::string filePathToCoinTexture, const std::string filePath
     {
         std::cerr << "Can't load an image";
     }
-    coinSprite.setTextureRect(IntRect(Vector2i(coinSprite.getPosition().x, coinSprite.getPosition().y), 
+    coinSprite.setTextureRect(IntRect(Vector2i(coinSprite.getPosition()), 
         Vector2i(16, 16)));
     coinSprite.setTexture(coinTexture);
     coinSprite.setPosition(Vector2f(200, 430));

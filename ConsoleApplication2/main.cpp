@@ -18,7 +18,6 @@ int main()
     }
     window.setIcon(512, 512, icon.getPixelsPtr());
 
-
     //Time
     Clock clock;
     const float timeStep = 1.0f / 60.0f;
@@ -37,7 +36,7 @@ int main()
     if (!playerTexture.loadFromFile("Image\\player-Sheet.png")) {
         std::cerr << "Can't load an image";
     }
-    Player player(&playerTexture, Vector2f(180, 480), Vector2u(12, 7), 0.1f);
+    Player player(&playerTexture, Vector2f(180, 480), Vector2f(7.0f, 22.0f), Vector2u(12, 7), 0.1f);
 
     // darkGhost
     Texture darkGhostTexture;
@@ -49,11 +48,18 @@ int main()
 
     
     // view collide
-    IntRect viewRectBounds(Vector2i(player.getPosition()),\
-        Vector2i(VIEW_HEIGHT * 1.5f, VIEW_HEIGHT * 1.0f));
+    Vector2i viewRectSize(VIEW_HEIGHT * 1.5f, VIEW_HEIGHT * 1.0f);
+    IntRect viewRectBounds(Vector2i(player.getPosition().x - viewRectSize.x / 2.0f, \
+        player.getPosition().y - viewRectSize.y / 2.0f),viewRectSize);
     Sprite playerAndViewCollideSprite; 
     playerAndViewCollideSprite.setTextureRect(viewRectBounds);
     Collider playerColliderForView(playerAndViewCollideSprite);
+    
+    //
+    RectangleShape Rect(Vector2f(VIEW_HEIGHT * 1.5f, VIEW_HEIGHT * 1.0f));
+    Rect.setFillColor(Color::Red);
+    Rect.setPosition(player.getPosition().x - Rect.getSize().x / 2.0f, \
+        player.getPosition().y - Rect.getSize().y / 2.0f); //временно
 
     // level collide
     Vector2f levelCenter(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
@@ -129,16 +135,22 @@ int main()
                         }
                     }
 
-                    if (ghost.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, player.getSize())))
+                    if (ghost.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, \
+                        player.getSize())))
                     {
                         ghost.attack();
                     }
 
                     // в структуру коллайдеров в Гейме?
+                    if (!player.getBody().getGlobalBounds().intersects(Rect.getGlobalBounds()))
+                    {
+                        std::cout << "collision\n";
+                        Rect.move(1.0f, 0.0f);
+                    }
                     playerColliderForView.internalCollider(player.getCollider());
                     levelLimitViewShape.setPosition(view.getCenter());
-                    levelLimitViewShape.setTextureRect(IntRect(Vector2i(view.getCenter().x, view.getCenter().y), \
-                        Vector2i(view.getSize().x, view.getSize().y)));
+                    levelLimitViewShape.setTextureRect(IntRect(Vector2i(view.getCenter()), \
+                        Vector2i(view.getSize())));
                     backCollider.levelCollision(player.getCollider(), Vector2f(16.0f, 16.0f));
                     backCollider.levelCollision(ghost.getCollider(), Vector2f(16.0f, 16.0f));
                 }
@@ -147,15 +159,16 @@ int main()
             
         }
         view.setCenter(playerAndViewCollideSprite.getPosition());
-
+        //view.setCenter(player.getPosition());
         window.clear(Color::White); // basic
         window.setView(view); // basic
         level.draw(window); // basic
         ghost.draw(window);
+        window.draw(Rect);
         player.draw(window); //пока непонятно, может потом в level
         if (isPaused) {
             Font font;
-            if (font.loadFromFile("Fonts\\arial.ttf")) { // Убедитесь, что шрифт доступен
+            if (font.loadFromFile("Fonts\\arial.ttf")) { 
                 Text pauseText(L"Пауза", font, 10);
                 pauseText.setFillColor(Color::Green);
                 pauseText.setPosition(player.getPosition());

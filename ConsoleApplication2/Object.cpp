@@ -4,9 +4,10 @@ Object::Object() : Entity()
 {
 }
 
-Object::Object(Texture* sheetTexture, Vector2f position, Vector2u imageCount, float switchTime) : Entity(sheetTexture, position, imageCount, switchTime)
+Object::Object(Texture* sheetTexture, Vector2f position, Vector2u imageCount, \
+	float switchTime, Vector2f size) : Entity(sheetTexture, position, size, imageCount, switchTime)
 {
-	Vector2f textureSize(sheetTexture->getSize().x, sheetTexture->getSize().y);
+	Vector2f textureSize(sheetTexture->getSize());
 	this->sheetTexture = Texture(*sheetTexture);
 
 }

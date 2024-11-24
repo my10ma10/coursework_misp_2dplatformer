@@ -14,6 +14,6 @@ void changeViewZoom(View& view) {
 
 void changeViewAspectRatio(const RenderWindow& window, View& view)
 {
-    float aspect_ratio = float(window.getSize().x) / float(window.getSize().y);
-    view.setSize(aspect_ratio * VIEW_HEIGHT, VIEW_HEIGHT);
+    float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
+    view.setSize(aspectRatio * VIEW_HEIGHT, VIEW_HEIGHT);
 }

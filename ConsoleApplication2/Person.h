@@ -4,11 +4,10 @@
 class Person : public Entity
 {
 public:
-	Person(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime);
+	Person(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime);
 
 
 	void takeDamage(int amount);
-	void update(float time) override;
 	void OnCollition(Vector2f direction);
 
 	unsigned int getCurrentFrame() const;

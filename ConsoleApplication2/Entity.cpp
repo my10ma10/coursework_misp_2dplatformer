@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity() : life(1), row(0), speed(0, 0)
+Entity::Entity()
 {
 }
 
@@ -9,15 +9,22 @@ Entity::Entity(Vector2f position) : Entity()
 	sprite.setPosition(position);
 }
 
-Entity::Entity(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime) : Entity(position)
+Entity::Entity(Texture* texture, Vector2f position, Vector2f bodySize, Vector2u imageCount, float switchTime) : \
+	life(1), row(0), speed(0, 0)
 {
-	sprite.setTexture(*texture);
 	this->sheetTexture = *texture;
+	sprite.setPosition(position);
+	sprite.setTexture(*texture);
 	Vector2f spriteSheetSize(sheetTexture.getSize());
-
 	sprite.setOrigin(spriteSheetSize.x / (imageCount.x * 2.0f), spriteSheetSize.y / (imageCount.y * 2.0f));
-	sprite.setTextureRect(IntRect(Vector2i(getPosition().x, getPosition().y),\
+	sprite.setTextureRect(IntRect(Vector2i(getPosition()),
 		Vector2i(getSize().x / imageCount.x, getSize().y / imageCount.y)));
+
+	body.setPosition(position);
+	body.setTextureRect(IntRect(Vector2i(position - bodySize / 2.0f), Vector2i(bodySize)));
+
+
+
 	setAnimation(imageCount, switchTime);
 }
 
@@ -95,6 +102,11 @@ const Texture* Entity::getTexture() const
 	return &sheetTexture;;
 }
 
+Sprite Entity::getBody() const
+{
+	return body;
+}
+
 Collider Entity::getCollider()
 {
 	return Collider(sprite);
@@ -117,7 +129,7 @@ Vector2f Entity::getPosition() const
 
 Vector2f Entity::getSize() const
 {
-	return sprite.getGlobalBounds().getSize();
+	return body.getGlobalBounds().getSize();
 }
 
 Vector2f Entity::getSpeed() const

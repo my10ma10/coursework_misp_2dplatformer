@@ -1,8 +1,8 @@
 #include "Player.h"
 #include "Enemy.h"
 
-Player::Player(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime) : \
-	Person(texture, position, imageCount, switchTime)
+Player::Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime) : \
+	Person(texture, position, size, imageCount, switchTime)
 {
 	wasJumpKeyPressed = isJumpKeyPressed = isBlocking = blockBonus = false;
 	sprite.setTextureRect(animation.getCurrentRect());
@@ -13,6 +13,8 @@ Player::Player(Texture* texture, Vector2f position, Vector2u imageCount, float s
 	}
 	Sprite bubble = Sprite(bubbleTexture);
 	bubble.setScale(Vector2f(1.5f, 1.5f));
+
+
 }
 
 void Player::draw(RenderWindow& window)
@@ -69,9 +71,12 @@ void Player::applyHeart(Object& heart)
 
 void Player::update(float time)
 {
+	body.setPosition(sprite.getPosition());
+	body.setTextureRect(IntRect(Vector2i(getPosition() - getSize() / 2.0f), Vector2i(getSize())));
+
 	bubble.setPosition(getPosition() - Vector2f(24.0f, 25.0f)); // магия
 	isJumpKeyPressed = Keyboard::isKeyPressed(Keyboard::W) or \
-		Keyboard::isKeyPressed(Keyboard::Up);//убрать W
+		Keyboard::isKeyPressed(Keyboard::Up);
 
 	velocity.x = 0.0f;
 	if (Keyboard::isKeyPressed(Keyboard::Left) or Keyboard::isKeyPressed(Keyboard::A)) 
@@ -103,13 +108,12 @@ void Player::update(float time)
 		canJump = false;
 	}
 
-
-
 	if (isJumpKeyPressed && !wasJumpKeyPressed)
 	{
 		this->jump();
 	}
 	wasJumpKeyPressed = isJumpKeyPressed;
+
 	if (Keyboard::isKeyPressed(Keyboard::Down) or Keyboard::isKeyPressed(Keyboard::S))
 	{
 		isBlocking = true;
@@ -117,12 +121,14 @@ void Player::update(float time)
 		velocity.x = 0.0f;
 		// blockFunction
 	}
+
 	if (Keyboard::isKeyPressed(Keyboard::Space))
 	{
 		setRow(3);
 		velocity.x = 0.0f;
 
 	}
+
 	if (updateAnimation(time / 1000, faceRight))
 	{
 		setRow(5);
@@ -142,7 +148,7 @@ void Player::jump()
 
 Vector2f Player::getSize() const
 {
-	return Vector2f(7.0f, 22.0f);
+	return body.getGlobalBounds().getSize();
 }
 
 unsigned int Player::getAnimCount() const

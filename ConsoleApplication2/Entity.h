@@ -12,7 +12,7 @@ class Entity
 public:
 	Entity();
 	Entity(Vector2f position);
-	Entity(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime);
+	Entity(Texture* texture, Vector2f position, Vector2f bodySize, Vector2u imageCount, float switchTime);
 
 	virtual void update(float time) = 0;
 	bool updateAnimation(float time, bool faceRight);
@@ -29,6 +29,7 @@ public:
 	void setTexture(Texture& texture);
 	void setRow(unsigned int row);
 
+	Sprite getBody() const;
 	Collider getCollider();
 	IntRect getCurrentRect() const;
 	bool alive() const;
@@ -45,6 +46,7 @@ protected:
 	Texture sheetTexture;
 	Sprite sprite;
 	Texture spriteTexture;
+	Sprite body;
 	bool life;
 	unsigned int row;
 	// FloatRect body; как внедрить?

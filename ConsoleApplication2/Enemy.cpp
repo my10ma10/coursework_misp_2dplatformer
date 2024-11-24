@@ -1,7 +1,8 @@
 #include "Enemy.h"
 
-Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime, EnemyName name, Player* player) : \
-	Person(texture, position, imageCount, switchTime), attackType(0)
+Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, \
+	float switchTime, EnemyName name, Player* player, Vector2f size) : \
+	Person(texture, position, size, imageCount, switchTime), attackType(0)
 {
 	this->name = name;
 	this->player = player;
