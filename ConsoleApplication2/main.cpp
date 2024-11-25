@@ -56,14 +56,9 @@ int main()
     playerAndViewCollideSprite.setTextureRect(viewRectBounds);
     Collider playerColliderForView(playerAndViewCollideSprite);
     
-    //
-    //RectangleShape Rect(Vector2f(VIEW_HEIGHT * 1.5f, VIEW_HEIGHT * 1.0f));
-    //Rect.setFillColor(Color::Red);
-    //Rect.setPosition(player.getPosition().x - Rect.getSize().x / 2.0f, \
-    //    player.getPosition().y - Rect.getSize().y / 2.0f); //временно
 
     // level collide
-    Vector2f levelCenter(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
+    
     Sprite levelLimitViewShape;
     Collider backCollider(levelLimitViewShape);
 
@@ -136,7 +131,7 @@ int main()
                             ghost.onCollition();
                         }
                     }
-
+                    
                     if (ghost.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, \
                         player.getSize())))
                     {
@@ -144,11 +139,7 @@ int main()
                     }
 
                     // в структуру коллайдеров в Гейме?
-                    //if (!player.getBody().getGlobalBounds().intersects(Rect.getGlobalBounds()))
-                    //{
-                    //    std::cout << "collision\n";
-                    //    Rect.move(1.0f, 0.0f);
-                    //}
+                    updateView(levelView, playerAndViewCollideSprite.getPosition(), Vector2f(level.getSize()));
                     playerColliderForView.internalCollider(player.getCollider());
                     levelLimitViewShape.setPosition(levelView.getCenter());
                     levelLimitViewShape.setTextureRect(IntRect(Vector2i(levelView.getCenter()), \
@@ -159,14 +150,16 @@ int main()
                 accumulator -= timeStep;
             }
             
-        }
-        levelView.setCenter(playerAndViewCollideSprite.getPosition());
+        }                       
+
+        //levelView.setCenter(playerAndViewCollideSprite.getPosition());
         window.clear(Color::White); // basic
         window.setView(levelView); // basic
         if (Keyboard::isKeyPressed(Keyboard::H))
         {
             window.setView(menuView);
         }
+        //game.draw(window);
         level.draw(window); // basic
         ghost.draw(window);
         player.draw(window); //пока непонятно, может потом в level

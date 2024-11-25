@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity()
+Entity::Entity() : life(true), row(0), speed(0, 0)
 {
 }
 
@@ -10,7 +10,7 @@ Entity::Entity(Vector2f position) : Entity()
 }
 
 Entity::Entity(Texture* texture, Vector2f position, Vector2f bodySize, Vector2u imageCount, float switchTime) : \
-	life(1), row(0), speed(0, 0)
+	life(true), row(0), speed(0, 0)
 {
 	this->sheetTexture = *texture;
 	sprite.setPosition(position);
@@ -48,7 +48,7 @@ void Entity::draw(RenderWindow& window)
 
 void Entity::kill()
 {
-	life = 0;
+	life = false;
 }
 
 void Entity::setAnimation(Vector2u imageCount, float switchTime)

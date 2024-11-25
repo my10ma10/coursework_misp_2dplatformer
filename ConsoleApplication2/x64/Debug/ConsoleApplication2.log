@@ -45,4 +45,14 @@ C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(53,60): warning C42
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(53,60): warning C4244:         [
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(53,60): warning C4244:             T=int
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp(53,60): warning C4244:         ]
+sfml-graphics-s-d.lib(Font.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(Font.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
+sfml-graphics-s-d.lib(RenderTarget.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(RenderTarget.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
+sfml-graphics-s-d.lib(Texture.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(Texture.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
+sfml-graphics-s-d.lib(Transform.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(Transform.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
+sfml-graphics-s-d.lib(Transformable.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(Transformable.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
+sfml-graphics-s-d.lib(View.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(View.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
+sfml-graphics-s-d.lib(Shape.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(Shape.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
+sfml-graphics-s-d.lib(Text.obj) : warning LNK4099: "" PDB не найден с "sfml-graphics-s-d.lib(Text.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
+sfml-window-s-d.lib(JoystickImpl.obj) : warning LNK4099: "" PDB не найден с "sfml-window-s-d.lib(JoystickImpl.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
+sfml-window-s-d.lib(WindowImplWin32.obj) : warning LNK4099: "" PDB не найден с "sfml-window-s-d.lib(WindowImplWin32.obj)" или на ""; компоновка объекта выполняется как при отсутствии отладочных данных
   ConsoleApplication2.vcxproj -> C:\Dev\game\ConsoleApplication2\x64\Debug\ConsoleApplication2.exe

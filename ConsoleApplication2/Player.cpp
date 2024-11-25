@@ -13,8 +13,6 @@ Player::Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imag
 	}
 	Sprite bubble = Sprite(bubbleTexture);
 	bubble.setScale(Vector2f(1.5f, 1.5f));
-
-
 }
 
 void Player::draw(RenderWindow& window)
@@ -71,6 +69,7 @@ void Player::applyHeart(Object& heart)
 
 void Player::update(float time)
 {
+
 	body.setPosition(sprite.getPosition());
 	body.setTextureRect(IntRect(Vector2i(getPosition() - getSize() / 2.0f), Vector2i(getSize())));
 
@@ -107,10 +106,11 @@ void Player::update(float time)
 	{
 		canJump = false;
 	}
-	std::cout << wasJumpKeyPressed << " " << isJumpKeyPressed << std::endl;
-	if (isJumpKeyPressed && !wasJumpKeyPressed)
+
+
+	if (isJumpKeyPressed and !wasJumpKeyPressed)
 	{
-		this->jump();
+		this->jump(time);
 	}
 	wasJumpKeyPressed = isJumpKeyPressed;
 
@@ -133,20 +133,20 @@ void Player::update(float time)
 	{
 		setRow(5);
 	}
+
 	velocity.y += gravity * time;
 	sprite.move(velocity * time);
 }
 
-void Player::jump()
+void Player::jump(float time)
 {
 	if ((Keyboard::isKeyPressed(Keyboard::Up) or Keyboard::isKeyPressed(Keyboard::W)) and canJump)
 	{
+		std::cout << "check\n";
 		canJump = false;
 		velocity.y = -sqrtf(2.0f * gravity * jumpHeight);
 	}
 }
-
-
 
 Vector2f Player::getSize() const
 {

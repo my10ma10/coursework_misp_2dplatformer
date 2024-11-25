@@ -15,7 +15,7 @@ public:
 	void applyBonus(Object& bonus);
 	void applyHeart(Object& heart);
 	void update(float time) override;
-	void jump();
+	void jump(float time);
 
 	Vector2f getSize() const;
 	unsigned int getAnimCount() const;

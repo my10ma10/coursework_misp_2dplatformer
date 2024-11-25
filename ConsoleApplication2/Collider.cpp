@@ -162,45 +162,6 @@ bool Collider::levelCollision(Collider playerCollider, Vector2f bodySize)
 	return false;
 }
 
-void Collider::levelCollisionWithView(Collider viewCollider, Vector2f levelCenter, Vector2f tempViewCenter, View& view) 
-{
-	Vector2f viewColliderPos = viewCollider.getPosition();
-	Vector2f viewColliderHalfSize = viewCollider.getHalfSize();
-	Vector2f levelHalfSize = Vector2f(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
-
-	Vector2f delta(levelCenter.x - viewColliderPos.x, levelCenter.y - viewColliderPos.y);
-	Vector2f intersect(levelHalfSize.x - (abs(delta.x) + viewColliderHalfSize.x), \
-		levelHalfSize.y - (abs(delta.y) + viewColliderHalfSize.y));
-
-
-	if (intersect.x < 0.0f || intersect.y < 0.0f) 
-	{
-		if (intersect.x < intersect.y) 
-		{
-			if (delta.x > 0.0f) 
-			{ //right
-				//view.move(intersect.x, 0.0f);
-				view.setCenter(tempViewCenter);
-			}
-			else
-			{//left
-				//view.move(-intersect.x, 0.0f);
-				view.setCenter(tempViewCenter);
-			}
-		}
-		else 
-		{
-			if (delta.y > 0.0f) 
-			{//down
-				view.move(0.0f, intersect.y);
-			}
-			else 
-			{//up
-				view.move(0.0f, -intersect.y);
-			}
-		}
-	}
-}
 
 Vector2f Collider::getPosition() 
 {

@@ -14,7 +14,7 @@ Button::Button(std::string text, Vector2f position, Vector2f size) : isPressed(f
 	this->buttonRect = IntRect(this->text.getLocalBounds());
 
 	this->button.setTextureRect(buttonRect);
-	this->button.setPosition(0.0f, 0.0f);
+	this->button.setPosition(textCenter);
 	this->button.setSize(Vector2f(buttonRect.getSize()) * deltaSize);
 	this->button.setFillColor(Color::White);
 	

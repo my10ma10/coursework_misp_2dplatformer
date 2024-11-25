@@ -6,12 +6,10 @@ Person::Person(Texture* texture, Vector2f position, Vector2f size, Vector2u imag
 {
 }
 
-
 void Person::takeDamage(int damageAmount)
 {
 	health -= damageAmount;
 }
-
 
 void Person::onCollition()
 {
@@ -40,6 +38,7 @@ void Person::onCollition()
 		canJump = false;
 	}
 }
+
 unsigned int Person::getCurrentFrame() const
 {
 	return animation.getCurrentFrame();
