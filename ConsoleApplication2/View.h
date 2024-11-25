@@ -3,7 +3,7 @@
 View levelView(Vector2f(0.0f, 0.0f), Vector2f(LEVEL_VIEW_HEIGHT, LEVEL_VIEW_HEIGHT));
 View menuView(Vector2f(0.0f, 0.0f), Vector2f(LEVEL_VIEW_HEIGHT, LEVEL_VIEW_HEIGHT));
 
-void checkViewIntersect(View& view, const Vector2f& levelSize)
+void checkViewIntersect(View& view, const Vector2u& levelSize)
 {
     Vector2f viewCenter = view.getCenter();
     Vector2f viewSize = view.getSize();
@@ -38,7 +38,7 @@ void checkViewIntersect(View& view, const Vector2f& levelSize)
     view.setCenter(viewCenter);
 }
 
-void updateView(View& view, const Vector2f& viewColliderPosition, const Vector2f& levelSize)
+void updateView(View& view, const Vector2f& viewColliderPosition, const Vector2u& levelSize)
 {
     view.setCenter(viewColliderPosition);
     checkViewIntersect(view, levelSize);

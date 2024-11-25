@@ -1,13 +1,13 @@
 #pragma once
 #include "Consts.h"
 #include "Enemy.h"
-#include "Platform.h"
 #include "Object.h"
+#include "Platform.h"
 #include "TileMap.h"
-#include <vector>
+#include <cstdlib>
 #include <fstream>
 #include <sstream>
-#include <cstdlib>
+#include <vector>
 
 enum class ObjectType { COIN, HEART, BONUS };
 

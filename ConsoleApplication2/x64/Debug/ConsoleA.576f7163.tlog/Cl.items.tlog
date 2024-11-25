@@ -3,6 +3,7 @@ C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Button.cpp;C:\Dev\game\Conso
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Collider.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Collider.obj
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Enemy.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Enemy.obj
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Entity.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Entity.obj
+C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Game.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Game.obj
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Level.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Level.obj
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\main.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\main.obj
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Object.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Object.obj
