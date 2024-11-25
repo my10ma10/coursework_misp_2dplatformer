@@ -8,9 +8,10 @@ public:
 
 
 	void takeDamage(int amount);
-	void OnCollition(Vector2f direction);
+	void onCollition();
 
 	unsigned int getCurrentFrame() const;
+	Vector2f& getDirection();
 	Vector2f getOrigin() const;
 	Vector2f getVelocity() const;
 	int getHealth() const;
@@ -23,6 +24,7 @@ protected:
 	bool canJump;
 	bool isDamageTaking;
 
+	Vector2f direction;
 	Vector2f velocity;
 	float personSpeed = 1.0f;
 	float gravity = 0.001f;

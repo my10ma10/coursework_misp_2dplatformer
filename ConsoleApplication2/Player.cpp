@@ -107,7 +107,7 @@ void Player::update(float time)
 	{
 		canJump = false;
 	}
-
+	std::cout << wasJumpKeyPressed << " " << isJumpKeyPressed << std::endl;
 	if (isJumpKeyPressed && !wasJumpKeyPressed)
 	{
 		this->jump();
@@ -145,6 +145,8 @@ void Player::jump()
 		velocity.y = -sqrtf(2.0f * gravity * jumpHeight);
 	}
 }
+
+
 
 Vector2f Player::getSize() const
 {

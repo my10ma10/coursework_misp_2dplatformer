@@ -1,4 +1,5 @@
 ﻿#include "Animation.h"
+#include "Button.h"
 #include "Consts.h"
 #include "Enemy.h"
 #include "Level.h"
@@ -23,7 +24,7 @@ int main()
     const float timeStep = 1.0f / 60.0f;
     float accumulator = 0.0f;
     float timePlayer = 0.0f;
-    bool isFocusLost = false;
+    //bool isFocusLost = false;
     bool isPaused = false;
 
     //level
@@ -48,7 +49,7 @@ int main()
 
     
     // view collide
-    Vector2i viewRectSize(VIEW_HEIGHT * 1.5f, VIEW_HEIGHT * 1.0f);
+    Vector2i viewRectSize(LEVEL_VIEW_HEIGHT * 1.5f, LEVEL_VIEW_HEIGHT * 1.0f);
     IntRect viewRectBounds(Vector2i(player.getPosition().x - viewRectSize.x / 2.0f, \
         player.getPosition().y - viewRectSize.y / 2.0f),viewRectSize);
     Sprite playerAndViewCollideSprite; 
@@ -56,16 +57,17 @@ int main()
     Collider playerColliderForView(playerAndViewCollideSprite);
     
     //
-    RectangleShape Rect(Vector2f(VIEW_HEIGHT * 1.5f, VIEW_HEIGHT * 1.0f));
-    Rect.setFillColor(Color::Red);
-    Rect.setPosition(player.getPosition().x - Rect.getSize().x / 2.0f, \
-        player.getPosition().y - Rect.getSize().y / 2.0f); //временно
+    //RectangleShape Rect(Vector2f(VIEW_HEIGHT * 1.5f, VIEW_HEIGHT * 1.0f));
+    //Rect.setFillColor(Color::Red);
+    //Rect.setPosition(player.getPosition().x - Rect.getSize().x / 2.0f, \
+    //    player.getPosition().y - Rect.getSize().y / 2.0f); //временно
 
     // level collide
     Vector2f levelCenter(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
     Sprite levelLimitViewShape;
     Collider backCollider(levelLimitViewShape);
 
+    Button testButton("Click me!", player.getPosition(), Vector2f(32.0f, 16.0f));
 
     while (window.isOpen())
     {
@@ -82,26 +84,27 @@ int main()
                 window.close();
                 break;
             case Event::Resized:
-                changeViewAspectRatio(window, view);
+                changeViewAspectRatio(window, levelView);
                 break;
             case Event::KeyPressed:
                 if (event.key.code == Keyboard::Escape)
                 {
                     isPaused = !isPaused;
-                    event.GainedFocus;
                 }
-                changeViewZoom(view);
+                changeViewZoom(levelView);
                 break;
             case Event::LostFocus:
-                isFocusLost = true;
+                //isFocusLost = true;
                 break;
             case Event::GainedFocus:
-                isFocusLost = false;
+                //isFocusLost = false;
                 break;
             default:
                 break;
             }
         }
+
+
 
         if (isPaused) {
             // реализовать меню паузы
@@ -109,7 +112,7 @@ int main()
 
         while (accumulator >= timeStep)
         {
-            if (!isFocusLost)
+            if (/*!isFocusLost*/ true)
             {
                 if (!isPaused)
                 {
@@ -120,18 +123,17 @@ int main()
 
 
                     //collider
-                    Vector2f collideDirection(0.0f, 0.0f);
                     for (Platform& platform : level.getPlatforms())
                     {
-                        if (platform.getCollider().externalCollider(player.getCollider(), collideDirection, \
+                        if (platform.getCollider().externalCollider(player.getCollider(), player.getDirection(), \
                             player.getSize()))
                         {
-                            player.OnCollition(collideDirection);
+                            player.onCollition();
                         }
-                        if (platform.getCollider().externalCollider(ghost.getCollider(), collideDirection, \
+                        if (platform.getCollider().externalCollider(ghost.getCollider(), player.getDirection(), \
                             Vector2f(16.0f, 16.0f)))
                         {
-                            ghost.OnCollition(collideDirection);
+                            ghost.onCollition();
                         }
                     }
 
@@ -142,15 +144,15 @@ int main()
                     }
 
                     // в структуру коллайдеров в Гейме?
-                    if (!player.getBody().getGlobalBounds().intersects(Rect.getGlobalBounds()))
-                    {
-                        std::cout << "collision\n";
-                        Rect.move(1.0f, 0.0f);
-                    }
+                    //if (!player.getBody().getGlobalBounds().intersects(Rect.getGlobalBounds()))
+                    //{
+                    //    std::cout << "collision\n";
+                    //    Rect.move(1.0f, 0.0f);
+                    //}
                     playerColliderForView.internalCollider(player.getCollider());
-                    levelLimitViewShape.setPosition(view.getCenter());
-                    levelLimitViewShape.setTextureRect(IntRect(Vector2i(view.getCenter()), \
-                        Vector2i(view.getSize())));
+                    levelLimitViewShape.setPosition(levelView.getCenter());
+                    levelLimitViewShape.setTextureRect(IntRect(Vector2i(levelView.getCenter()), \
+                        Vector2i(levelView.getSize())));
                     backCollider.levelCollision(player.getCollider(), Vector2f(16.0f, 16.0f));
                     backCollider.levelCollision(ghost.getCollider(), Vector2f(16.0f, 16.0f));
                 }
@@ -158,20 +160,24 @@ int main()
             }
             
         }
-        view.setCenter(playerAndViewCollideSprite.getPosition());
-        //view.setCenter(player.getPosition());
+        levelView.setCenter(playerAndViewCollideSprite.getPosition());
         window.clear(Color::White); // basic
-        window.setView(view); // basic
+        window.setView(levelView); // basic
+        if (Keyboard::isKeyPressed(Keyboard::H))
+        {
+            window.setView(menuView);
+        }
         level.draw(window); // basic
         ghost.draw(window);
-        window.draw(Rect);
         player.draw(window); //пока непонятно, может потом в level
+        testButton.draw(window);
+
         if (isPaused) {
             Font font;
             if (font.loadFromFile("Fonts\\arial.ttf")) { 
-                Text pauseText(L"Пауза", font, 10);
+                Text pauseText(L"Пауза", font, 20);
                 pauseText.setFillColor(Color::Green);
-                pauseText.setPosition(player.getPosition());
+                pauseText.setPosition(levelView.getCenter() - pauseText.getGlobalBounds().getSize() / 2.0f);
                 window.draw(pauseText);
             }
         }

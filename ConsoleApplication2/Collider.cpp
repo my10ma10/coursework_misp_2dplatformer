@@ -10,7 +10,7 @@ void Collider::Move(float dx, float dy) {
 bool Collider::externalCollider(Collider other, Vector2f& direction, Vector2f bodySize, float push)
 {
 	Vector2f otherPos = other.getPosition();
-	Vector2f otherHalfSize = bodySize / 2.0f;
+	Vector2f otherHalfSize = (bodySize / 2.0f) + Vector2f(0.5f, 0.5f);;
 	Vector2f thisPos = getPosition();
 	Vector2f thisHalfSize = getHalfSize();
 
@@ -74,8 +74,27 @@ void Collider::internalCollider(Collider playerCollider)
 	Vector2f delta(playerColliderPos.x - thisPos.x, playerColliderPos.y - thisPos.y);
 	Vector2f intersect(thisHalfSize.x - playerColliderHalfSize.x - abs(delta.x), \
 					   thisHalfSize.y - playerColliderHalfSize.y - abs(delta.y));
-	
-	if (intersect.x < 0.0f || intersect.y < 0.0f) 
+
+	if (intersect.x < 0.0f && intersect.y < 0.0f)
+	{
+		if (delta.x > 0.0f)
+		{ //right
+			Move(-intersect.x, 0.0f);
+		}
+		else
+		{//left
+			Move(intersect.x, 0.0f);
+		}
+		if (delta.y > 0.0f)
+		{//down
+			Move(0.0f, -intersect.y);
+		}
+		else
+		{//up
+			Move(0.0f, intersect.y);
+		}
+	}
+	else if (intersect.x < 0.0f || intersect.y < 0.0f) 
 	{
 		if (intersect.x < intersect.y) 
 		{

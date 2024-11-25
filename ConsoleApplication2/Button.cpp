@@ -2,11 +2,28 @@
 
 Button::Button(std::string text, Vector2f position, Vector2f size) : isPressed(false), isHover(false)
 {
-	setFont("Fonts\\arial.ttf");
-	this->text = Text(text, this->font);
-	this->text.setPosition(position);
+	float deltaSize = 1.5f;
+	setFont("Fonts\\Rubik-VariableFont_wght.ttf");
+	this->text = Text("", font, 30);
+	this->text.setString(text);
+	this->text.setFillColor(Color::Black);
+
+	Vector2f textCenter(this->text.getGlobalBounds().getPosition().x + this->text.getGlobalBounds().getSize().x / 2.0f, \
+		this->text.getGlobalBounds().getPosition().y + this->text.getGlobalBounds().getSize().y / 2.0f);
 	Vector2f leftTopPosition(position.x - size.x / 2.0f, position.y - size.y / 2.0f);
-	buttonRect = FloatRect(leftTopPosition, size);
+	this->buttonRect = IntRect(this->text.getLocalBounds());
+
+	this->button.setTextureRect(buttonRect);
+	this->button.setPosition(0.0f, 0.0f);
+	this->button.setSize(Vector2f(buttonRect.getSize()) * deltaSize);
+	this->button.setFillColor(Color::White);
+	
+}
+
+void Button::draw(RenderWindow& window)
+{
+	window.draw(button);
+	window.draw(text);
 }
 
 void Button::setFont(std::string fontPath)
@@ -15,9 +32,15 @@ void Button::setFont(std::string fontPath)
 	{
 		std::cerr << "Can't load a font";
 	}
+	font.setSmooth(false);
 }
 
-void Button::setMousePosition(Vector2f mousePosition)
+void Button::checkMousePosition(Vector2f mousePosition)
 {
 
+}
+
+Vector2f Button::getPosition() const
+{
+	return button.getPosition();
 }

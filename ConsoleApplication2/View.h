@@ -1,7 +1,8 @@
 #pragma once
 //view
-View view(Vector2f(0.0f, 0.0f), Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
+View levelView(Vector2f(0.0f, 0.0f), Vector2f(LEVEL_VIEW_HEIGHT, LEVEL_VIEW_HEIGHT));
 
+View menuView(Vector2f(0.0f, 0.0f), Vector2f(LEVEL_VIEW_HEIGHT, LEVEL_VIEW_HEIGHT));
 
 void changeViewZoom(View& view) {
     if (Keyboard::isKeyPressed(Keyboard::Equal)) {
@@ -15,5 +16,5 @@ void changeViewZoom(View& view) {
 void changeViewAspectRatio(const RenderWindow& window, View& view)
 {
     float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
-    view.setSize(aspectRatio * VIEW_HEIGHT, VIEW_HEIGHT);
+    view.setSize(aspectRatio * LEVEL_VIEW_HEIGHT, LEVEL_VIEW_HEIGHT);
 }
