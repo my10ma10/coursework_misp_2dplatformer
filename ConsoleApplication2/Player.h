@@ -17,8 +17,11 @@ public:
 	void update(float time) override;
 	void jump(float time);
 
+
+
 	Vector2f getSize() const;
 	unsigned int getAnimCount() const;
+	float getJumpHeight() const;
 
 private:
 	bool isBlocking;

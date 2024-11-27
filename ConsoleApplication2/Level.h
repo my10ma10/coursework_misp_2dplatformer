@@ -8,25 +8,31 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <unordered_map>
+#include <queue>
 
 enum class ObjectType { COIN, HEART, BONUS };
 
 class Level
 {
 public:
-	Level(const std::string filePathToCoinTexture, \
-		const std::string filePathToBonusTexture, const std::string filePathToBackGroundTexture, int numberOfLevel);
-
+	Level(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
+		const std::string filePathToBackGroundTexture, Player* player = nullptr, int numberOfLevel = 5);
+	
 	void update(float time);
 	void draw(RenderWindow& window);
-	std::vector<int> setTileLevel();
-	//void setPlatforms();
-	void setCoins();
+	void loadTextures(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
+		const std::string filePathToBackGroundTexture);
+	void loadEnemyTextures();
+	void setEnemies(Player* playerPtr);
+	void setBackground();
 	void setBonuses();
+	void setCoins();
+	void setTileMap();
 
 	Sprite getBackGroundSprite() const;
 	std::vector<Platform>& getPlatforms();
-	//std::vector<Enemy>& getEnemies();
+	std::vector<Enemy>& getEnemies();
 	Vector2u getSize() const;
 	Vector2f getCenter() const;
 
@@ -35,21 +41,23 @@ private:
 	std::vector<Platform> platforms; // size, position
 	std::vector<Object> coins;
 	std::vector<Object> bonuses;
+	std::vector<Enemy> enemies;
 	Sprite platformSprite;
 	Sprite coinSprite;
 	Sprite bonusSprite;
 	Sprite backGroundSprite;
 
-	TileMap map;
+	TileMap tileMap;
 	std::vector<int> tileLevel;
 	Vector2u tileSize;
 	Vector2u tilesAmount;
 	Vector2u mapSize;
 
-
+	std::unordered_map<EnemyName, Texture> enemyTextures;
+	Texture enemyTexture;
 	Texture coinTexture;
 	Texture bonusTexture;
-	Texture backGroundTexture;
+	Texture backgroundTexture;
 
 	Vector2u levelSize;
 	Vector2f position;

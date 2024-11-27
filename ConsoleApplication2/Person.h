@@ -4,11 +4,14 @@
 class Person : public Entity
 {
 public:
+	Person();
 	Person(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime);
 
 
 	void takeDamage(int amount);
 	void onCollition();
+
+	void setAttackPower(float power);
 
 	unsigned int getCurrentFrame() const;
 	Vector2f& getDirection();
@@ -21,6 +24,7 @@ protected:
 	int energy;
 	float attackPower;
 	bool faceRight;
+	bool canAttack;
 	bool canJump;
 	bool isDamageTaking;
 
@@ -31,3 +35,4 @@ protected:
 };
 
 class Enemy;
+enum class EnemyName { Basic, Skeleton, Wizard, Tank, Dragon, Ghost, darkKnight };

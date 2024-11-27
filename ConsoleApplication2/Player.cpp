@@ -106,8 +106,6 @@ void Player::update(float time)
 	{
 		canJump = false;
 	}
-
-
 	if (isJumpKeyPressed and !wasJumpKeyPressed)
 	{
 		this->jump(time);
@@ -124,8 +122,11 @@ void Player::update(float time)
 
 	if (Keyboard::isKeyPressed(Keyboard::Space))
 	{
-		setRow(3);
-		velocity.x = 0.0f;
+		if (canJump)
+		{
+			setRow(3);
+			velocity.x = 0.0f;
+		}
 
 	}
 
@@ -142,7 +143,6 @@ void Player::jump(float time)
 {
 	if ((Keyboard::isKeyPressed(Keyboard::Up) or Keyboard::isKeyPressed(Keyboard::W)) and canJump)
 	{
-		std::cout << "check\n";
 		canJump = false;
 		velocity.y = -sqrtf(2.0f * gravity * jumpHeight);
 	}
@@ -156,5 +156,10 @@ Vector2f Player::getSize() const
 unsigned int Player::getAnimCount() const
 {
 	return animation.animationCount;
+}
+
+float Player::getJumpHeight() const
+{
+	return jumpHeight;
 }
 

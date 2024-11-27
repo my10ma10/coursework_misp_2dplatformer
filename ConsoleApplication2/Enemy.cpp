@@ -1,19 +1,25 @@
 #include "Enemy.h"
 
+Enemy::Enemy() : attackType(0), name(EnemyName::Basic)
+{
+}
+
 Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, \
-	float switchTime, EnemyName name, Player* player, Vector2f size) : \
+	float switchTime, EnemyName name, Player* playerPtr, Vector2f size) : \
 	Person(texture, position, size, imageCount, switchTime), attackType(0)
 {
 	this->name = name;
-	this->player = player;
+	this->playerPtr = playerPtr;
 	personSpeed = 1500.0f;
 }
 
 void Enemy::update(float time)
 {
-	player->getPosition().x > this->getPosition().x ? faceRight = true : faceRight = false;
+	playerPtr->getPosition().x > this->getPosition().x ? faceRight = true : faceRight = false;
 	updateAnimation(time / 1.5f, faceRight);
-	if (moveRangeIntersect(FloatRect(player->getPosition() - player->getSize() / 2.0f, player->getSize())))
+	;
+
+	if (moveRangeIntersect(FloatRect(playerPtr->getPosition() - playerPtr->getSize() / 2.0f, playerPtr->getSize())))
 	{
 		if (!faceRight)
 		{
@@ -55,7 +61,7 @@ void Enemy::update(float time)
 	}
 	velocity.y += gravity * 10000 * time; // gravity
 	sprite.move(velocity * time);
-	setRanges(name);
+	initEnemy(name);
 }
 
 bool Enemy::attackRangeIntersect(const FloatRect& rectangel) const
@@ -68,25 +74,30 @@ bool Enemy::moveRangeIntersect(const FloatRect& rectangel) const
 	return moveRange.intersects(rectangel);
 }
 
+void Enemy::stoppingRect(const FloatRect& rectangel)
+{
+	if (this->sprite.getGlobalBounds().intersects(rectangel))
+	{
+		velocity.x = 0.0f;
+	}
+}
+
 void Enemy::attack()
 {
 	row = 2;
 	if (getCurrentFrame() == 5 and !isDamageTaking)
 	{
 		isDamageTaking = true;
-		player->takeDamage(attackPower);
+		playerPtr->takeDamage(attackPower);
 	}
 	if (getCurrentFrame() != 5)
 	{
 		isDamageTaking = false;
 	}
-	// анимация атаки
 }
 
-void Enemy::setRanges(EnemyName name)
+void Enemy::initEnemy(EnemyName name)
 {
-	float attackSizeDiff = 2.0f; // разница между размером спрайта и области атаки
-	float moveSizeDiff = 3.0f; // разница между размером спрайта и области движения к игроку
 	switch (name) {
 		case EnemyName::Skeleton:
 			attackType = 0;
@@ -103,16 +114,12 @@ void Enemy::setRanges(EnemyName name)
 		case EnemyName::Ghost:
 			attackPower = 20.0f;
 			attackType = 1;
-
-			attackRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * attackSizeDiff, \
-				getPosition().y - getSize().y / 2.0f), \
-				Vector2f(getSize().x * attackSizeDiff, getSize().y));
-			moveRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * moveSizeDiff, \
-				getPosition().y - getSize().y / 2.0f), \
-				Vector2f(getSize().x * moveSizeDiff, getSize().y));
+			setAttackMoveRange(6.0f, 12.0f);
 			break;
 		case EnemyName::darkKnight:
+			attackPower = 40.0f;
 			attackType = 0;
+
 			break;
 		default:
 			std::cout << "Unknown enemy -\_/-\n";
@@ -120,9 +127,26 @@ void Enemy::setRanges(EnemyName name)
 	}
 }
 
+void Enemy::setAttackMoveRange(float attackSizeDiff, float moveSizeDiff)
+{
+	attackRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * attackSizeDiff, \
+		getPosition().y - getSize().y / 2.0f), \
+		Vector2f(getSize().x * attackSizeDiff, getSize().y));
+	attackRange.top -= playerPtr->getJumpHeight();
+	attackRange.height += playerPtr->getJumpHeight();
+
+	moveRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * moveSizeDiff, \
+		getPosition().y - getSize().y / 2.0f), \
+		Vector2f(getSize().x * moveSizeDiff, getSize().y));
+	moveRange.top -= playerPtr->getJumpHeight();
+	moveRange.height += playerPtr->getJumpHeight();
+
+}
+
 FloatRect Enemy::getAttackRange() const
 {
 	return attackRange;
 }
+
 
 

@@ -11,8 +11,6 @@ static void updateColliders(View& levelView, const Sprite& playerAndViewCollideS
     Collider& playerColliderForView, Collider& backCollider, const Collider& playerCollider, \
     const Collider& ghostCollider, Sprite& levelLimitViewSprite)
 {
-    updateView(levelView, playerAndViewCollideSprite.getPosition(), levelSize);
-    playerColliderForView.internalCollider(playerCollider);
     levelLimitViewSprite.setPosition(levelView.getCenter());
     levelLimitViewSprite.setTextureRect(IntRect(Vector2i(levelView.getCenter()), \
         Vector2i(levelView.getSize())));

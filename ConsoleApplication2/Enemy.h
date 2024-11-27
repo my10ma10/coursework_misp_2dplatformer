@@ -2,25 +2,26 @@
 #include "Person.h"
 #include "Player.h"
 
-enum class EnemyName {Skeleton, Wizard, Tank, Dragon, Ghost, darkKnight};
 
 class Enemy : public Person
 {
 public:
-	Enemy(Texture* texture, Vector2f position, Vector2u imageCount, \
-		float switchTime, EnemyName name, Player* player = nullptr, Vector2f size = Vector2f(16.0f, 16.0f));
-
+	Enemy();
+	Enemy(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime, EnemyName name, \
+		Player* playerPtr = nullptr, Vector2f size = Vector2f(16.0f, 16.0f));
 	void update(float time);
 	bool attackRangeIntersect(const FloatRect& rectangel) const;
 	bool moveRangeIntersect(const FloatRect& rectangel) const;
+	void stoppingRect(const FloatRect& rectangel);
 	void attack();
-	void setRanges(EnemyName name);
+	void initEnemy(EnemyName name);
+	void setAttackMoveRange(float attackSizeDiff, float moveSizeDiff);
 	FloatRect getAttackRange() const;
 
 private:
 	EnemyName name;
 	bool attackType; // 0 - ближний, 1 - дальний
-	Player* player = nullptr;
+	Player* playerPtr = nullptr;
 	FloatRect attackRange;
 	FloatRect moveRange;
 

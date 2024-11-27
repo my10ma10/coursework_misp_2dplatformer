@@ -1,13 +1,7 @@
 ﻿#include "Animation.h"
 #include "Button.h"
-#include "Consts.h"
 #include "Game.h"
-#include "Enemy.h"
 #include "Level.h"
-#include "Object.h"
-#include "Player.h"
-#include "Platform.h"
-#include "Tilemap.h"
 #include "View.h"
 
 int main()
@@ -28,10 +22,6 @@ int main()
     //bool isFocusLost = false;
     bool isPaused = false;
 
-    //level
-    Level level("Image\\coin-Sheet.png", \
-        "Image\\potion-Sheet.png", "Image\\a78a2b.jpg", 1);
-    FloatRect levelBounds(0, 0, level.getSize().x, level.getSize().y);
 
     //player
     Texture playerTexture;
@@ -40,12 +30,13 @@ int main()
     }
     Player player(&playerTexture, Vector2f(180, 480), Vector2f(7.0f, 22.0f), Vector2u(12, 7), 0.1f);
 
+
+    //level
+    Level level("Image\\coin-Sheet.png", "Image\\potion-Sheet.png", \
+        "Image\\a78a2b.jpg", &player, 1);
+    FloatRect levelBounds(0, 0, level.getSize().x, level.getSize().y);
+
     // darkGhost
-    Texture darkGhostTexture;
-    if (!darkGhostTexture.loadFromFile("Image\\dark_ghost-Sheet.png")) {
-        std::cerr << "Can't load an image";
-    }
-    Enemy ghost(&darkGhostTexture, Vector2f(240, 470), Vector2u(8, 4), 0.1f, EnemyName::Ghost, &player);
 
 
     
@@ -58,8 +49,7 @@ int main()
     Collider playerColliderForView(playerAndViewCollideSprite);
     
 
-    // level collide
-    
+    levelView.setCenter(player.getPosition());
     Sprite levelLimitViewSprite;
     Collider backCollider(levelLimitViewSprite);
 
@@ -111,10 +101,8 @@ int main()
             if (!isPaused)
             {
                 // game.update(time1, time2)
-                ghost.update(timeStep); // точно в level.update
                 level.update(timeStep);
                 player.update(timePlayer); // может в level.update
-
 
                 //collider
                 for (Platform& platform : level.getPlatforms())
@@ -124,36 +112,48 @@ int main()
                     {
                         player.onCollition();
                     }
-                    if (platform.getCollider().externalCollider(ghost.getCollider(), player.getDirection(), \
-                        Vector2f(16.0f, 16.0f)))
+                    if (player.getSprite().getGlobalBounds().intersects(platform.getSprite().getGlobalBounds()))
                     {
-                        ghost.onCollition();
+                        player.setAttackPower(0); 
                     }
-                }
+                    else
+                    {
+                        player.setAttackPower(PLAYER_ATTACK_POWER);
+                    }
+                    for (Enemy& enemy : level.getEnemies())
+                    {
+                        if (platform.getCollider().externalCollider(enemy.getCollider(), enemy.getDirection(), \
+                            Vector2f(16.0f, 16.0f)))
+                        {
+                            enemy.onCollition();
+                        }
+                    }
                     
-                if (ghost.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, \
-                    player.getSize())))
-                {
-                    ghost.attack();
                 }
-
-                // в структуру коллайдеров в Гейме?
-
-                updateColliders(levelView, playerAndViewCollideSprite, level.getSize(), playerColliderForView, \
-                    backCollider, player.getCollider(), ghost.getCollider(), levelLimitViewSprite);
+                for (Enemy& enemy : level.getEnemies())
+                {
+                    if (enemy.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, \
+                        player.getSize())))
+                    {
+                        enemy.attack();
+                    }
+                    updateColliders(levelView, playerAndViewCollideSprite, level.getSize(), playerColliderForView, \
+                        backCollider, player.getCollider(), enemy.getCollider(), levelLimitViewSprite);
+                }                                
             }
+            updateView(levelView, playerAndViewCollideSprite.getPosition(), level.getSize());
+            playerColliderForView.internalCollider(player.getCollider());
             accumulator -= timeStep;
         }                  
         
         window.clear(Color::White); // basic
-        window.setView(levelView); // в gameUpdate при разных условиях
+        window.setView(levelView); // в gameUpdate, при разных условиях разный вид
         if (Keyboard::isKeyPressed(Keyboard::H))
         {
             window.setView(menuView);
         }
         //game.draw(window);
         level.draw(window); // basic
-        ghost.draw(window);
         player.draw(window); //пока непонятно, может потом в level
         //testButton.draw(window);
 
