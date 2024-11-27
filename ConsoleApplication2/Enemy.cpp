@@ -10,14 +10,14 @@ Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, \
 {
 	this->name = name;
 	this->playerPtr = playerPtr;
-	personSpeed = 1500.0f;
+	initEnemy(name);
+
 }
 
 void Enemy::update(float time)
 {
 	playerPtr->getPosition().x > this->getPosition().x ? faceRight = true : faceRight = false;
 	updateAnimation(time / 1.5f, faceRight);
-	;
 
 	if (moveRangeIntersect(FloatRect(playerPtr->getPosition() - playerPtr->getSize() / 2.0f, playerPtr->getSize())))
 	{
@@ -34,7 +34,11 @@ void Enemy::update(float time)
 	{
 		velocity.x = 0.0f;
 	}
-	
+	if (stopRangeIntersect(FloatRect(playerPtr->getPosition() - playerPtr->getSize() / 2.0f, playerPtr->getSize())))
+	{
+		velocity.x = 0.0f;
+	}
+
 	if (velocity.x == 0.0f)
 	{
 		row = 0;
@@ -61,7 +65,30 @@ void Enemy::update(float time)
 	}
 	velocity.y += gravity * 10000 * time; // gravity
 	sprite.move(velocity * time);
-	initEnemy(name);
+	changeRanges();
+}
+
+void Enemy::changeRanges()
+{
+	switch (name) {
+	case EnemyName::Skeleton:
+		break;
+	case EnemyName::Wizard:
+		break;
+	case EnemyName::Tank:
+		break;
+	case EnemyName::Dragon:
+		break;
+	case EnemyName::Ghost:
+		setAttackMoveStopRange(9.0f, 12.0f);
+		break;
+	case EnemyName::darkKnight:
+		setAttackMoveStopRange(3.0f, 10.0f);
+		break;
+	default:
+		std::cout << "Unknown enemy -\_/-\n";
+		break;
+	}
 }
 
 bool Enemy::attackRangeIntersect(const FloatRect& rectangel) const
@@ -72,6 +99,11 @@ bool Enemy::attackRangeIntersect(const FloatRect& rectangel) const
 bool Enemy::moveRangeIntersect(const FloatRect& rectangel) const
 {
 	return moveRange.intersects(rectangel);
+}
+
+bool Enemy::stopRangeIntersect(const FloatRect& rectangel) const
+{
+	return stopRange.intersects(rectangel);
 }
 
 void Enemy::stoppingRect(const FloatRect& rectangel)
@@ -114,12 +146,14 @@ void Enemy::initEnemy(EnemyName name)
 		case EnemyName::Ghost:
 			attackPower = 20.0f;
 			attackType = 1;
-			setAttackMoveRange(6.0f, 12.0f);
+			personSpeed = GHOST_SPEED;
+			gravity = 0.001f;
 			break;
 		case EnemyName::darkKnight:
 			attackPower = 40.0f;
 			attackType = 0;
-
+			personSpeed = DARK_KNIGHT_SPEED;
+			gravity = 0.005f;
 			break;
 		default:
 			std::cout << "Unknown enemy -\_/-\n";
@@ -127,7 +161,7 @@ void Enemy::initEnemy(EnemyName name)
 	}
 }
 
-void Enemy::setAttackMoveRange(float attackSizeDiff, float moveSizeDiff)
+void Enemy::setAttackMoveStopRange(float attackSizeDiff, float moveSizeDiff)
 {
 	attackRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * attackSizeDiff, \
 		getPosition().y - getSize().y / 2.0f), \
@@ -141,6 +175,10 @@ void Enemy::setAttackMoveRange(float attackSizeDiff, float moveSizeDiff)
 	moveRange.top -= playerPtr->getJumpHeight();
 	moveRange.height += playerPtr->getJumpHeight();
 
+	stopRange = FloatRect(\
+		Vector2f(getPosition().x - getSpriteSize().x / 2.0f, getPosition().y - getSpriteSize().y / 2.0f), getSpriteSize());
+	stopRange.top -= playerPtr->getJumpHeight();
+	stopRange.height += playerPtr->getJumpHeight();
 }
 
 FloatRect Enemy::getAttackRange() const

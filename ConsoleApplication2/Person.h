@@ -7,11 +7,11 @@ public:
 	Person();
 	Person(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime);
 
-
 	void takeDamage(int amount);
 	void onCollition();
 
 	void setAttackPower(float power);
+	void setSpeed(float speed);
 
 	unsigned int getCurrentFrame() const;
 	Vector2f& getDirection();

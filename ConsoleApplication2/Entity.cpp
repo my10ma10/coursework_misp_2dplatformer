@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity() : life(true), row(0), speed(0, 0)
+Entity::Entity() : life(true), row(0)
 {
 }
 
@@ -10,7 +10,7 @@ Entity::Entity(Vector2f position) : Entity()
 }
 
 Entity::Entity(Texture* texture, Vector2f position, Vector2f bodySize, Vector2u imageCount, float switchTime) : \
-	life(true), row(0), speed(0, 0)
+	life(true), row(0)
 {
 	this->sheetTexture = *texture;
 	sprite.setPosition(position);
@@ -71,17 +71,6 @@ void Entity::setPosition(float x, float y)
 	sprite.setPosition(x, y);
 }
 
-void Entity::setSpeed(Vector2f speed)
-{
-	this->speed = Vector2f(speed);
-}
-
-void Entity::setSpeed(float speedX, float speedY)
-{
-	speed.x = speedX;
-	speed.y = speedY;
-}
-
 void Entity::setTexture(Texture& texture)
 {
 	this->sheetTexture = texture;
@@ -107,7 +96,12 @@ Sprite Entity::getBody() const
 	return body;
 }
 
-Collider Entity::getCollider()
+Collider Entity::getBodyCollider()
+{
+	return Collider(body);
+}
+
+Collider Entity::getSpriteCollider()
 {
 	return Collider(sprite);
 }
@@ -132,7 +126,7 @@ Vector2f Entity::getSize() const
 	return body.getGlobalBounds().getSize();
 }
 
-Vector2f Entity::getSpeed() const
+Vector2f Entity::getSpriteSize() const
 {
-	return speed;
+	return sprite.getGlobalBounds().getSize();
 }

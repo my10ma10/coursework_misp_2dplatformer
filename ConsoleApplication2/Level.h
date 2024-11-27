@@ -42,6 +42,7 @@ private:
 	std::vector<Object> coins;
 	std::vector<Object> bonuses;
 	std::vector<Enemy> enemies;
+	Object portal;
 	Sprite platformSprite;
 	Sprite coinSprite;
 	Sprite bonusSprite;
@@ -58,6 +59,7 @@ private:
 	Texture coinTexture;
 	Texture bonusTexture;
 	Texture backgroundTexture;
+	Texture portalTexture;
 
 	Vector2u levelSize;
 	Vector2f position;

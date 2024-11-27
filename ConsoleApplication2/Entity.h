@@ -24,24 +24,21 @@ public:
 	void setTextureRect(const IntRect& rectangle);
 	void setPosition(Vector2f position);
 	void setPosition(float x, float y);
-	void setSpeed(Vector2f speed);
-	void setSpeed(float speedX, float speedY);
 	void setTexture(Texture& texture);
 	void setRow(unsigned int row);
 
 	Sprite getBody() const;
-	Collider getCollider();
+	Collider getBodyCollider();
+	Collider getSpriteCollider();
 	IntRect getCurrentRect() const;
 	bool alive() const;
 	Vector2f getPosition() const;
 	Vector2f getSize() const;
-	Vector2f getSpeed() const;
+	Vector2f getSpriteSize() const;
 	Sprite& getSprite();
 	const Texture* getTexture() const;
 
 protected:
-	std::string name;
-	Vector2f speed;
 	Animation animation;
 	Texture sheetTexture;
 	Sprite sprite;
@@ -49,7 +46,5 @@ protected:
 	Sprite body;
 	bool life;
 	unsigned int row;
-	// FloatRect body; как внедрить?
-
 };
 

@@ -2,7 +2,6 @@ C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Animation.cpp;C:\Dev\game\Co
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Button.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Button.obj
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Collider.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Collider.obj
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Enemy.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Enemy.obj
-C:\Dev\game\ConsoleApplication2\ConsoleApplication2\EnemyTextures.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\EnemyTextures.obj
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Entity.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Entity.obj
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Game.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Game.obj
 C:\Dev\game\ConsoleApplication2\ConsoleApplication2\Level.cpp;C:\Dev\game\ConsoleApplication2\ConsoleApplication2\x64\Debug\Level.obj

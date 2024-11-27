@@ -12,6 +12,7 @@ Level::Level(const std::string filePathToCoinTexture, const std::string filePath
     setBonuses();
     setCoins();
     setEnemies(playerPtr);
+    portal = Object(&portalTexture, Vector2f(170, 460), Vector2u(8, 1), 0.1f, Vector2f(20, 32));
 }
 
 
@@ -29,12 +30,14 @@ void Level::update(float time)
     {
         enemy.update(time);
     }
+    portal.updateAnimation(time, true);
 }
 
 void Level::draw(RenderWindow& window)
 {
     window.draw(backGroundSprite);
     window.draw(tileMap);
+    portal.draw(window);
     for (Platform& platform : platforms)
     {
         platform.draw(window);
@@ -67,6 +70,10 @@ void Level::loadTextures(const std::string filePathToCoinTexture, const std::str
         std::cerr << "Can't load an image";
     }
     if (!coinTexture.loadFromFile(filePathToCoinTexture))
+    {
+        std::cerr << "Can't load an image";
+    }
+    if (!portalTexture.loadFromFile("Image\\portal-Sheet.png"))
     {
         std::cerr << "Can't load an image";
     }

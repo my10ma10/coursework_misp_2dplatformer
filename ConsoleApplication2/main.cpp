@@ -33,25 +33,21 @@ int main()
 
     //level
     Level level("Image\\coin-Sheet.png", "Image\\potion-Sheet.png", \
-        "Image\\a78a2b.jpg", &player, 1);
+        "Image\\back3.png", &player, 1);
     FloatRect levelBounds(0, 0, level.getSize().x, level.getSize().y);
 
-    // darkGhost
-
-
-    
     // view collide
-    Vector2i viewRectSize(LEVEL_VIEW_HEIGHT * 1.5f, LEVEL_VIEW_HEIGHT * 1.0f);
+    Vector2i viewRectSize(LEVEL_VIEW_HEIGHT * 1.0f, LEVEL_VIEW_HEIGHT * 1.0f);
     IntRect viewRectBounds(Vector2i(player.getPosition().x - viewRectSize.x / 2.0f, \
-        player.getPosition().y - viewRectSize.y / 2.0f),viewRectSize);
+        player.getPosition().y - viewRectSize.y / 2.0f), viewRectSize);
     Sprite playerAndViewCollideSprite; 
     playerAndViewCollideSprite.setTextureRect(viewRectBounds);
     Collider playerColliderForView(playerAndViewCollideSprite);
     
 
-    levelView.setCenter(player.getPosition());
     Sprite levelLimitViewSprite;
     Collider backCollider(levelLimitViewSprite);
+
 
     //Button testButton("Click me!", player.getPosition(), Vector2f(32.0f, 16.0f));
 
@@ -107,7 +103,7 @@ int main()
                 //collider
                 for (Platform& platform : level.getPlatforms())
                 {
-                    if (platform.getCollider().externalCollider(player.getCollider(), player.getDirection(), \
+                    if (platform.getCollider().externalCollider(player.getSpriteCollider(), player.getDirection(), \
                         player.getSize()))
                     {
                         player.onCollition();
@@ -122,7 +118,7 @@ int main()
                     }
                     for (Enemy& enemy : level.getEnemies())
                     {
-                        if (platform.getCollider().externalCollider(enemy.getCollider(), enemy.getDirection(), \
+                        if (platform.getCollider().externalCollider(enemy.getSpriteCollider(), enemy.getDirection(), \
                             Vector2f(16.0f, 16.0f)))
                         {
                             enemy.onCollition();
@@ -137,12 +133,19 @@ int main()
                     {
                         enemy.attack();
                     }
-                    updateColliders(levelView, playerAndViewCollideSprite, level.getSize(), playerColliderForView, \
-                        backCollider, player.getCollider(), enemy.getCollider(), levelLimitViewSprite);
-                }                                
+                    Sprite enemyBody(enemy.getSprite());
+                    Collider enemyBodyCollider(enemyBody);
+                    if (enemyBodyCollider.externalCollider(player.getBodyCollider(), player.getDirection(), \
+                        player.getSize()))
+                    {
+                        enemy.setSpeed(0.0f);
+                    }
+                    updateColliders(levelView, level.getSize(), backCollider, \
+                        player.getSpriteCollider(), enemy.getSpriteCollider(), levelLimitViewSprite);
+                }
             }
             updateView(levelView, playerAndViewCollideSprite.getPosition(), level.getSize());
-            playerColliderForView.internalCollider(player.getCollider());
+            playerColliderForView.internalCollider(player.getSpriteCollider());
             accumulator -= timeStep;
         }                  
         

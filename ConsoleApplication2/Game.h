@@ -7,8 +7,7 @@ class Game
 };
 
 
-static void updateColliders(View& levelView, const Sprite& playerAndViewCollideSprite, Vector2u levelSize, \
-    Collider& playerColliderForView, Collider& backCollider, const Collider& playerCollider, \
+static void updateColliders(View& levelView, Vector2u levelSize, Collider& backCollider, const Collider& playerCollider,\
     const Collider& ghostCollider, Sprite& levelLimitViewSprite)
 {
     levelLimitViewSprite.setPosition(levelView.getCenter());
@@ -16,5 +15,6 @@ static void updateColliders(View& levelView, const Sprite& playerAndViewCollideS
         Vector2i(levelView.getSize())));
     backCollider.levelCollision(playerCollider, Vector2f(16.0f, 16.0f)); // магия
     backCollider.levelCollision(ghostCollider, Vector2f(16.0f, 16.0f)); // магия
+
 }
 

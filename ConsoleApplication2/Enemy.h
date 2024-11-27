@@ -10,12 +10,14 @@ public:
 	Enemy(Texture* texture, Vector2f position, Vector2u imageCount, float switchTime, EnemyName name, \
 		Player* playerPtr = nullptr, Vector2f size = Vector2f(16.0f, 16.0f));
 	void update(float time);
+	void changeRanges();
 	bool attackRangeIntersect(const FloatRect& rectangel) const;
 	bool moveRangeIntersect(const FloatRect& rectangel) const;
+	bool stopRangeIntersect(const FloatRect& rectangel) const;
 	void stoppingRect(const FloatRect& rectangel);
 	void attack();
 	void initEnemy(EnemyName name);
-	void setAttackMoveRange(float attackSizeDiff, float moveSizeDiff);
+	void setAttackMoveStopRange(float attackSizeDiff, float moveSizeDiff);
 	FloatRect getAttackRange() const;
 
 private:
@@ -24,6 +26,6 @@ private:
 	Player* playerPtr = nullptr;
 	FloatRect attackRange;
 	FloatRect moveRange;
-
+	FloatRect stopRange;
 };
 

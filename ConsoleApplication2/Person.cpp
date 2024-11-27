@@ -49,6 +49,11 @@ void Person::setAttackPower(float power)
 	attackPower = power;
 }
 
+void Person::setSpeed(float speed)
+{
+	velocity.x = speed;
+}
+
 unsigned int Person::getCurrentFrame() const
 {
 	return animation.getCurrentFrame();
