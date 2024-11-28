@@ -81,9 +81,11 @@ void Enemy::changeRanges()
 		break;
 	case EnemyName::Ghost:
 		setAttackMoveStopRange(9.0f, 12.0f);
+		attackPower = 20.0f;
 		break;
 	case EnemyName::darkKnight:
 		setAttackMoveStopRange(3.0f, 10.0f);
+		attackPower = 40.0f;
 		break;
 	default:
 		std::cout << "Unknown enemy -\_/-\n";

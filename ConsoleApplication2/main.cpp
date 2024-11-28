@@ -19,7 +19,6 @@ int main()
     const float timeStep = 1.0f / 60.0f;
     float accumulator = 0.0f;
     float timePlayer = 0.0f;
-    //bool isFocusLost = false;
     bool isPaused = false;
 
 
@@ -28,7 +27,7 @@ int main()
     if (!playerTexture.loadFromFile("Image\\player-Sheet.png")) {
         std::cerr << "Can't load an image";
     }
-    Player player(&playerTexture, Vector2f(180, 480), Vector2f(7.0f, 22.0f), Vector2u(12, 7), 0.1f);
+    Player player(&playerTexture, Vector2f(180, 480), Vector2f(5.0f, 23.0f), Vector2u(12, 7), 0.1f);
 
 
     //level
@@ -44,7 +43,6 @@ int main()
     playerAndViewCollideSprite.setTextureRect(viewRectBounds);
     Collider playerColliderForView(playerAndViewCollideSprite);
     
-
     Sprite levelLimitViewSprite;
     Collider backCollider(levelLimitViewSprite);
 
@@ -74,12 +72,6 @@ int main()
                     isPaused = !isPaused;
                 }
                 changeViewZoom(levelView);
-                break;
-            case Event::LostFocus:
-                //isFocusLost = true;
-                break;
-            case Event::GainedFocus:
-                //isFocusLost = false;
                 break;
             default:
                 break;
@@ -140,6 +132,15 @@ int main()
                     {
                         enemy.setSpeed(0.0f);
                     }
+                    if (player.getSpriteCollider().externalCollider(enemyBodyCollider, \
+                        enemy.getDirection(), enemy.getSize()))
+                    {
+                        player.addEnemy(&enemy);
+                    }
+                    else
+                    {
+                        player.removeEnemy(&enemy);
+                    }
                     updateColliders(levelView, level.getSize(), backCollider, \
                         player.getSpriteCollider(), enemy.getSpriteCollider(), levelLimitViewSprite);
                 }
@@ -155,8 +156,13 @@ int main()
         {
             window.setView(menuView);
         }
-        //game.draw(window);
-        level.draw(window); // basic
+
+        // game.draw(window);
+        if (player.alive())
+        {
+            //и level.update(time);
+            level.draw(window); // basic
+        }
         player.draw(window); //пока непонятно, может потом в level
         //testButton.draw(window);
 

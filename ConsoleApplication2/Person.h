@@ -8,6 +8,7 @@ public:
 	Person(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime);
 
 	void takeDamage(int amount);
+	void updateHealth();
 	void onCollition();
 
 	void setAttackPower(float power);

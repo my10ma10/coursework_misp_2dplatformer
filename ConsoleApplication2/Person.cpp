@@ -16,6 +16,14 @@ void Person::takeDamage(int damageAmount)
 	health -= damageAmount;
 }
 
+void Person::updateHealth()
+{
+	if (health <= 0)
+	{
+		life = false;
+	}
+}
+
 void Person::onCollition()
 {
 	if (direction.x < 0.0f)
