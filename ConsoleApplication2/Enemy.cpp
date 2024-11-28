@@ -8,6 +8,7 @@ Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, \
 	float switchTime, EnemyName name, Player* playerPtr, Vector2f size) : \
 	Person(texture, position, size, imageCount, switchTime), attackType(0)
 {
+	this->health = HEALTH_MAX / 100;
 	this->name = name;
 	this->playerPtr = playerPtr;
 	initEnemy(name);
@@ -18,6 +19,11 @@ void Enemy::update(float time)
 {
 	playerPtr->getPosition().x > this->getPosition().x ? faceRight = true : faceRight = false;
 	updateAnimation(time / 1.5f, faceRight);
+	
+	if (!alive())
+	{
+		attackPower = 0.0f;
+	}
 
 	if (moveRangeIntersect(FloatRect(playerPtr->getPosition() - playerPtr->getSize() / 2.0f, playerPtr->getSize())))
 	{
@@ -43,6 +49,7 @@ void Enemy::update(float time)
 	{
 		row = 0;
 	}
+
 	else
 	{
 		row = 1;
@@ -66,30 +73,34 @@ void Enemy::update(float time)
 	velocity.y += gravity * 10000 * time; // gravity
 	sprite.move(velocity * time);
 	changeRanges();
+	updateHealth();
 }
 
 void Enemy::changeRanges()
 {
-	switch (name) {
-	case EnemyName::Skeleton:
-		break;
-	case EnemyName::Wizard:
-		break;
-	case EnemyName::Tank:
-		break;
-	case EnemyName::Dragon:
-		break;
-	case EnemyName::Ghost:
-		setAttackMoveStopRange(9.0f, 12.0f);
-		attackPower = 20.0f;
-		break;
-	case EnemyName::darkKnight:
-		setAttackMoveStopRange(3.0f, 10.0f);
-		attackPower = 40.0f;
-		break;
-	default:
-		std::cout << "Unknown enemy -\_/-\n";
-		break;
+	switch (name) 
+	{
+		case EnemyName::Skeleton:
+			break;
+		case EnemyName::Wizard:
+			break;
+		case EnemyName::Tank:
+			break;
+		case EnemyName::Dragon:
+			setAttackMoveStopRange(4.0f, 8.0f);
+			attackPower = 30.0f;
+			break;
+		case EnemyName::Ghost:
+			setAttackMoveStopRange(9.0f, 12.0f);
+			attackPower = 20.0f;
+			break;
+		case EnemyName::darkKnight:
+			setAttackMoveStopRange(3.0f, 8.0f);
+			attackPower = 40.0f;
+			break;
+		default:
+			std::cout << "Unknown enemy -\_/-\n";
+			break;
 	}
 }
 
@@ -132,7 +143,8 @@ void Enemy::attack()
 
 void Enemy::initEnemy(EnemyName name)
 {
-	switch (name) {
+	switch (name) 
+	{
 		case EnemyName::Skeleton:
 			attackType = 0;
 			break;
@@ -144,15 +156,15 @@ void Enemy::initEnemy(EnemyName name)
 			break;
 		case EnemyName::Dragon:
 			attackType = 1;
+			personSpeed = DRAGON_SPEED;
+			gravity = 0.002f;
 			break;
 		case EnemyName::Ghost:
-			attackPower = 20.0f;
 			attackType = 1;
 			personSpeed = GHOST_SPEED;
 			gravity = 0.001f;
 			break;
 		case EnemyName::darkKnight:
-			attackPower = 40.0f;
 			attackType = 0;
 			personSpeed = DARK_KNIGHT_SPEED;
 			gravity = 0.005f;

@@ -1,6 +1,6 @@
 Image\\rectangle_test.png
 Image\\rectangle_test.png
 Image\\rectangle_test.png
-Image\\rectangle_test.png
+Image\\dragon-Sheet.png
 Image\\dark_ghost-Sheet.png
 Image\\dark_Knight-Sheet.png

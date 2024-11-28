@@ -20,7 +20,13 @@ void Person::updateHealth()
 {
 	if (health <= 0)
 	{
-		life = false;
+		setRow(3);
+		if (getCurrentFrame() == 7)
+		{
+			std::cout << "killed\n";
+			life = false;
+		}
+		
 	}
 }
 

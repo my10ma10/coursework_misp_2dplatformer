@@ -95,8 +95,7 @@ int main()
                 //collider
                 for (Platform& platform : level.getPlatforms())
                 {
-                    if (platform.getCollider().externalCollider(player.getSpriteCollider(), player.getDirection(), \
-                        player.getSize()))
+                    if (platform.getCollider().externalCollider(player.getSpriteCollider(), player.getDirection()))
                     {
                         player.onCollition();
                     }
@@ -110,8 +109,7 @@ int main()
                     }
                     for (Enemy& enemy : level.getEnemies())
                     {
-                        if (platform.getCollider().externalCollider(enemy.getSpriteCollider(), enemy.getDirection(), \
-                            Vector2f(16.0f, 16.0f)))
+                        if (platform.getCollider().externalCollider(enemy.getSpriteCollider(), enemy.getDirection()))
                         {
                             enemy.onCollition();
                         }
@@ -127,13 +125,12 @@ int main()
                     }
                     Sprite enemyBody(enemy.getSprite());
                     Collider enemyBodyCollider(enemyBody);
-                    if (enemyBodyCollider.externalCollider(player.getBodyCollider(), player.getDirection(), \
-                        player.getSize()))
+                    if (enemyBodyCollider.externalCollider(player.getBodyCollider(), player.getDirection()))
                     {
                         enemy.setSpeed(0.0f);
                     }
                     if (player.getSpriteCollider().externalCollider(enemyBodyCollider, \
-                        enemy.getDirection(), enemy.getSize()))
+                        enemy.getDirection()))
                     {
                         player.addEnemy(&enemy);
                     }

@@ -1,5 +1,4 @@
 #include "Collider.h"
-#include <iostream>
 
 Collider::Collider(Sprite& sprite) : sprite(sprite) {}
 
@@ -7,10 +6,10 @@ void Collider::Move(float dx, float dy) {
 	sprite.move(dx, dy);
 }
 
-bool Collider::externalCollider(Collider other, Vector2f& direction, Vector2f bodySize, float push)
+bool Collider::externalCollider(Collider other, Vector2f& direction, float push)
 {
 	Vector2f otherPos = other.getPosition();
-	Vector2f otherHalfSize = (bodySize / 2.0f) + Vector2f(0.5f, 0.5f);;
+	Vector2f otherHalfSize = getHalfSize();
 	Vector2f thisPos = getPosition();
 	Vector2f thisHalfSize = getHalfSize();
 
@@ -30,7 +29,6 @@ bool Collider::externalCollider(Collider other, Vector2f& direction, Vector2f bo
 				other.Move(-intersect.x * push, 0.0f); 
 				direction.x = 1.0f;
 				direction.y = 0.0f;
-
 			}
 			else 
 			{ //colliding on the left
@@ -48,7 +46,6 @@ bool Collider::externalCollider(Collider other, Vector2f& direction, Vector2f bo
 				other.Move(0.0f, -intersect.y * push);
 				direction.x = 0.0f;
 				direction.y = 1.0f;
-
 			}
 			else 
 			{//colliding on a bottom
@@ -56,7 +53,6 @@ bool Collider::externalCollider(Collider other, Vector2f& direction, Vector2f bo
 				other.Move(0.0f, intersect.y * push);
 				direction.x = 0.0f;
 				direction.y = -1.0f;
-
 			}
 		}
 		return true;

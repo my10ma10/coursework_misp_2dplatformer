@@ -4,6 +4,7 @@
 Player::Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime) : \
 	Person(texture, position, size, imageCount, switchTime)
 {
+	health = HEALTH_MAX;
 	wasJumpKeyPressed = isJumpKeyPressed = isBlocking = blockBonus = false;
 	sprite.setTextureRect(animation.getCurrentRect());
 	personSpeed = 0.075f;

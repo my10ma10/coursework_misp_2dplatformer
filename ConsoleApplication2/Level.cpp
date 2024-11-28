@@ -30,6 +30,15 @@ void Level::update(float time)
     {
         enemy.update(time);
     }
+    for (auto iter = enemies.begin(); iter != enemies.end(); iter++)
+    {
+        if (!iter->alive())
+        {
+            //enemies.erase(iter);
+        }
+    }
+    std::cout << enemies.size() << std::endl;
+    
     portal.updateAnimation(time, true);
 }
 
@@ -128,6 +137,8 @@ void Level::setEnemies(Player* playerPtr)
             break;
 
         case EnemyName::Dragon:
+            enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.13f, pair.first, playerPtr, \
+                Vector2f(24, 24)));
             break;
 
         case EnemyName::Ghost:
@@ -218,11 +229,11 @@ void Level::setTileMap()
     tileStream.close();
     this->tileLevel = std::move(vec);
 
-    for (int i = 0; i < tileLevel.size(); ++i)
+    for (int i = 0; i < tileLevel.size(); i++)
     {
         div_t tileArr = div(i, 48);
         Vector2f tilePosition(tileSize.x * tileArr.rem + tileSize.x / 2.0f, \
-            tileSize.y * tileArr.quot + tileSize.x / 2.0f);
+            tileSize.y * tileArr.quot + tileSize.y / 2.0f);
         if (tileLevel[i] == 0)
             continue;
         platforms.push_back(Platform(Vector2f(tileSize.x, tileSize.y), Vector2f(tilePosition.x, tilePosition.y)));
