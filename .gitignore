@@ -398,3 +398,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/.vs/ConsoleApplication2/v17/ipch/AutoPCH/626e41c365c79018/COLLIDER.ipch
