@@ -11,7 +11,6 @@ class Entity
 {
 public:
 	Entity();
-	Entity(Vector2f position);
 	Entity(Texture* texture, Vector2f position, Vector2f bodySize, Vector2u imageCount, float switchTime);
 
 	virtual void update(float time) = 0;

@@ -17,13 +17,13 @@ Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, \
 
 void Enemy::update(float time)
 {
+	updateHealth();
+
 	playerPtr->getPosition().x > this->getPosition().x ? faceRight = true : faceRight = false;
 	updateAnimation(time / 1.5f, faceRight);
+	body.setPosition(getPosition());
+
 	
-	if (!alive())
-	{
-		attackPower = 0.0f;
-	}
 
 	if (moveRangeIntersect(FloatRect(playerPtr->getPosition() - playerPtr->getSize() / 2.0f, playerPtr->getSize())))
 	{
@@ -73,7 +73,10 @@ void Enemy::update(float time)
 	velocity.y += gravity * 10000 * time; // gravity
 	sprite.move(velocity * time);
 	changeRanges();
-	updateHealth();
+	if (!life)
+	{
+		attackPower = 0.0f;
+	}
 }
 
 void Enemy::changeRanges()

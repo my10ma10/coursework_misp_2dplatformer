@@ -36,9 +36,7 @@ void Level::update(float time)
         {
             //enemies.erase(iter);
         }
-    }
-    std::cout << enemies.size() << std::endl;
-    
+    }    
     portal.updateAnimation(time, true);
 }
 

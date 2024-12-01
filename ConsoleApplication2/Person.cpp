@@ -18,15 +18,17 @@ void Person::takeDamage(int damageAmount)
 
 void Person::updateHealth()
 {
-	if (health <= 0)
+	if (health <= 0 and life)
 	{
 		setRow(3);
-		if (getCurrentFrame() == 7)
+		if (getCurrentFrame() == 1)
 		{
-			std::cout << "killed\n";
+			killing = true;
+		}
+		if (getCurrentFrame() == 0 and killing)
+		{
 			life = false;
 		}
-		
 	}
 }
 

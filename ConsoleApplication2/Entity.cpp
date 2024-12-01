@@ -4,11 +4,6 @@ Entity::Entity() : life(true), row(0)
 {
 }
 
-Entity::Entity(Vector2f position) : Entity()
-{
-	sprite.setPosition(position);
-}
-
 Entity::Entity(Texture* texture, Vector2f position, Vector2f bodySize, Vector2u imageCount, float switchTime) : \
 	life(true), row(0)
 {
@@ -21,9 +16,7 @@ Entity::Entity(Texture* texture, Vector2f position, Vector2f bodySize, Vector2u 
 		Vector2i(getSize().x / imageCount.x, getSize().y / imageCount.y)));
 
 	body.setPosition(position);
-	body.setTextureRect(IntRect(Vector2i(position - bodySize / 2.0f), Vector2i(bodySize)));
-
-
+	body.setTextureRect(IntRect(Vector2i(position), Vector2i(bodySize)));
 
 	setAnimation(imageCount, switchTime);
 }

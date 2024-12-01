@@ -6,7 +6,6 @@ Player::Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imag
 {
 	health = HEALTH_MAX;
 	wasJumpKeyPressed = isJumpKeyPressed = isBlocking = blockBonus = false;
-	sprite.setTextureRect(animation.getCurrentRect());
 	personSpeed = 0.075f;
 	if (!bubbleTexture.loadFromFile("Image\\bubble.png"))
 	{
@@ -19,8 +18,6 @@ Player::Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imag
 void Player::update(float time)
 {
 	body.setPosition(sprite.getPosition());
-	body.setTextureRect(IntRect(Vector2i(getPosition() - getSize() / 2.0f), Vector2i(getSize())));
-
 	bubble.setPosition(getPosition() - Vector2f(24.0f, 25.0f)); // магия
 
 	isJumpKeyPressed = Keyboard::isKeyPressed(Keyboard::W) or \
@@ -77,6 +74,7 @@ void Player::update(float time)
 		if (canJump)
 		{
 			velocity.x = 0.0f;
+			row = 3;
 			for (Enemy* enemy : enemiesPtr)
 			{
 				attack(*enemy);
@@ -92,6 +90,7 @@ void Player::update(float time)
 	velocity.y += gravity * time;
 	sprite.move(velocity * time);
 	updateHealth();
+	std::cout << health << std::endl;
 }
 
 void Player::draw(RenderWindow& window)
@@ -109,7 +108,6 @@ void Player::draw(RenderWindow& window)
 
 void Player::attack(Enemy& enemy)
 {
-	row = 3;
 	if (getCurrentFrame() == 5 and !isDamageTaking)
 	{
 		for (Enemy* enemy : enemiesPtr)
@@ -149,10 +147,10 @@ std::vector<Enemy*> Player::getEnemies() const
 
 void Player::collectCoin(Object& coin)
 {
-	if (0/*коллайд с монеткой*/) 
+	if (0/*коллайд с монеткой*/) //external collide 
 	{
 		// счётчик++;
-		// монетка исчезает
+		// монетка исчезает и удаляется с уровня
 	}
 }
 void Player::applyBonus(Object& bonus)

@@ -28,7 +28,7 @@ protected:
 	bool canAttack;
 	bool canJump;
 	bool isDamageTaking;
-
+	bool killing = false;
 	Vector2f direction;
 	Vector2f velocity;
 	float personSpeed = 1.0f;

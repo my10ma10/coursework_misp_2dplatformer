@@ -129,11 +129,11 @@ int main()
                     {
                         enemy.setSpeed(0.0f);
                     }
-                    if (player.getSpriteCollider().externalCollider(enemyBodyCollider, \
-                        enemy.getDirection()))
+                    if (enemy.getBody().getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
                     {
                         player.addEnemy(&enemy);
                     }
+
                     else
                     {
                         player.removeEnemy(&enemy);
