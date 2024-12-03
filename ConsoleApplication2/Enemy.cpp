@@ -77,6 +77,7 @@ void Enemy::update(float time)
 	{
 		attackPower = 0.0f;
 	}
+	std::cout << health << std::endl;
 }
 
 void Enemy::changeRanges()

@@ -2,7 +2,7 @@
 
 Level::Level(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
     const std::string filePathToBackGroundTexture, Player* playerPtr, int numberOfLevel) : \
-    isComplete(false), numberOfLevel(numberOfLevel), tileSize(16, 16), tilesAmount(48, 48), \
+    ñomplete(false), numberOfLevel(numberOfLevel), tileSize(16, 16), tilesAmount(48, 48), \
     mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y), levelSize(WINDOW_WIDTH, WINDOW_HEIGHT)
 {
     loadTextures(filePathToCoinTexture, filePathToBonusTexture, filePathToBackGroundTexture);
@@ -12,7 +12,7 @@ Level::Level(const std::string filePathToCoinTexture, const std::string filePath
     setBonuses();
     setCoins();
     setEnemies(playerPtr);
-    portal = Object(&portalTexture, Vector2f(170, 460), Vector2u(8, 1), 0.1f, Vector2f(20, 32));
+    portal = Object(&portalTexture, Vector2f(470, 460), Vector2u(8, 1), 0.1f, Vector2f(20, 32));
 }
 
 
@@ -30,13 +30,9 @@ void Level::update(float time)
     {
         enemy.update(time);
     }
-    for (auto iter = enemies.begin(); iter != enemies.end(); iter++)
-    {
-        if (!iter->alive())
-        {
-            //enemies.erase(iter);
-        }
-    }    
+    enemies.erase(std::remove_if(enemies.begin(), enemies.end(), \
+        [](const Enemy& enemy) { return !enemy.alive(); }), enemies.end()); // erase dead enemies
+
     portal.updateAnimation(time, true);
 }
 
@@ -119,6 +115,14 @@ void Level::loadEnemyTextures()
 
 }
 
+void Level::checkPortal(Vector2f playerPosition)
+{
+    if (portal.getSprite().getGlobalBounds().contains(playerPosition))
+    {
+        ñomplete = true;
+    }
+}
+
 void Level::setEnemies(Player* playerPtr)
 {
     for (auto& pair : enemyTextures)
@@ -140,13 +144,13 @@ void Level::setEnemies(Player* playerPtr)
             break;
 
         case EnemyName::Ghost:
-            enemies.push_back(Enemy(&pair.second, Vector2f(280, 480), Vector2u(8, 4), 0.1f, pair.first, playerPtr));
-            enemies.push_back(Enemy(&pair.second, Vector2f(380, 470), Vector2u(8, 4), 0.1f, pair.first, playerPtr));
+            //enemies.push_back(Enemy(&pair.second, Vector2f(280, 480), Vector2u(8, 4), 0.1f, pair.first, playerPtr));
+            //enemies.push_back(Enemy(&pair.second, Vector2f(380, 470), Vector2u(8, 4), 0.1f, pair.first, playerPtr));
             break;
 
         case EnemyName::darkKnight:
-            enemies.push_back(Enemy(&pair.second, Vector2f(310, 480), Vector2u(8, 4), 0.1f, pair.first, playerPtr, \
-                Vector2f(16, 16)));
+            //enemies.push_back(Enemy(&pair.second, Vector2f(310, 480), Vector2u(8, 4), 0.1f, pair.first, playerPtr, \
+            //    Vector2f(16, 16)));
 
             break;
 
@@ -194,8 +198,8 @@ void Level::setCoins()
     switch (numberOfLevel)
     {
     case 1:
-        coins.push_back(Object(&coinTexture, Vector2f(170, 436), Vector2u(8, 1), 0.1f));
-        coins.push_back(Object(&coinTexture, Vector2f(200, 436), Vector2u(8, 1), 0.1f));
+        coins.push_back(Object(&coinTexture, Vector2f(170, 496), Vector2u(8, 1), 0.1f));
+        coins.push_back(Object(&coinTexture, Vector2f(200, 496), Vector2u(8, 1), 0.1f));
         break;
     case 2:
         break;
@@ -255,6 +259,16 @@ std::vector<Platform>& Level::getPlatforms()
 std::vector<Enemy>& Level::getEnemies()
 {
     return enemies;
+}
+
+std::vector<Object>& Level::getCoins()
+{
+    return coins;
+}
+
+bool Level::getComplete() const
+{
+    return ñomplete;
 }
 
 Vector2u Level::getSize() const

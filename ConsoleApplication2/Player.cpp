@@ -5,7 +5,7 @@ Player::Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imag
 	Person(texture, position, size, imageCount, switchTime)
 {
 	health = HEALTH_MAX;
-	wasJumpKeyPressed = isJumpKeyPressed = isBlocking = blockBonus = false;
+	wasJumpKeyPressed = isJumpKeyPressed = isBlocking = bubbleBonusState = changedRow = false;
 	personSpeed = 0.075f;
 	if (!bubbleTexture.loadFromFile("Image\\bubble.png"))
 	{
@@ -61,7 +61,7 @@ void Player::update(float time)
 	if (Keyboard::isKeyPressed(Keyboard::Down) or Keyboard::isKeyPressed(Keyboard::S))
 	{
 		isBlocking = true;
-		setRow(6);
+		row = 6;
 		velocity.x = 0.0f;
 		for (Enemy* enemy : enemiesPtr)
 		{
@@ -71,7 +71,23 @@ void Player::update(float time)
 
 	if (Keyboard::isKeyPressed(Keyboard::Space))
 	{
-		if (canJump)
+		attackState = true;
+	}
+
+	if (Keyboard::isKeyPressed(Keyboard::LControl))
+	{
+		superAttackState = true;
+	}
+	if (canJump and enemiesPtr.size() != 0)
+	{
+		if (superAttackState)
+		{
+			for (Enemy* enemy : enemiesPtr)
+			{
+				superAttack(*enemy);
+			}
+		}
+		if (attackState and !superAttackState)
 		{
 			velocity.x = 0.0f;
 			row = 3;
@@ -80,17 +96,15 @@ void Player::update(float time)
 				attack(*enemy);
 			}
 		}
-
 	}
 
 	if (updateAnimation(time / 1000, faceRight))
 	{
-		setRow(5);
+		row = 5;
 	}
 	velocity.y += gravity * time;
 	sprite.move(velocity * time);
 	updateHealth();
-	std::cout << health << std::endl;
 }
 
 void Player::draw(RenderWindow& window)
@@ -99,32 +113,73 @@ void Player::draw(RenderWindow& window)
 	{
 		window.draw(sprite);
 	}
-	if (blockBonus)
+	if (bubbleBonusState)
 	{
 		//window.draw(bubble);
 	}
 }
 
+void Player::attackUpdate(float time)
+{
+
+}
+
 
 void Player::attack(Enemy& enemy)
 {
-	if (getCurrentFrame() == 5 and !isDamageTaking)
+	if (getCurrentFrame() == 7 and !isDamageTaking and enemy.alive())
 	{
-		for (Enemy* enemy : enemiesPtr)
-		{
-			enemy->takeDamage(attackPower);
-		}
+		enemy.takeDamage(attackPower);
 		isDamageTaking = true;
 	}
-	if (getCurrentFrame() != 5)
+	if (getCurrentFrame() == 11)
+	{
+		attackState = false;
+	}
+	if (getCurrentFrame() != 7)
 	{
 		isDamageTaking = false;
 	}
 }
 
-void Player::superattack(Enemy& enemy)
+void Player::superAttack(Enemy& enemy)
 {
-	// 3 анимации атаки подряд
+	superAttackAnimation();
+	if (getCurrentFrame() == 7 and !isDamageTaking and enemy.alive())
+	{
+		enemy.takeDamage(attackPower);
+		isDamageTaking = true;
+	}
+	if (getCurrentFrame() != 7)
+	{
+		isDamageTaking = false;
+	}
+	if (getCurrentFrame() == 11 and row == 5)
+	{
+		superAttackState = false;
+	}
+}
+
+void Player::superAttackAnimation()
+{
+	if (superAttackRow == 5)
+	{
+		superAttackRow = 1;
+		superAttackState = false;
+	}
+	if (getCurrentFrame() == 0)
+	{
+		changedRow = false;
+	}
+	if (getCurrentFrame() == 11 and !changedRow)
+	{
+		changedRow = true;
+		superAttackRow++;
+		std::cout << "change row\n";
+	}
+	
+	velocity.x = 0.0f;
+	row = superAttackRow;
 }
 
 void Player::addEnemy(Enemy* enemy)
@@ -147,10 +202,10 @@ std::vector<Enemy*> Player::getEnemies() const
 
 void Player::collectCoin(Object& coin)
 {
-	if (0/*коллайд с монеткой*/) //external collide 
+	if (body.getGlobalBounds().intersects(coin.getSprite().getGlobalBounds()) and coin.alive())
 	{
-		// счётчик++;
-		// монетка исчезает и удаляется с уровня
+		coinCounter++;
+		coin.kill();
 	}
 }
 void Player::applyBonus(Object& bonus)

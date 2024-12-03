@@ -89,8 +89,14 @@ int main()
             if (!isPaused)
             {
                 // game.update(time1, time2)
-                level.update(timeStep);
-                player.update(timePlayer); // может в level.update
+                if (!level.getComplete())
+                {
+                    level.update(timeStep);
+                    player.update(timePlayer); // может в level.update
+
+                }
+
+                level.checkPortal(player.getPosition());
 
                 //collider
                 for (Platform& platform : level.getPlatforms())
@@ -116,6 +122,10 @@ int main()
                     }
                     
                 }
+                for (Object& coin : level.getCoins())
+                {
+                    player.collectCoin(coin);
+                }
                 for (Enemy& enemy : level.getEnemies())
                 {
                     if (enemy.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, \
@@ -133,7 +143,6 @@ int main()
                     {
                         player.addEnemy(&enemy);
                     }
-
                     else
                     {
                         player.removeEnemy(&enemy);

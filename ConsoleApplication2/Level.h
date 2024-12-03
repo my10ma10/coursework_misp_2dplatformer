@@ -24,6 +24,7 @@ public:
 	void loadTextures(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
 		const std::string filePathToBackGroundTexture);
 	void loadEnemyTextures();
+	void checkPortal(Vector2f playerPosition);
 	void setEnemies(Player* playerPtr);
 	void setBackground();
 	void setBonuses();
@@ -33,11 +34,13 @@ public:
 	Sprite getBackGroundSprite() const;
 	std::vector<Platform>& getPlatforms();
 	std::vector<Enemy>& getEnemies();
+	std::vector<Object>& getCoins();
+	bool getComplete() const;
 	Vector2u getSize() const;
 	Vector2f getCenter() const;
 
 private:
-	bool isComplete;
+	bool ñomplete;
 	std::vector<Platform> platforms; // size, position
 	std::vector<Object> coins;
 	std::vector<Object> bonuses;

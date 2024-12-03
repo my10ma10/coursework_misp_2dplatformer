@@ -16,9 +16,11 @@ void Object::update(float time)
 
 void Object::draw(RenderWindow& window)
 {
-	Image image;
-	window.draw(sprite);
-	window.draw(bonusIconSprite);
+	if (life)
+	{
+		window.draw(sprite);
+		window.draw(bonusIconSprite);
+	}
 }
 
 void Object::setBonusIconSprite(std::string& path)

@@ -9,9 +9,11 @@ public:
 
 	void update(float time) override;
 	void draw(RenderWindow& window);
+	void attackUpdate(float time);
 
 	void attack(Enemy& enemy);
-	void superattack(Enemy& enemy);
+	void superAttack(Enemy& enemy);
+	void superAttackAnimation();
 	void addEnemy(Enemy* enemy);
 	void removeEnemy(Enemy* enemy);
 	std::vector<Enemy*> getEnemies() const;
@@ -20,17 +22,20 @@ public:
 	void applyHeart(Object& heart);
 	void jump(float time);
 
-
-
 	Vector2f getSize() const;
 	unsigned int getAnimCount() const;
 	float getJumpHeight() const;
 
 private:
+	unsigned int coinCounter = 0;
+	bool superAttackState = false;
+	bool attackState = false;
 	bool isBlocking;
-	bool blockBonus;
+	bool bubbleBonusState;
 	bool isJumpKeyPressed;
 	bool wasJumpKeyPressed;
+	bool changedRow;
+	unsigned int superAttackRow = 1;
 	float jumpHeight = 36.0f;
 	Texture bubbleTexture;
 	Sprite bubble;
