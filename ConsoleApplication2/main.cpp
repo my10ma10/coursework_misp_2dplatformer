@@ -47,8 +47,8 @@ int main()
     Collider backCollider(levelLimitViewSprite);
 
 
-    //Button testButton("Click me!", player.getPosition(), Vector2f(32.0f, 16.0f));
-
+    Button testButton("Click me!", Color::Green, Vector2f(32.0f, 16.0f), player.getPosition());
+    
     while (window.isOpen())
     {
         Time elapsed = clock.restart();
@@ -95,7 +95,7 @@ int main()
                     player.update(timePlayer); // может в level.update
 
                 }
-
+                testButton.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))));
                 level.checkPortal(player.getPosition());
 
                 //collider
@@ -170,7 +170,7 @@ int main()
             level.draw(window); // basic
         }
         player.draw(window); //пока непонятно, может потом в level
-        //testButton.draw(window);
+        testButton.draw(window);
 
         if (isPaused) {
             Font font;

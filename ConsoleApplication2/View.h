@@ -1,7 +1,7 @@
 #pragma once
 //view
 View levelView(Vector2f(0.0f, 0.0f), Vector2f(LEVEL_VIEW_HEIGHT, LEVEL_VIEW_HEIGHT));
-View menuView(Vector2f(0.0f, 0.0f), Vector2f(LEVEL_VIEW_HEIGHT, LEVEL_VIEW_HEIGHT));
+View menuView(Vector2f(0.0f, 0.0f), Vector2f(MENU_VIEW_HEIGHT, MENU_VIEW_HEIGHT));
 
 void checkViewIntersect(View& view, const Vector2u& levelSize)
 {
