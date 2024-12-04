@@ -8,7 +8,7 @@ Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, \
 	float switchTime, EnemyName name, Player* playerPtr, Vector2f size) : \
 	Person(texture, position, size, imageCount, switchTime), attackType(0)
 {
-	this->health = HEALTH_MAX / 100;
+	this->health = HealthMax / 100;
 	this->name = name;
 	this->playerPtr = playerPtr;
 	initEnemy(name);
@@ -18,12 +18,9 @@ Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, \
 void Enemy::update(float time)
 {
 	updateHealth();
-
 	playerPtr->getPosition().x > this->getPosition().x ? faceRight = true : faceRight = false;
 	updateAnimation(time / 1.5f, faceRight);
 	body.setPosition(getPosition());
-
-	
 
 	if (moveRangeIntersect(FloatRect(playerPtr->getPosition() - playerPtr->getSize() / 2.0f, playerPtr->getSize())))
 	{
@@ -77,7 +74,6 @@ void Enemy::update(float time)
 	{
 		attackPower = 0.0f;
 	}
-	std::cout << health << std::endl;
 }
 
 void Enemy::changeRanges()
@@ -160,17 +156,17 @@ void Enemy::initEnemy(EnemyName name)
 			break;
 		case EnemyName::Dragon:
 			attackType = 1;
-			personSpeed = DRAGON_SPEED;
+			personSpeed = DragonSpeed;
 			gravity = 0.002f;
 			break;
 		case EnemyName::Ghost:
 			attackType = 1;
-			personSpeed = GHOST_SPEED;
+			personSpeed = GhostSpeed;
 			gravity = 0.001f;
 			break;
 		case EnemyName::darkKnight:
 			attackType = 0;
-			personSpeed = DARK_KNIGHT_SPEED;
+			personSpeed = DarkKnightSpeed;
 			gravity = 0.005f;
 			break;
 		default:

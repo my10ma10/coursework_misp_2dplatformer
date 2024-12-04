@@ -7,27 +7,32 @@ class Player : public Person
 public:
 	Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime);
 
-	void update(float time) override;
 	void draw(RenderWindow& window);
-	void attackUpdate(float time);
+	void update(float time) override;
+	void attackUpdate();
+	void blockUpdate();
 
-	void attack(Enemy& enemy);
-	void superAttack(Enemy& enemy);
+	void attack();
+	void superAttack();
 	void superAttackAnimation();
 	void addEnemy(Enemy* enemy);
 	void removeEnemy(Enemy* enemy);
-	std::vector<Enemy*> getEnemies() const;
 	void collectCoin(Object& coin);
 	void applyBonus(Object& bonus);
 	void applyHeart(Object& heart);
 	void jump(float time);
+	void updateBonuses();
 
+	std::vector<Enemy*> getEnemies() const;
 	Vector2f getSize() const;
 	unsigned int getAnimCount() const;
 	float getJumpHeight() const;
 
 private:
+	float energyDelta = 15.0f;
 	unsigned int coinCounter = 0;
+	bool attacking = false;
+	bool energyChanged = false;
 	bool superAttackState = false;
 	bool attackState = false;
 	bool isBlocking;

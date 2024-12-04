@@ -18,17 +18,18 @@ public:
 	Vector2f& getDirection();
 	Vector2f getOrigin() const;
 	Vector2f getVelocity() const;
+	int getEnergy() const;
 	int getHealth() const;
 
 protected:
 	int health;
-	int energy;
+	float energy;
 	float attackPower;
 	bool faceRight;
 	bool canAttack;
 	bool canJump;
 	bool isDamageTaking;
-	bool killing = false;
+	bool killing;
 	Vector2f direction;
 	Vector2f velocity;
 	float personSpeed = 1.0f;

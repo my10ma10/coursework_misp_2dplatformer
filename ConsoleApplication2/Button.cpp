@@ -40,12 +40,10 @@ void Button::update(Vector2i mousePos)
 	mousePosition = mousePos;
 	if (shape.getGlobalBounds().contains(Vector2f(mousePosition)))
 	{
-		std::cout << "Mouse\n";
 		isHover = true;
 		if (Mouse::isButtonPressed(Mouse::Button::Left))
 		{
 			isPressed = true;
-			std::cout << "Clicked\n";
 		}
 		else
 		{

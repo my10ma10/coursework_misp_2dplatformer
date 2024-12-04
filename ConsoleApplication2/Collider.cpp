@@ -122,7 +122,7 @@ bool Collider::levelCollision(Collider playerCollider, Vector2f bodySize)
 	Vector2f playerColliderPos = playerCollider.getPosition();
 	Vector2f playerColliderHalfSize = bodySize / 2.0f;
 
-	Vector2f levelHalfSize = Vector2f(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
+	Vector2f levelHalfSize = Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f);
 
 	Vector2f delta(playerColliderPos.x - levelHalfSize.x, playerColliderPos.y - levelHalfSize.y);
 	Vector2f intersect(levelHalfSize.x - playerColliderHalfSize.x - abs(delta.x), \

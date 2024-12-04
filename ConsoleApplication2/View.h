@@ -1,7 +1,7 @@
 #pragma once
 //view
-View levelView(Vector2f(0.0f, 0.0f), Vector2f(LEVEL_VIEW_HEIGHT, LEVEL_VIEW_HEIGHT));
-View menuView(Vector2f(0.0f, 0.0f), Vector2f(MENU_VIEW_HEIGHT, MENU_VIEW_HEIGHT));
+View levelView(Vector2f(0.0f, 0.0f), Vector2f(LevelViewHeight, LevelViewHeight));
+View menuView(Vector2f(0.0f, 0.0f), Vector2f(MenuViewHeight, MenuViewHeight));
 
 void checkViewIntersect(View& view, const Vector2u& levelSize)
 {
@@ -57,5 +57,5 @@ void changeViewZoom(View& view)
 void changeViewAspectRatio(const RenderWindow& window, View& view)
 {
     float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
-    view.setSize(aspectRatio * LEVEL_VIEW_HEIGHT, LEVEL_VIEW_HEIGHT);
+    view.setSize(aspectRatio * LevelViewHeight, LevelViewHeight);
 }

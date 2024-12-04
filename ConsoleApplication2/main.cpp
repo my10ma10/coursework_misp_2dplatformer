@@ -1,4 +1,5 @@
 ﻿#include "Animation.h"
+#include "Bar.h"
 #include "Button.h"
 #include "Game.h"
 #include "Level.h"
@@ -36,7 +37,7 @@ int main()
     FloatRect levelBounds(0, 0, level.getSize().x, level.getSize().y);
 
     // view collide
-    Vector2i viewRectSize(LEVEL_VIEW_HEIGHT * 1.0f, LEVEL_VIEW_HEIGHT * 1.0f);
+    Vector2i viewRectSize(LevelViewHeight * 1.0f, LevelViewHeight * 1.0f);
     IntRect viewRectBounds(Vector2i(player.getPosition().x - viewRectSize.x / 2.0f, \
         player.getPosition().y - viewRectSize.y / 2.0f), viewRectSize);
     Sprite playerAndViewCollideSprite; 
@@ -47,8 +48,12 @@ int main()
     Collider backCollider(levelLimitViewSprite);
 
 
-    Button testButton("Click me!", Color::Green, Vector2f(32.0f, 16.0f), player.getPosition());
-    
+    //Button testButton("Click me!", Color::Green, Vector2f(32.0f, 16.0f), player.getPosition());
+
+    Bar healthBar(Vector2f(32.0f, 4.0f), player.getPosition() + Vector2f(36.0f, -16.0f), Color::Red, HealthMax);
+    Bar energyBar(Vector2f(32.0f, 4.0f), player.getPosition() + Vector2f(30.0f, -16.0f), Color::Blue, EnergyMax);
+
+
     while (window.isOpen())
     {
         Time elapsed = clock.restart();
@@ -88,6 +93,11 @@ int main()
         {
             if (!isPaused)
             {
+                healthBar.update(player.getHealth(), levelView.getCenter() - levelView.getSize() / 2.25f);
+                energyBar.update(player.getEnergy(), levelView.getCenter() - levelView.getSize() / 2.25f \
+                    + Vector2f(0.0f, 6.0f));
+
+
                 // game.update(time1, time2)
                 if (!level.getComplete())
                 {
@@ -95,7 +105,7 @@ int main()
                     player.update(timePlayer); // может в level.update
 
                 }
-                testButton.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))));
+                //testButton.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))));
                 level.checkPortal(player.getPosition());
 
                 //collider
@@ -111,7 +121,7 @@ int main()
                     }
                     else
                     {
-                        player.setAttackPower(PLAYER_ATTACK_POWER);
+                        player.setAttackPower(PlayerAttackPower);
                     }
                     for (Enemy& enemy : level.getEnemies())
                     {
@@ -170,7 +180,10 @@ int main()
             level.draw(window); // basic
         }
         player.draw(window); //пока непонятно, может потом в level
-        testButton.draw(window);
+        //testButton.draw(window);
+
+        healthBar.draw(window);
+        energyBar.draw(window);
 
         if (isPaused) {
             Font font;

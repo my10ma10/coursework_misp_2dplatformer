@@ -3,7 +3,7 @@
 Level::Level(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
     const std::string filePathToBackGroundTexture, Player* playerPtr, int numberOfLevel) : \
     ñomplete(false), numberOfLevel(numberOfLevel), tileSize(16, 16), tilesAmount(48, 48), \
-    mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y), levelSize(WINDOW_WIDTH, WINDOW_HEIGHT)
+    mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y), levelSize(WindowWidth, WindowHeight)
 {
     loadTextures(filePathToCoinTexture, filePathToBonusTexture, filePathToBackGroundTexture);
 
@@ -139,8 +139,8 @@ void Level::setEnemies(Player* playerPtr)
             break;
 
         case EnemyName::Dragon:
-            //enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.13f, pair.first, playerPtr, \
-            //    Vector2f(24, 24)));
+            enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.13f, pair.first, playerPtr, \
+                Vector2f(24, 24)));
             break;
 
         case EnemyName::Ghost:
@@ -151,6 +151,7 @@ void Level::setEnemies(Player* playerPtr)
         case EnemyName::darkKnight:
             //enemies.push_back(Enemy(&pair.second, Vector2f(310, 480), Vector2u(8, 4), 0.1f, pair.first, playerPtr, \
             //    Vector2f(16, 16)));
+
             break;
 
         default:
@@ -161,8 +162,8 @@ void Level::setEnemies(Player* playerPtr)
 
 void Level::setBackground()
 {
-    Vector2f BackGroundScale(static_cast<float>(WINDOW_WIDTH) / backgroundTexture.getSize().x, \
-        static_cast<float>(WINDOW_HEIGHT) / backgroundTexture.getSize().y);
+    Vector2f BackGroundScale(static_cast<float>(WindowWidth) / backgroundTexture.getSize().x, \
+        static_cast<float>(WindowHeight) / backgroundTexture.getSize().y);
     backGroundSprite.setTexture(backgroundTexture);
     backGroundSprite.setScale(BackGroundScale);
 }
