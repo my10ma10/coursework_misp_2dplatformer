@@ -1,9 +1,17 @@
 #include "Collider.h"
 
-Collider::Collider(Sprite& sprite) : sprite(sprite) {}
+Collider::Collider() 
+{
+	this->sprite = nullptr;
+}
+
+Collider::Collider(Sprite& sprite) 
+{
+	this->sprite = &sprite;
+}
 
 void Collider::Move(float dx, float dy) {
-	sprite.move(dx, dy);
+	sprite->move(dx, dy);
 }
 
 bool Collider::externalCollider(Collider other, Vector2f& direction, float push)
@@ -161,12 +169,12 @@ bool Collider::levelCollision(Collider playerCollider, Vector2f bodySize)
 
 Vector2f Collider::getPosition() 
 {
-	return sprite.getPosition();
+	return sprite->getPosition();
 }
 
 Vector2f Collider::getHalfSize() 
 {
-	return Vector2f(sprite.getGlobalBounds().getSize()) / 2.0f;
+	return Vector2f(sprite->getGlobalBounds().getSize()) / 2.0f;
 }
 
 

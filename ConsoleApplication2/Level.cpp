@@ -1,18 +1,25 @@
 #include "Level.h"
 
+Level::Level() : ñomplete(false), numberOfLevel(0), tileSize(16, 16), tilesAmount(48, 48), \
+    mapSize(tileSize.x* tilesAmount.x, tileSize.y* tilesAmount.y), levelSize(WindowWidth, WindowHeight)
+{
+}
+
 Level::Level(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
-    const std::string filePathToBackGroundTexture, Player* playerPtr, int numberOfLevel) : \
+    const std::string filePathToBackGroundTexture, int numberOfLevel) : \
     ñomplete(false), numberOfLevel(numberOfLevel), tileSize(16, 16), tilesAmount(48, 48), \
     mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y), levelSize(WindowWidth, WindowHeight)
 {
     loadTextures(filePathToCoinTexture, filePathToBonusTexture, filePathToBackGroundTexture);
 
-    setTileMap();
-    setBackground();
-    setBonuses();
-    setCoins();
-    setEnemies(playerPtr);
+    initTileMap();
+    initBackground();
+    initBonuses();
+    initCoins();
+    initEnemies();
     portal = Object(&portalTexture, Vector2f(470, 460), Vector2u(8, 1), 0.1f, Vector2f(20, 32));
+    player = Player(&playerTexture, Vector2f(180, 480), Vector2f(5.0f, 23.0f), Vector2u(12, 7), 0.1f);
+
 }
 
 
@@ -33,6 +40,7 @@ void Level::update(float time)
     enemies.erase(std::remove_if(enemies.begin(), enemies.end(), \
         [](const Enemy& enemy) { return !enemy.alive(); }), enemies.end()); // erase dead enemies
 
+    player.update(time*1000);
     portal.updateAnimation(time, true);
 }
 
@@ -57,6 +65,8 @@ void Level::draw(RenderWindow& window)
     {
         enemy.draw(window);
     }
+    player.draw(window);
+
 }
 
 void Level::loadTextures(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
@@ -80,6 +90,11 @@ void Level::loadTextures(const std::string filePathToCoinTexture, const std::str
     {
         std::cerr << "Can't load an image";
     }
+    if (!playerTexture.loadFromFile("Image\\player-Sheet.png")) 
+    {
+        std::cerr << "Can't load an image";
+    }
+
     loadEnemyTextures();
 }
 
@@ -123,7 +138,84 @@ void Level::checkPortal(Vector2f playerPosition)
     }
 }
 
-void Level::setEnemies(Player* playerPtr)
+void Level::updatePlatfotmsCollide()
+{
+    for (Platform& platform : platforms)
+    {
+        if (platform.getCollider().externalCollider(player.getSpriteCollider(), player.getDirection()))
+        {
+            player.onCollition();
+        }
+        if (player.getSprite().getGlobalBounds().intersects(platform.getSprite().getGlobalBounds()))
+        {
+            player.setAttackPower(0);
+        }
+        else
+        {
+            player.setAttackPower(PlayerAttackPower);
+        }
+        for (Enemy& enemy : enemies)
+        {
+            if (platform.getCollider().externalCollider(enemy.getSpriteCollider(), enemy.getDirection()))
+            {
+                enemy.onCollition();
+            }
+        }
+    }
+}
+
+void Level::updateCoinCollecting()
+{
+    for (Object& coin : coins)
+    {
+        player.collectCoin(coin);
+    }
+}
+
+void Level::updateEnemies()
+{
+    for (Enemy& enemy : enemies)
+    {
+        if (enemy.attackRangeIntersect(FloatRect(player.getPosition() - player.getSize() / 2.0f, \
+            player.getSize())))
+        {
+            enemy.attack();
+        }
+        Sprite enemyBody(enemy.getSprite());
+        Collider enemyBodyCollider(enemyBody);
+        if (enemyBodyCollider.externalCollider(player.getBodyCollider(), player.getDirection()))
+        {
+            enemy.setSpeed(0.0f);
+        }
+        if (enemy.getBody().getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
+        {
+            player.addEnemy(&enemy);
+        }
+        else
+        {
+            player.removeEnemy(&enemy);
+        }
+    }
+
+}
+
+void Level::updateColliders(View& levelView, Vector2u levelSize, Collider& backCollider, Sprite& levelLimitViewSprite,\
+    Sprite& playerAndViewCollideSprite, Collider& playerColliderForView)
+{
+    playerColliderForView.internalCollider(player.getSpriteCollider());
+    
+
+    levelLimitViewSprite.setPosition(levelView.getCenter());
+    levelLimitViewSprite.setTextureRect(IntRect(Vector2i(levelView.getCenter()), \
+        Vector2i(levelView.getSize())));
+    backCollider.levelCollision(player.getSpriteCollider(), Vector2f(16.0f, 16.0f)); // ìàãèÿ
+    for (Enemy& enemy : enemies)
+    {
+        backCollider.levelCollision(enemy.getSpriteCollider(), Vector2f(16.0f, 16.0f)); // ìàãèÿ
+    }
+}
+
+void Level::initEnemies()
 {
     for (auto& pair : enemyTextures)
     {
@@ -139,17 +231,17 @@ void Level::setEnemies(Player* playerPtr)
             break;
 
         case EnemyName::Dragon:
-            enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.13f, pair.first, playerPtr, \
+            enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.13f, pair.first, &player, \
                 Vector2f(24, 24)));
             break;
 
         case EnemyName::Ghost:
-            //enemies.push_back(Enemy(&pair.second, Vector2f(280, 480), Vector2u(8, 4), 0.1f, pair.first, playerPtr));
-            //enemies.push_back(Enemy(&pair.second, Vector2f(380, 470), Vector2u(8, 4), 0.1f, pair.first, playerPtr));
+            //enemies.push_back(Enemy(&pair.second, Vector2f(280, 480), Vector2u(8, 4), 0.1f, pair.first, &player));
+            //enemies.push_back(Enemy(&pair.second, Vector2f(380, 470), Vector2u(8, 4), 0.1f, pair.first, &player));
             break;
 
         case EnemyName::darkKnight:
-            //enemies.push_back(Enemy(&pair.second, Vector2f(310, 480), Vector2u(8, 4), 0.1f, pair.first, playerPtr, \
+            //enemies.push_back(Enemy(&pair.second, Vector2f(310, 480), Vector2u(8, 4), 0.1f, pair.first, &player, \
             //    Vector2f(16, 16)));
 
             break;
@@ -160,7 +252,7 @@ void Level::setEnemies(Player* playerPtr)
     }
 }
 
-void Level::setBackground()
+void Level::initBackground()
 {
     Vector2f BackGroundScale(static_cast<float>(WindowWidth) / backgroundTexture.getSize().x, \
         static_cast<float>(WindowHeight) / backgroundTexture.getSize().y);
@@ -168,7 +260,7 @@ void Level::setBackground()
     backGroundSprite.setScale(BackGroundScale);
 }
 
-void Level::setBonuses()
+void Level::initBonuses()
 {
     switch (numberOfLevel)
     {
@@ -189,7 +281,7 @@ void Level::setBonuses()
     }
 }
 
-void Level::setCoins()
+void Level::initCoins()
 {
     coinSprite.setTextureRect(IntRect(Vector2i(coinSprite.getPosition()),
         Vector2i(16, 16)));
@@ -215,7 +307,12 @@ void Level::setCoins()
     }
 }
 
-void Level::setTileMap()
+void Level::initPlayer()
+{
+    player = Player(&playerTexture, Vector2f(180, 480), Vector2f(5.0f, 23.0f), Vector2u(12, 7), 0.1f);
+}
+
+void Level::initTileMap()
 {
     std::ifstream tileStream("Files\\tileMapLevel" + std::to_string(numberOfLevel) + ".txt");
     if (!tileStream) {
@@ -279,5 +376,30 @@ Vector2u Level::getSize() const
 Vector2f Level::getCenter() const
 {
     return backGroundSprite.getGlobalBounds().getSize() / 2.0f;
+}
+
+Player& Level::getPlayer()
+{
+    return player;
+}
+
+Vector2f Level::getPlayerPosition()
+{
+    return player.getPosition();
+}
+
+int Level::getPlayerEnergy()
+{
+    return player.getEnergy();
+}
+
+int Level::getPlayerHealth()
+{
+    return player.getHealth();
+}
+
+Collider Level::getPlayerSpriteCollider()
+{
+    return player.getSpriteCollider();
 }
 

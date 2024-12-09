@@ -16,20 +16,29 @@ enum class ObjectType { COIN, HEART, BONUS };
 class Level
 {
 public:
+	Level();
 	Level(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
-		const std::string filePathToBackGroundTexture, Player* player = nullptr, int numberOfLevel = 5);
+		const std::string filePathToBackGroundTexture, int numberOfLevel);
 	
 	void update(float time);
 	void draw(RenderWindow& window);
 	void loadTextures(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
 		const std::string filePathToBackGroundTexture);
 	void loadEnemyTextures();
+
 	void checkPortal(Vector2f playerPosition);
-	void setEnemies(Player* playerPtr);
-	void setBackground();
-	void setBonuses();
-	void setCoins();
-	void setTileMap();
+	void updatePlatfotmsCollide();
+	void updateCoinCollecting();
+	void updateEnemies();
+	void updateColliders(View& levelView, Vector2u levelSize, Collider& backCollider, Sprite& levelLimitViewSprite, \
+		Sprite& playerAndViewCollideSprite, Collider& playerColliderForView);
+
+	void initEnemies();
+	void initBackground();
+	void initBonuses();
+	void initCoins();
+	void initPlayer();
+	void initTileMap();
 
 	Sprite getBackGroundSprite() const;
 	std::vector<Platform>& getPlatforms();
@@ -39,6 +48,12 @@ public:
 	Vector2u getSize() const;
 	Vector2f getCenter() const;
 
+	Player& getPlayer();
+	Vector2f getPlayerPosition();
+	int getPlayerEnergy();
+	int getPlayerHealth();
+	Collider getPlayerSpriteCollider();
+
 private:
 	bool ñomplete;
 	std::vector<Platform> platforms; // size, position
@@ -46,10 +61,13 @@ private:
 	std::vector<Object> bonuses;
 	std::vector<Enemy> enemies;
 	Object portal;
+	Player player;
 	Sprite platformSprite;
 	Sprite coinSprite;
 	Sprite bonusSprite;
 	Sprite backGroundSprite;
+
+	Collider BackCollider;
 
 	TileMap tileMap;
 	std::vector<int> tileLevel;
@@ -63,6 +81,7 @@ private:
 	Texture bonusTexture;
 	Texture backgroundTexture;
 	Texture portalTexture;
+	Texture playerTexture;
 
 	Vector2u levelSize;
 	Vector2f position;

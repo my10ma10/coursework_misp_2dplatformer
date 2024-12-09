@@ -1,6 +1,12 @@
 #include "Player.h"
 #include "Enemy.h"
 
+Player::Player(): Person()
+{
+	wasJumpKeyPressed = isJumpKeyPressed = isBlocking = bubbleBonusState = changedRow = false;
+
+}
+
 Player::Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime) : \
 	Person(texture, position, size, imageCount, switchTime)
 {
@@ -80,7 +86,6 @@ void Player::update(float time)
 	{
 		energy += 0.2f;
 	}
-	std::cout << enemiesPtr.size() << std::endl;
 }
 
 void Player::attackUpdate()
@@ -211,7 +216,6 @@ void Player::superAttackAnimation()
 	{
 		changedRow = true;
 		superAttackRow++;
-		std::cout << "change row\n";
 	}
 	
 	velocity.x = 0.0f;

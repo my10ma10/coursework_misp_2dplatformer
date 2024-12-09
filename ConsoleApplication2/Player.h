@@ -5,6 +5,7 @@
 class Player : public Person
 {
 public:
+	Player();
 	Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime);
 
 	void draw(RenderWindow& window);

@@ -7,6 +7,7 @@ using namespace sf;
 class Collider
 {
 public:
+	Collider();
 	Collider(Sprite& sprite);
 
 	void Move(float dx, float dy);
@@ -18,6 +19,6 @@ public:
 	Vector2f getPosition();
 	Vector2f getHalfSize();
 private:
-	Sprite& sprite;
+	Sprite* sprite;
 };
 
