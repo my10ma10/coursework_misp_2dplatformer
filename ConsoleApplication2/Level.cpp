@@ -5,8 +5,8 @@ Level::Level() : Òomplete(false), numberOfLevel(0), tileSize(16, 16), tilesAmoun
 {
 }
 
-Level::Level(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
-    const std::string filePathToBackGroundTexture, int numberOfLevel) : \
+Level::Level(const std::string& filePathToCoinTexture, const std::string& filePathToBonusTexture, \
+    const std::string& filePathToBackGroundTexture, int numberOfLevel) : \
     Òomplete(false), numberOfLevel(numberOfLevel), tileSize(16, 16), tilesAmount(48, 48), \
     mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y), levelSize(WindowWidth, WindowHeight)
 {
@@ -118,7 +118,7 @@ void Level::loadEnemyTextures()
     int i = 0;
     while (!enemiesFilePaths.empty()) {
         std::string path = enemiesFilePaths.front();
-        sf::Texture tempTexture;
+        Texture tempTexture;
         if (!tempTexture.loadFromFile(path))
         {
             std::cerr << "Can't load an image";
@@ -137,6 +137,42 @@ void Level::checkPortal(Vector2f playerPosition)
         Òomplete = true;
     }
 }
+
+void Level::checkViewIntersect(View& view, const Vector2u& levelSize)
+{
+    Vector2f viewCenter = view.getCenter();
+    Vector2f viewSize = view.getSize();
+
+    if (viewCenter.x - viewSize.x / 2.0f < 0)
+    {
+        viewCenter.x = viewSize.x / 2.0f;
+    }
+    if (viewCenter.x + viewSize.x / 2.0f > levelSize.x)
+    {
+        viewCenter.x = levelSize.x - viewSize.x / 2.0f;
+    }
+    if (viewCenter.y - viewSize.y / 2.0f < 0)
+    {
+        viewCenter.y = viewSize.y / 2.0f;
+    }
+    if (viewCenter.y + viewSize.y / 2.0f > levelSize.y)
+    {
+        viewCenter.y = levelSize.y - viewSize.y / 2.0f;
+    }
+
+    if (viewSize.x > levelSize.x)
+    {
+        viewSize.x = levelSize.x;
+    }
+    if (viewSize.y > levelSize.y)
+    {
+        viewSize.y = levelSize.y;
+    }
+
+    view.setSize(viewSize);
+    view.setCenter(viewCenter);
+}
+
 
 void Level::updatePlatfotmsCollide()
 {
@@ -199,20 +235,25 @@ void Level::updateEnemies()
 
 }
 
-void Level::updateColliders(View& levelView, Vector2u levelSize, Collider& backCollider, Sprite& levelLimitViewSprite,\
+void Level::updateColliders(View& levelView, Collider& backCollider, Sprite& levelLimitViewSprite,\
     Sprite& playerAndViewCollideSprite, Collider& playerColliderForView)
 {
     playerColliderForView.internalCollider(player.getSpriteCollider());
-    
+
+    levelView.setCenter(playerAndViewCollideSprite.getPosition());
 
     levelLimitViewSprite.setPosition(levelView.getCenter());
     levelLimitViewSprite.setTextureRect(IntRect(Vector2i(levelView.getCenter()), \
         Vector2i(levelView.getSize())));
     backCollider.levelCollision(player.getSpriteCollider(), Vector2f(16.0f, 16.0f)); // Ï‡„Ëˇ
+
     for (Enemy& enemy : enemies)
     {
         backCollider.levelCollision(enemy.getSpriteCollider(), Vector2f(16.0f, 16.0f)); // Ï‡„Ëˇ
     }
+
+    levelView.setCenter(playerAndViewCollideSprite.getPosition());
+    checkViewIntersect(levelView, getSize());
 }
 
 void Level::initEnemies()

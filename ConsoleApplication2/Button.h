@@ -15,6 +15,8 @@ public:
 	void checkMousePosition(Vector2f mousePosition);
 
 	Vector2f getPosition() const;
+	Text getText() const;
+	bool isClicked() const;
 
 private:
 	RectangleShape shape;

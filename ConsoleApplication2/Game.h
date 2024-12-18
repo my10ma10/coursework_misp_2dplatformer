@@ -9,13 +9,15 @@
 class Game
 {
 public:
-    Game(unsigned int levelIndex);
+    Game(const std::string& filePathToCoinTexture, const std::string& filePathToBonusTexture, \
+        const std::string& filePathToBackGroundTexture, unsigned int levelIndex);
 
     void updateLevel(float time);
     void checkPortal();
-    void update(Collider& backCollider, Sprite& levelLimitViewSprite, View& levelView, \
+    void update(View& levelView, Collider& backCollider, Sprite& levelLimitViewSprite, \
         Sprite& playerAndViewCollideSprite, Collider& playerColliderForView);
 
+    
     void render(RenderWindow& window);
 
     bool getLevelComplete() const;

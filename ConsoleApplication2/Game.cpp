@@ -1,9 +1,10 @@
 #include "Game.h"
 
-Game::Game(unsigned int levelIndex) : levelIndex(levelIndex)
+Game::Game(const std::string& filePathToCoinTexture, const std::string& filePathToBonusTexture, \
+	const std::string& filePathToBackGroundTexture, unsigned int levelIndex) : levelIndex(levelIndex)
 {
-	level = Level("Image\\coin-Sheet.png", "Image\\potion-Sheet.png", \
-		"Image\\back3.png", levelIndex);
+	level = Level(filePathToCoinTexture, filePathToBonusTexture, \
+		filePathToBackGroundTexture, levelIndex);
 }
 
 void Game::updateLevel(float time)
@@ -16,15 +17,14 @@ void Game::checkPortal()
 	level.checkPortal(getPlayerPosition());
 }
 
-void Game::update(Collider& backCollider, Sprite& levelLimitViewSprite, View& levelView, \
+void Game::update(View& levelView, Collider& backCollider, Sprite& levelLimitViewSprite,  \
 	Sprite& playerAndViewCollideSprite, Collider& playerColliderForView)
 {
 	checkPortal();
-
-	//collider
 	level.updatePlatfotmsCollide();
 	level.updateCoinCollecting();
-	level.updateColliders(levelView, level.getSize(), backCollider, levelLimitViewSprite, playerAndViewCollideSprite, playerColliderForView);
+	level.updateColliders(levelView, backCollider, levelLimitViewSprite, \
+		playerAndViewCollideSprite, playerColliderForView);
 
 }
 

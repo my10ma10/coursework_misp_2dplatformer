@@ -73,3 +73,13 @@ Vector2f Button::getPosition() const
 {
 	return shape.getPosition();
 }
+
+Text Button::getText() const
+{
+	return text;
+}
+
+bool Button::isClicked() const
+{
+	return isPressed;
+}

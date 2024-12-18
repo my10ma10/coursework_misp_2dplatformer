@@ -17,8 +17,8 @@ class Level
 {
 public:
 	Level();
-	Level(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
-		const std::string filePathToBackGroundTexture, int numberOfLevel);
+	Level(const std::string& filePathToCoinTexture, const std::string& filePathToBonusTexture, \
+		const std::string& filePathToBackGroundTexture, int numberOfLevel);
 	
 	void update(float time);
 	void draw(RenderWindow& window);
@@ -27,10 +27,11 @@ public:
 	void loadEnemyTextures();
 
 	void checkPortal(Vector2f playerPosition);
+	void checkViewIntersect(View& view, const Vector2u& levelSize);
 	void updatePlatfotmsCollide();
 	void updateCoinCollecting();
 	void updateEnemies();
-	void updateColliders(View& levelView, Vector2u levelSize, Collider& backCollider, Sprite& levelLimitViewSprite, \
+	void updateColliders(View& levelView, Collider& backCollider, Sprite& levelLimitViewSprite, \
 		Sprite& playerAndViewCollideSprite, Collider& playerColliderForView);
 
 	void initEnemies();
