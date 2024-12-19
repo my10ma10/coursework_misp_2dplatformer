@@ -1,11 +1,10 @@
 ﻿#include "Game.h"
-#include "Menu.h"
-
-void changeViewZoom(View& view);
-void changeViewAspectRatio(const RenderWindow& window, View& view);
 
 int main()
 {
+   Game game("Image\\icon.png", "Image\\coin-Sheet.png",
+        "Image\\potion-Sheet.png", "Image\\back3.png", 1);
+    game.run();/*
     RenderWindow window(VideoMode(1024, 1024), L"Игра", Style::Default);
 
     Image icon;
@@ -26,11 +25,8 @@ int main()
     Clock clock;
     const float timeStep = 1.0f / 60.0f;
     float accumulator = 0.0f;
-    float timePlayer = 0.0f;
     bool isPaused = false;
 
-    //Game game("Image\\coin-Sheet.png", "Image\\potion-Sheet.png", \
-    //    "Image\\back3.png", 1);
 
     Level level("Image\\coin-Sheet.png", "Image\\potion-Sheet.png", \
         "Image\\back3.png", 1);
@@ -62,8 +58,6 @@ int main()
     {
         Time elapsed = clock.restart();
         accumulator += elapsed.asSeconds();
-        timePlayer = timeStep * 1000;
-
         Event event;
         while (window.pollEvent(event))
         {
@@ -93,7 +87,7 @@ int main()
         if (isPaused) {
             // реализовать меню паузы
         }
-
+    
         while (accumulator >= timeStep)
         {
             if (!isPaused)
@@ -110,7 +104,8 @@ int main()
                 level.updatePlatfotmsCollide();
                 level.updateCoinCollecting();
                 level.updateColliders(levelView, backCollider, \
-                    levelLimitViewSprite, playerAndViewCollideSprite, playerAndViewCollider);
+                    levelLimitViewSprite, playerAndViewCollideSprite, \
+                    playerAndViewCollider);
                 
                 //testButton.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))));
                 if (gameState == GameState::Menu) 
@@ -136,10 +131,10 @@ int main()
             {
                 window.setView(menuView);
             }
-
+    
             level.draw(window);
             //testButton.draw(window);
-
+    
             //healthBar.draw(window);
             //energyBar.draw(window);
 
@@ -154,22 +149,7 @@ int main()
             }
         }
         window.display();
-    }
+    }*/
     return 0;
 }
 
-void changeViewZoom(View& view)
-{
-    if (Keyboard::isKeyPressed(Keyboard::Equal)) {
-        view.zoom(0.995f);
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Dash)) {
-        view.zoom(1.005f);
-    }
-}
-
-void changeViewAspectRatio(const RenderWindow& window, View& view)
-{
-    float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
-    view.setSize(aspectRatio * LevelViewHeight, LevelViewHeight);
-}

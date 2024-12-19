@@ -22,9 +22,6 @@ public:
 	
 	void update(float time);
 	void draw(RenderWindow& window);
-	void loadTextures(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
-		const std::string filePathToBackGroundTexture);
-	void loadEnemyTextures();
 
 	void checkPortal(Vector2f playerPosition);
 	void checkViewIntersect(View& view, const Vector2u& levelSize);
@@ -33,13 +30,6 @@ public:
 	void updateEnemies();
 	void updateColliders(View& levelView, Collider& backCollider, Sprite& levelLimitViewSprite, \
 		Sprite& playerAndViewCollideSprite, Collider& playerColliderForView);
-
-	void initEnemies();
-	void initBackground();
-	void initBonuses();
-	void initCoins();
-	void initPlayer();
-	void initTileMap();
 
 	Sprite getBackGroundSprite() const;
 	std::vector<Platform>& getPlatforms();
@@ -56,6 +46,16 @@ public:
 	Collider getPlayerSpriteCollider();
 
 private:
+	void loadTextures(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
+		const std::string filePathToBackGroundTexture);
+	void loadEnemyTextures();
+	void initEnemies();
+	void initBackground();
+	void initBonuses();
+	void initCoins();
+	void initPlayer();
+	void initTileMap();
+
 	bool ñomplete;
 	std::vector<Platform> platforms; // size, position
 	std::vector<Object> coins;

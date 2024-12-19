@@ -25,5 +25,8 @@ private:
     RenderWindow& window;
     std::vector<Button> buttons;
     GameState currentState = GameState::Menu;
+    Texture backgroundTexture;
+    Sprite backgroundSprite;
+    Font font;
 };
 

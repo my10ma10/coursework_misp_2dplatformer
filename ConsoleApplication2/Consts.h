@@ -4,11 +4,10 @@
 static const int WindowWidth = 768; 
 static const int WindowHeight = 768; 
 static const float LevelViewHeight = WindowHeight / 5.5f;
-static const float MenuViewHeight = WindowHeight / 2.0f;
+static const float MenuViewHeight = WindowHeight / 1.0f;
 static const int HealthMax = 10000;
 static const int EnergyMax = 100;
 static const int PlayerAttackPower = 20;
-//static const Vector2f BASIC_ENEMY_BODY_SIZE = Vector2f(16.0f, 16.0f);
 
 static const float DragonSpeed = 1500.0f;
 static const float GhostSpeed = 1300.0f;

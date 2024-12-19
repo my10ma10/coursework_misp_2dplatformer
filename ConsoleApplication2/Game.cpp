@@ -1,79 +1,169 @@
 #include "Game.h"
 
-Game::Game(const std::string& filePathToCoinTexture, const std::string& filePathToBonusTexture, \
-	const std::string& filePathToBackGroundTexture, unsigned int levelIndex) : levelIndex(levelIndex)
+Game::Game(const std::string& iconPath, const std::string& coinSheetPath, const std::string& bonusSheetPath, \
+	const std::string& backgroundPath, unsigned int levelIndex) : levelIndex(levelIndex), \
+	level(coinSheetPath, bonusSheetPath, backgroundPath, levelIndex), \
+	window(VideoMode(1024, 1024), L"Игра", Style::Default), \
+	gameState(GameState::Game),
+	menu(window),
+	timeStep(1.0f / 60.0f),
+	accumulator(0.0f),
+	isPaused(false),
+	levelView(Vector2f(0.0f, 0.0f), Vector2f(LevelViewHeight, LevelViewHeight)),
+	menuView(Vector2f(0.0f, 0.0f), Vector2f(MenuViewHeight, MenuViewHeight))
 {
-	level = Level(filePathToCoinTexture, filePathToBonusTexture, \
-		filePathToBackGroundTexture, levelIndex);
+	Image icon;
+	if (icon.loadFromFile(iconPath)) 
+	{
+		window.setIcon(512, 512, icon.getPixelsPtr());
+	}
+
+	levelView.setCenter(level.getPlayerPosition());
+
+	Vector2i viewRectSize(LevelViewHeight * 1.0f, LevelViewHeight * 1.0f);
+	IntRect viewRectBounds(Vector2i(level.getPlayerPosition().x - viewRectSize.x / 2.0f, \
+		level.getPlayerPosition().y - viewRectSize.y / 2.0f), viewRectSize);
+	playerAndViewCollideSprite.setTextureRect(viewRectBounds);
+	playerAndViewCollider = Collider(playerAndViewCollideSprite);
+	backCollider = Collider(levelLimitViewSprite);
 }
 
-void Game::updateLevel(float time)
+void Game::run()
 {
-	level.update(time);
+	while (window.isOpen()) 
+	{
+		Time elapsed = clock.restart();
+		accumulator += elapsed.asSeconds();
+
+		processEvents();
+
+		if (isPaused) 
+		{
+			gameState = GameState::Menu;
+		}
+		else
+		{
+			gameState = GameState::Game;
+		}
+
+		while (accumulator >= timeStep) 
+		{
+			update(timeStep);
+			accumulator -= timeStep;
+		}
+
+		render();
+	}
 }
 
-void Game::checkPortal()
+void Game::processEvents()
 {
-	level.checkPortal(getPlayerPosition());
+	Event event;
+	while (window.pollEvent(event))
+	{
+		switch (event.type)
+		{
+		case Event::Closed:
+			window.close();
+			break;
+		case Event::Resized:
+			changeViewAspectRatio(window, levelView);
+			break;
+		case Event::KeyPressed:
+			if (event.key.code == Keyboard::Escape)
+			{
+				isPaused = !isPaused;
+			}
+			changeViewZoom(levelView);
+			break;
+		default:
+			break;
+		}
+	}
 }
 
-void Game::update(View& levelView, Collider& backCollider, Sprite& levelLimitViewSprite,  \
-	Sprite& playerAndViewCollideSprite, Collider& playerColliderForView)
+
+void Game::update(float timeStep)
 {
-	checkPortal();
-	level.updatePlatfotmsCollide();
-	level.updateCoinCollecting();
-	level.updateColliders(levelView, backCollider, levelLimitViewSprite, \
-		playerAndViewCollideSprite, playerColliderForView);
+//	healthBar.update(playerPtr->getEnergy(), levelView.getCenter() - levelView.getSize() / 2.25f);
+//	energyBar.update(playerPtr->getHealth(), levelView.getCenter() - levelView.getSize() / 2.25f \
+            + Vector2f(0.0f, 6.0f));
+	
+	switch (gameState)
+	{
+	case GameState::Menu:
+		menu.update();
+		break;
+	case GameState::Game:
+		if (isPaused)
+		{
+			break;
+		}
+		if (!level.getComplete())
+		{
+			level.update(timeStep);
+		}
+		level.updatePlatfotmsCollide();
+		level.updateCoinCollecting();
+		level.updateColliders(levelView, backCollider, levelLimitViewSprite, \
+			playerAndViewCollideSprite, playerAndViewCollider);
+		break;
+	case GameState::Settings:
+		break;
+	case GameState::Exit:
+		break;
+	default:
+		break;
+	}
+
 
 }
 
-void Game::render(RenderWindow& window)
+void Game::render()
 {
-	level.draw(window);
+	window.clear(Color::White); // basic
+
+	Font font;
+	switch (gameState)
+	{
+	case GameState::Menu:
+		menuView.setCenter(level.getCenter());
+		window.setView(menuView);
+		menu.render();
+
+		break;
+	case GameState::Game:
+		window.setView(levelView); // в gameUpdate, при разных условиях разный вид
+
+		level.draw(window);
+
+		//healthBar.draw(window);
+		//energyBar.draw(window);
+		break;
+	case GameState::Settings:
+		break;
+	case GameState::Exit:
+		break;
+	default:
+		break;
+	}
+	window.display();
 }
 
-bool Game::getLevelComplete() const
+void Game::changeViewZoom(View& view)
 {
-	return level.getComplete();
+	if (Keyboard::isKeyPressed(Keyboard::Equal)) {
+		view.zoom(0.995f);
+	}
+	if (Keyboard::isKeyPressed(Keyboard::Dash)) {
+		view.zoom(1.005f);
+	}
 }
 
-std::vector<Object>& Game::getLevelCoins()
+void Game::changeViewAspectRatio(const RenderWindow& window, View& view)
 {
-	return level.getCoins();
+	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
+	view.setSize(aspectRatio * LevelViewHeight, LevelViewHeight);
 }
 
-std::vector<Enemy>& Game::getLevelEnemies()
-{
-	return level.getEnemies();
-}
 
-std::vector<Platform>& Game::getLevelPlatforms()
-{
-	return level.getPlatforms();
-}
-
-Vector2u Game::getLevelSize()
-{
-	return level.getSize();
-}
-
-Vector2f Game::getPlayerPosition()
-{
-	return level.getPlayerPosition();
-}
-
-int Game::getPlayerEnergy()
-{
-	return level.getPlayerEnergy();
-}
-
-int Game::getPlayerHealth()
-{
-	return level.getPlayerHealth();
-}
-
-Collider Game::getPlayerSpriteCollider()
-{
-	return level.getPlayerSpriteCollider();
-}
