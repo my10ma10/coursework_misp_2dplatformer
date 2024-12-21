@@ -2,6 +2,7 @@
 #include "Consts.h"
 #include "Enemy.h"
 #include "Object.h"
+#include "Bar.h"
 #include "Platform.h"
 #include "TileMap.h"
 #include <cstdlib>
@@ -20,7 +21,7 @@ public:
 	Level(const std::string& filePathToCoinTexture, const std::string& filePathToBonusTexture, \
 		const std::string& filePathToBackGroundTexture, int numberOfLevel);
 	
-	void update(float time);
+	void update(float time, const View& levelView);
 	void draw(RenderWindow& window);
 
 	void checkPortal(Vector2f playerPosition);
@@ -67,6 +68,8 @@ private:
 	Sprite coinSprite;
 	Sprite bonusSprite;
 	Sprite backGroundSprite;
+	Bar healthBar;
+	Bar energyBar;
 
 	Collider BackCollider;
 

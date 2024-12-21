@@ -1,6 +1,4 @@
 #pragma once
-#include "Animation.h"
-#include "Bar.h"
 #include "Button.h"
 #include "Game.h"
 #include "Level.h"
@@ -19,8 +17,9 @@ private:
     void update(float timeStep);
     void render();
 
+    void updateState();
     void changeViewZoom(View& view);
-    void changeViewAspectRatio(const RenderWindow& window, View& view);
+    void changeViewAspectRatio(const RenderWindow& window, View& view) const;
 
 
     RenderWindow window;

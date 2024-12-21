@@ -43,6 +43,7 @@ void Button::update(Vector2i mousePos)
 	{
 		isHover = false;
 	}
+	std::cout << isHover << std::endl;
 }
 
 void Button::setFont(const std::string& fontPath)

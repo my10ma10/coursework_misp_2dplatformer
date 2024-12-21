@@ -1,7 +1,7 @@
 #include "Level.h"
 
 Level::Level() : ñomplete(false), numberOfLevel(0), tileSize(16, 16), tilesAmount(48, 48), \
-    mapSize(tileSize.x* tilesAmount.x, tileSize.y* tilesAmount.y), levelSize(WindowWidth, WindowHeight)
+    mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y), levelSize(WindowWidth, WindowHeight)
 {
 }
 
@@ -19,11 +19,13 @@ Level::Level(const std::string& filePathToCoinTexture, const std::string& filePa
     initEnemies();
     portal = Object(&portalTexture, Vector2f(470, 460), Vector2u(8, 1), 0.1f, Vector2f(20, 32));
     player = Player(&playerTexture, Vector2f(180, 480), Vector2f(5.0f, 23.0f), Vector2u(12, 7), 0.1f);
+    healthBar = Bar(Vector2f(32.0f, 4.0f), player.getPosition() + Vector2f(36.0f, -16.0f), Color::Red, HealthMax);
+    energyBar = Bar(Vector2f(32.0f, 4.0f), player.getPosition() + Vector2f(30.0f, -16.0f), Color::Blue, EnergyMax);
 
 }
 
 
-void Level::update(float time)
+void Level::update(float time, const View& levelView)
 {
     for (Object& coin : coins)
     {
@@ -41,7 +43,11 @@ void Level::update(float time)
         [](const Enemy& enemy) { return !enemy.alive(); }), enemies.end()); // erase dead enemies
 
     player.update(time*1000);
-    portal.updateAnimation(time, true);
+    portal.updateAnimation(time, true); 
+    healthBar.update(player.getHealth(), levelView.getCenter() - levelView.getSize() / 2.25f);
+    energyBar.update(player.getEnergy(), levelView.getCenter() - levelView.getSize() / 2.25f \
+        + Vector2f(0.0f, 6.0f));
+
 }
 
 void Level::draw(RenderWindow& window)
@@ -66,6 +72,8 @@ void Level::draw(RenderWindow& window)
         enemy.draw(window);
     }
     player.draw(window);
+    healthBar.draw(window);
+    energyBar.draw(window);
 
 }
 

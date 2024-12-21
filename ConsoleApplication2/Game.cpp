@@ -37,21 +37,11 @@ void Game::run()
 
 		processEvents();
 
-		if (isPaused) 
-		{
-			gameState = GameState::Menu;
-		}
-		else
-		{
-			gameState = GameState::Game;
-		}
-
 		while (accumulator >= timeStep) 
 		{
 			update(timeStep);
 			accumulator -= timeStep;
 		}
-
 		render();
 	}
 }
@@ -68,6 +58,7 @@ void Game::processEvents()
 			break;
 		case Event::Resized:
 			changeViewAspectRatio(window, levelView);
+			changeViewAspectRatio(window, menuView);
 			break;
 		case Event::KeyPressed:
 			if (event.key.code == Keyboard::Escape)
@@ -85,69 +76,58 @@ void Game::processEvents()
 
 void Game::update(float timeStep)
 {
-//	healthBar.update(playerPtr->getEnergy(), levelView.getCenter() - levelView.getSize() / 2.25f);
-//	energyBar.update(playerPtr->getHealth(), levelView.getCenter() - levelView.getSize() / 2.25f \
-            + Vector2f(0.0f, 6.0f));
-	
-	switch (gameState)
+	if (gameState == GameState::Game)
 	{
-	case GameState::Menu:
-		menu.update();
-		break;
-	case GameState::Game:
-		if (isPaused)
+		if (!isPaused)
 		{
-			break;
+			if (!level.getComplete())
+			{
+				level.update(timeStep, levelView);
+			}
+			level.updatePlatfotmsCollide();
+			level.updateCoinCollecting();
+			level.updateColliders(levelView, backCollider, levelLimitViewSprite, \
+				playerAndViewCollideSprite, playerAndViewCollider);
 		}
-		if (!level.getComplete())
-		{
-			level.update(timeStep);
-		}
-		level.updatePlatfotmsCollide();
-		level.updateCoinCollecting();
-		level.updateColliders(levelView, backCollider, levelLimitViewSprite, \
-			playerAndViewCollideSprite, playerAndViewCollider);
-		break;
-	case GameState::Settings:
-		break;
-	case GameState::Exit:
-		break;
-	default:
-		break;
 	}
-
+	else
+	{
+		menu.update();
+	}
+	updateState();
 
 }
 
 void Game::render()
 {
-	window.clear(Color::White); // basic
+	window.clear(Color::White);
 
 	Font font;
-	switch (gameState)
+	if (gameState == GameState::Game)
 	{
-	case GameState::Menu:
-		menuView.setCenter(level.getCenter());
+		window.setView(levelView);
+		level.draw(window);
+	}
+	else
+	{
+		menuView.setCenter(menu.getCenter());
 		window.setView(menuView);
 		menu.render();
-
-		break;
-	case GameState::Game:
-		window.setView(levelView); // в gameUpdate, при разных условиях разный вид
-
-		level.draw(window);
-
-		//healthBar.draw(window);
-		//energyBar.draw(window);
-		break;
-	case GameState::Settings:
-		break;
-	case GameState::Exit:
-		break;
-	default:
-		break;
 	}
 	window.display();
+}
+
+void Game::updateState()
+{
+	gameState = menu.getState();
+	if (gameState == GameState::Game)
+	{
+		isPaused = false;
+	}
+	else
+	{
+		isPaused = true;
+	}
 }
 
 void Game::changeViewZoom(View& view)
@@ -160,10 +140,17 @@ void Game::changeViewZoom(View& view)
 	}
 }
 
-void Game::changeViewAspectRatio(const RenderWindow& window, View& view)
+void Game::changeViewAspectRatio(const RenderWindow& window, View& view) const
 {
 	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
-	view.setSize(aspectRatio * LevelViewHeight, LevelViewHeight);
+	if (gameState == GameState::Game)
+	{
+		view.setSize(aspectRatio * LevelViewHeight, LevelViewHeight);
+	}
+	else
+	{
+		view.setSize(aspectRatio * MenuViewHeight, MenuViewHeight);
+	}
 }
 
 

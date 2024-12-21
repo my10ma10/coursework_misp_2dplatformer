@@ -1,5 +1,9 @@
 #include "Bar.h"
 
+Bar::Bar(): amount(0)
+{
+}
+
 Bar::Bar(Vector2f size, Vector2f position, Color color, int amount) \
 	: color(color), amount(amount), size(size)
 {

@@ -7,6 +7,7 @@ using namespace sf;
 class Bar
 {
 public:
+	Bar();
 	Bar(Vector2f size, Vector2f position, Color color, int amount);
 	void update(int amount, Vector2f position);
 	void draw(RenderWindow& window);
