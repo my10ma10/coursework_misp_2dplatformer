@@ -1,22 +1,26 @@
 #pragma once
-#include <SFML\Graphics.hpp>
 #include <iostream>
+#include <SFML\Graphics.hpp>
 
 using namespace sf;
 
 class Button
 {
 public:
-	Button(std::string text, Color textColor, const Font& font, Vector2f size = Vector2f(0.0f, 0.0f), \
+	Button(std::string text, Color textColor, Color shapeColor, const Font& font, Vector2f size = Vector2f(0.0f, 0.0f), \
+		Vector2f position = Vector2f(0.0f, 0.0f));
+	Button(const wchar_t* text, Color textColor, Color shapeColor, const Font& font, Vector2f size = Vector2f(0.0f, 0.0f), \
 		Vector2f position = Vector2f(0.0f, 0.0f));
 	void draw(RenderWindow& window);
 	void update(Vector2i mousePos);
+
+	void setClickable(bool pred);
 	void setFont(const std::string& fontPath);
-	void checkMousePosition(Vector2f mousePosition);
+	void setShapeColor(Color color);
 
 	Vector2f getPosition() const;
 	Text getText() const;
-	bool isClicked() const;
+	bool getPressed() const;
 
 private:
 	
@@ -28,5 +32,6 @@ private:
 	Vector2i mousePosition;
 	bool isPressed;
 	bool isHover;
+	bool isClickable;
 };
 

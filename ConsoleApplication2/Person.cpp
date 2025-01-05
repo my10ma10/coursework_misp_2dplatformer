@@ -16,23 +16,6 @@ void Person::takeDamage(int damageAmount)
 	health -= damageAmount;
 }
 
-void Person::updateHealth()
-{
-	if (health <= 0 and life)
-	{
-		setRow(3);
-		if (getCurrentFrame() == 1)
-		{
-			killing = true;
-		}
-		if (getCurrentFrame() == 0 and killing)
-		{
-			life = false;
-		}
-	}
-	health = std::max(0, health);
-}
-
 void Person::onCollition()
 {
 	if (direction.x < 0.0f)
@@ -91,7 +74,7 @@ Vector2f Person::getVelocity() const
 	return velocity;
 }
 
-int Person::getEnergy() const
+float Person::getEnergy() const
 {
 	return energy;
 }

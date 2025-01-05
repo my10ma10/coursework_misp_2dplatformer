@@ -12,6 +12,8 @@ public:
 	void update(float time) override;
 	void attackUpdate();
 	void blockUpdate();
+	void updateHealth() override;
+	void keyProcessing();
 
 	void attack();
 	void superAttack();
@@ -24,6 +26,7 @@ public:
 	void jump(float time);
 	void updateBonuses();
 
+	const FloatRect& getAttackRange() const;
 	std::vector<Enemy*> getEnemies() const;
 	Vector2f getSize() const;
 	unsigned int getAnimCount() const;

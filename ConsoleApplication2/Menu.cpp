@@ -9,13 +9,16 @@ Menu::Menu(RenderWindow& window): window(window)
     Vector2f buttonSize(320, 160);
     initMainMenu(buttonSize);
     initLevelsMenu(buttonSize);
+    initAchievementsMenu(buttonSize);
+    initCompleteMenu(buttonSize);
+    initGameoverMenu(buttonSize);
 }
 
 void Menu::initMainMenu(Vector2f buttonSize)
 {
-    mainButtons.emplace_back(Button("Start Game", Color::Blue, font, \
+    mainButtons.emplace_back(Button(L"Начать игру", textColor, shapeColor, font, \
         buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f - buttonSize.y)));
-    mainButtons.emplace_back(Button("Exit", Color::Blue, font, \
+    mainButtons.emplace_back(Button(L"Выход", textColor, shapeColor, font, \
         buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f + buttonSize.y)));
 
 }
@@ -23,23 +26,40 @@ void Menu::initMainMenu(Vector2f buttonSize)
 void Menu::initLevelsMenu(Vector2f buttonSize)
 {
     float deltaX = WindowWidth / 2.0f + 80;
-    levelsButtons.emplace_back(Button("Back", Color::Blue, font, \
-        buttonSize, Vector2f(deltaX - buttonSize.y / 2, WindowHeight / 2.0f + 1.5f * buttonSize.y)));
-
     buttonSize = Vector2f(120, 120);
-    levelsButtons.emplace_back(Button("1", Color::Blue, font, \
+    levelsButtons.emplace_back(Button("1", textColor, shapeColor, font, \
         buttonSize, Vector2f(deltaX - 2 * buttonSize.x, WindowHeight / 2.0f)));
-    levelsButtons.emplace_back(Button("2", Color::Blue, font, \
+    levelsButtons.emplace_back(Button("2", textColor, shapeColor, font, \
         buttonSize, Vector2f(deltaX - buttonSize.x, WindowHeight / 2.0f)));
-    levelsButtons.emplace_back(Button("3", Color::Blue, font, \
+    levelsButtons.emplace_back(Button("3", textColor, shapeColor, font, \
         buttonSize, Vector2f(deltaX, WindowHeight / 2.0f)));
-    levelsButtons.emplace_back(Button("4", Color::Blue, font, \
+    levelsButtons.emplace_back(Button("4", textColor, shapeColor, font, \
         buttonSize, Vector2f(deltaX + buttonSize.x, WindowHeight / 2.0f)));
-    levelsButtons.emplace_back(Button("5", Color::Blue, font, \
+    levelsButtons.emplace_back(Button("5", textColor, shapeColor, font, \
         buttonSize, Vector2f(deltaX + 2 * buttonSize.x, WindowHeight / 2.0f)));
 }
 
-void Menu::update()
+void Menu::initCompleteMenu(Vector2f buttonSize)
+{
+    completeButtons.emplace_back(Button(L"Далее", textColor, shapeColor, font, \
+        buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f + buttonSize.y / 2.0f)));
+    completeButtons.emplace_back(Button(L"Главное меню", textColor, shapeColor, font, \
+        buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f - buttonSize.y / 2.0f)));
+}
+
+void Menu::initGameoverMenu(Vector2f buttonSize)
+{
+    gameoverButtons.emplace_back(Button(L"Ещё раз", textColor, shapeColor, font, \
+        buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f + buttonSize.y / 2.0f)));
+    completeButtons.emplace_back(Button(L"Главное меню", textColor, shapeColor, font, \
+        buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f - buttonSize.y / 2.0f)));
+}
+
+void Menu::initAchievementsMenu(Vector2f buttonSize)
+{
+}
+
+void Menu::update(unsigned int availableLevel, unsigned int currentLevel)
 {
     switch (currentState)
     {
@@ -52,19 +72,20 @@ void Menu::update()
         updateLevelsMenu();
         break;
     case GameState::Achievements:
-        break;
-    case GameState::Pause:
+        updateAchievementsMenu();
         break;
     case GameState::Complete:
+        updateCompleteMenu();
         break;
     case GameState::GameOver:
+        updateGameoverMenu();
         break;
     case GameState::Exit:
         break;
     default:
         break;
     }
-    //std::cout << static_cast<int>(currentState) << std::endl;
+    updateTransparent(availableLevel, currentLevel);
 }
 
 void Menu::updateMainMenu()
@@ -74,13 +95,13 @@ void Menu::updateMainMenu()
         for (auto& button : mainButtons)
         {
             button.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))));
-            if (button.isClicked())
+            if (button.getPressed())
             {
-                if (button.getText().getString() == "Start Game")
+                if (button.getText().getString() == L"Начать игру")
                 {
                     currentState = GameState::Levels;
                 }
-                else if (button.getText().getString() == "Exit")
+                else if (button.getText().getString() == L"Выход")
                 {
                     currentState = GameState::Exit;
                     window.close();
@@ -97,7 +118,7 @@ void Menu::updateLevelsMenu()
         for (auto& button : levelsButtons)
         {
             button.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))));
-            if (button.isClicked())
+            if (button.getPressed())
             {// можно перебором строки 12345
                 if (button.getText().getString() == "1")
                 {
@@ -107,11 +128,78 @@ void Menu::updateLevelsMenu()
                 {
                     currentState = GameState::Game;
                 }
-                else if (button.getText().getString() == "Back")
+                else if (button.getText().getString() == "3")
+                {
+                    currentState = GameState::Game;
+                }
+                else if (button.getText().getString() == "4")
+                {
+                    currentState = GameState::Game;
+                }
+                else if (button.getText().getString() == "5")
+                {
+                    currentState = GameState::Game;
+                }
+            }
+        }
+    }
+}
+
+void Menu::updateCompleteMenu()
+{
+    if (!completeButtons.empty())
+    {
+        for (auto& button : completeButtons)
+        {
+            button.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))));
+            if (button.getPressed())
+            {
+                if (button.getText().getString() == L"Далее")
+                {
+                    // next level
+                }
+                else if (button.getText().getString() == L"Главное меню")
                 {
                     currentState = GameState::Main;
                 }
             }
+        }
+    }
+}
+
+void Menu::updateGameoverMenu()
+{
+}
+
+void Menu::updateAchievementsMenu()
+{
+}
+
+// дебаг
+void Menu::updateTransparent(unsigned int availableLevel, unsigned int currentLevel)
+{
+    for (auto& button : levelsButtons)
+    {
+        unsigned int number = std::stoi(button.getText().getString().toAnsiString()); //@ номер уровня на этой кнопке
+        if (number > availableLevel)
+        {
+            button.setShapeColor(transparentShapeColor);
+            button.setClickable(false);
+        }
+        else
+        {
+            button.setClickable(true);
+        }
+    }
+}
+
+void Menu::drawButtons(std::vector<Button> buttons)
+{
+    if (!buttons.empty())
+    {
+        for (auto& button : buttons)
+        {
+            button.draw(window);
         }
     }
 }
@@ -121,38 +209,31 @@ void Menu::render()
     switch (currentState)
     {
     case GameState::Main:
-        if (!mainButtons.empty())
-        {
-            for (auto& button : mainButtons)
-            {
-                button.draw(window);
-            }
-        }
+        drawButtons(mainButtons);
         break;
     case GameState::Game:
         break;
     case GameState::Levels:
-        if (!levelsButtons.empty())
-        {
-            for (auto& button : levelsButtons)
-            {
-                button.draw(window);
-            }
-        }
+        drawButtons(levelsButtons);
         break;
     case GameState::Achievements:
         break;
-    case GameState::Pause:
-        break;
     case GameState::Complete:
+        drawButtons(completeButtons);
         break;
     case GameState::GameOver:
+        drawButtons(gameoverButtons);
         break;
     case GameState::Exit:
         break;
     default:
         break;
     }
+}
+
+void Menu::setState(GameState state)
+{
+    currentState = state;
 }
 
 Vector2f Menu::getCenter() const

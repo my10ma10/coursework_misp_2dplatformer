@@ -9,6 +9,9 @@ static const int HealthMax = 100;
 static const int EnergyMax = 100;
 static const int PlayerAttackPower = 20;
 
+static const float SkeletonSpeed = 1800.0f;
+static const float WizardSpeed = 1300.0f;
+static const float TankSpeed = 1200.0f;
 static const float DragonSpeed = 1500.0f;
 static const float GhostSpeed = 1300.0f;
 static const float DarkKnightSpeed = 2000.0f;

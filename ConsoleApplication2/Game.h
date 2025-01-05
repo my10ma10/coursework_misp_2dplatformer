@@ -12,15 +12,17 @@ public:
         const std::string& backgroundPath, unsigned int levelIndex);
     void run();
 
+    unsigned int getCurrentLevel() const;
+
 private:
     void processEvents();
     void update(float timeStep);
     void render();
 
+    void updateAvailables();
     void updateState();
     void changeViewZoom(View& view);
     void changeViewAspectRatio(const RenderWindow& window, View& view) const;
-
 
     RenderWindow window;
     View levelView;
@@ -30,11 +32,13 @@ private:
     GameState gameState;
     Menu menu;
     Level level;
-    unsigned int levelIndex;
+    unsigned int currentLevel;
+    unsigned int availableLevel;
 
     const float timeStep;
     float accumulator;
-    bool isPaused;
+    bool isProcessPaused;
+    bool pauseState;
 
     Sprite playerAndViewCollideSprite;
     Collider playerAndViewCollider;

@@ -38,18 +38,16 @@ void Player::update(float time)
 {
 	body.setPosition(sprite.getPosition());
 	velocity.x = 0.0f;
-	updateBonuses();
-
-	isJumpKeyPressed = Keyboard::isKeyPressed(Keyboard::W) or Keyboard::isKeyPressed(Keyboard::Up);
-
-	if (Keyboard::isKeyPressed(Keyboard::Left) or Keyboard::isKeyPressed(Keyboard::A))
+	for (Enemy* enemy : enemiesPtr)
 	{
-		velocity.x -= personSpeed;
+		if (!enemy->alive())
+		{
+			removeEnemy(enemy);
+		}
 	}
-	if (Keyboard::isKeyPressed(Keyboard::Right) or Keyboard::isKeyPressed(Keyboard::D))
-	{
-		velocity.x += personSpeed;
-	}
+
+
+	keyProcessing();
 	if (velocity.x == 0.0f)
 	{
 		row = 0;
@@ -78,24 +76,35 @@ void Player::update(float time)
 
 	attackUpdate();
 	blockUpdate();
+	updateBonuses();
 	updateAnimation(time / 1000, faceRight);
-	velocity.y += gravity * time;
-	sprite.move(velocity * time);
 	updateHealth();
 	if (energy < EnergyMax)
 	{
 		energy += 0.2f;
 	}
+	velocity.y += gravity * time;
+	sprite.move(velocity * time);
 }
 
 void Player::attackUpdate()
 {
+	if (faceRight)
+	{
+		attackRange = FloatRect(Vector2f(getSprite().getPosition() - Vector2f(0, (getSpriteSize().y - getSize().y) / 2.0f)),
+			Vector2f(getSpriteSize() / 2.0f));
+	}
+	else
+	{
+		attackRange = FloatRect(Vector2f(getSprite().getPosition() - Vector2f(getSpriteSize().x / 2.0f, (getSpriteSize().y - getSize().y) / 2.0f)),
+			Vector2f(getSpriteSize() / 2.0f));
+	}
+
 	if (Keyboard::isKeyPressed(Keyboard::Space))
 	{
 		attackState = true;
 		superAttackState = false;
 	}
-
 	if (Keyboard::isKeyPressed(Keyboard::LControl))
 	{
 		superAttackState = true;
@@ -130,6 +139,29 @@ void Player::blockUpdate()
 	}
 }
 
+void Player::updateHealth()
+{
+	if (health <= 0 and life)
+	{
+		life = false;
+	}
+	health = std::max(0, health);
+}
+
+void Player::keyProcessing()
+{
+	isJumpKeyPressed = Keyboard::isKeyPressed(Keyboard::W) or Keyboard::isKeyPressed(Keyboard::Up);
+	if ((Keyboard::isKeyPressed(Keyboard::Left) or Keyboard::isKeyPressed(Keyboard::A))
+		and !attackState and !superAttackState)
+	{
+		velocity.x -= personSpeed;
+	}
+	if ((Keyboard::isKeyPressed(Keyboard::Right) or Keyboard::isKeyPressed(Keyboard::D))
+		and !attackState and !superAttackState)
+	{
+		velocity.x += personSpeed;
+	}
+}
 
 void Player::attack()
 {
@@ -274,6 +306,11 @@ void Player::jump(float time)
 void Player::updateBonuses()
 {
 	bubble.setPosition(getPosition() - Vector2f(24.0f, 25.0f)); // магия
+}
+
+const FloatRect& Player::getAttackRange() const
+{
+	return attackRange;
 }
 
 std::vector<Enemy*> Player::getEnemies() const

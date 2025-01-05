@@ -8,7 +8,7 @@ public:
 	Person(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime);
 
 	void takeDamage(int amount);
-	void updateHealth();
+	virtual void updateHealth() = 0;
 	void onCollition();
 
 	void setAttackPower(float power);
@@ -18,7 +18,7 @@ public:
 	Vector2f& getDirection();
 	Vector2f getOrigin() const;
 	Vector2f getVelocity() const;
-	int getEnergy() const;
+	float getEnergy() const;
 	int getHealth() const;
 
 protected:
@@ -34,7 +34,8 @@ protected:
 	Vector2f velocity;
 	float personSpeed = 1.0f;
 	float gravity = 0.001f;
+	FloatRect attackRange;
 };
 
 class Enemy;
-enum class EnemyName { Basic, Skeleton, Wizard, Tank, Dragon, Ghost, darkKnight };
+enum class EnemyName { Basic, Skeleton, Wizard, Tank, Dragon, Ghost, DarkKnight };

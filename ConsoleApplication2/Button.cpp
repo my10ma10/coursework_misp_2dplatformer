@@ -1,11 +1,11 @@
 #include "Button.h"
 
-Button::Button(std::string text, Color textColor, const Font& font, Vector2f size, Vector2f position) : \
-	isPressed(false), isHover(false), font(font)
+Button::Button(std::string text, Color textColor, Color shapeColor, const Font& font, Vector2f size, Vector2f position)\
+	: isPressed(false), isHover(false), isClickable(true), font(font)
 {
 	shape.setPosition(position);
 	shape.setSize(size);
-	shape.setFillColor(Color::Black);
+	shape.setFillColor(shapeColor);
 
 	setFont("Fonts\\Rubik-VariableFont_wght.ttf");
 	this->text.setCharacterSize(24);
@@ -18,6 +18,24 @@ Button::Button(std::string text, Color textColor, const Font& font, Vector2f siz
 	this->text.setPosition(position.x + size.x / 2.0f, position.y + size.y / 2.0f );
 }
 
+Button::Button(const wchar_t* text, Color textColor, Color shapeColor, const Font& font, Vector2f size, Vector2f position)\
+	: isPressed(false), isHover(false), isClickable(true), font(font)
+{
+	shape.setPosition(position);
+	shape.setSize(size);
+	shape.setFillColor(shapeColor);
+
+	setFont("Fonts\\Rubik-VariableFont_wght.ttf");
+	this->text.setCharacterSize(24);
+	this->text.setFillColor(textColor);
+	this->text.setString(text);
+	this->text.setFont(font);
+
+	FloatRect textBounds = this->text.getLocalBounds();
+	this->text.setOrigin(textBounds.width / 2.0f, textBounds.height / 2.0f);
+	this->text.setPosition(position.x + size.x / 2.0f, position.y + size.y / 2.0f);
+}
+
 void Button::draw(RenderWindow& window)
 {
 	window.draw(shape);
@@ -27,23 +45,30 @@ void Button::draw(RenderWindow& window)
 void Button::update(Vector2i mousePos)
 {
 	mousePosition = mousePos;
-	if (shape.getGlobalBounds().contains(Vector2f(mousePosition)))
+	if (isClickable) 
 	{
-		isHover = true;
-		if (Mouse::isButtonPressed(Mouse::Button::Left))
+		if (shape.getGlobalBounds().contains(Vector2f(mousePosition)))
 		{
-			isPressed = true;
+			isHover = true;
+			if (Mouse::isButtonPressed(Mouse::Button::Left))
+			{
+				isPressed = true;
+			}
+			else
+			{
+				isPressed = false;
+			}
 		}
 		else
 		{
-			isPressed = false;
+			isHover = false;
 		}
 	}
-	else
-	{
-		isHover = false;
-	}
-	std::cout << isHover << std::endl;
+}
+
+void Button::setClickable(bool pred)
+{
+	isClickable = pred;
 }
 
 void Button::setFont(const std::string& fontPath)
@@ -54,10 +79,11 @@ void Button::setFont(const std::string& fontPath)
 	}
 }
 
-void Button::checkMousePosition(Vector2f mousePosition)
+void Button::setShapeColor(Color color)
 {
-
+	shape.setFillColor(color);
 }
+
 
 Vector2f Button::getPosition() const
 {
@@ -69,7 +95,7 @@ Text Button::getText() const
 	return text;
 }
 
-bool Button::isClicked() const
+bool Button::getPressed() const
 {
 	return isPressed;
 }

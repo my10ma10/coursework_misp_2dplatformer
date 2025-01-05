@@ -1,18 +1,19 @@
 #pragma once
+#include "Bar.h"
 #include "Consts.h"
 #include "Enemy.h"
 #include "Object.h"
-#include "Bar.h"
 #include "Platform.h"
 #include "TileMap.h"
 #include <cstdlib>
 #include <fstream>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
 #include <queue>
+#include <sstream>
+#include <unordered_map>
+#include <vector>
 
 enum class ObjectType { COIN, HEART, BONUS };
+enum class LevelState {Failed, Complete, Passing};
 
 class Level
 {
@@ -36,15 +37,12 @@ public:
 	std::vector<Platform>& getPlatforms();
 	std::vector<Enemy>& getEnemies();
 	std::vector<Object>& getCoins();
-	bool getComplete() const;
+	LevelState getState() const;
 	Vector2u getSize() const;
 	Vector2f getCenter() const;
 
-	Player& getPlayer();
+	unsigned int getNumber() const;
 	Vector2f getPlayerPosition();
-	int getPlayerEnergy();
-	int getPlayerHealth();
-	Collider getPlayerSpriteCollider();
 
 private:
 	void loadTextures(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
@@ -57,7 +55,7 @@ private:
 	void initPlayer();
 	void initTileMap();
 
-	bool ñomplete;
+	LevelState levelState;
 	std::vector<Platform> platforms; // size, position
 	std::vector<Object> coins;
 	std::vector<Object> bonuses;

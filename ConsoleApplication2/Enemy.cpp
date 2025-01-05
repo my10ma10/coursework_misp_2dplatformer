@@ -76,27 +76,50 @@ void Enemy::update(float time)
 	}
 }
 
+void Enemy::updateHealth()
+{
+	if (health <= 0 and life)
+	{
+		row = 3;
+		if (getCurrentFrame() == 1)
+		{
+			killing = true;
+		}
+		if (getCurrentFrame() == 0 and killing)
+		{
+			life = false;
+		}
+	}
+	health = std::max(0, health);
+}
+
 void Enemy::changeRanges()
 {
 	switch (name) 
 	{
 		case EnemyName::Skeleton:
+			setAttackMoveStopRange(4.0f, 15.0f);
+			attackPower = 5.0f;
 			break;
 		case EnemyName::Wizard:
+			setAttackMoveStopRange(8.0f, 11.0f);
+			attackPower = 15.0f;
 			break;
 		case EnemyName::Tank:
+			setAttackMoveStopRange(2.0f, 11.0f);
+			attackPower = 10.0f;
 			break;
 		case EnemyName::Dragon:
 			setAttackMoveStopRange(4.0f, 8.0f);
-			attackPower = 30.0f;
+			attackPower = 13.0f;
 			break;
 		case EnemyName::Ghost:
 			setAttackMoveStopRange(9.0f, 12.0f);
-			attackPower = 20.0f;
+			attackPower = 15.0f;
 			break;
-		case EnemyName::darkKnight:
-			setAttackMoveStopRange(3.0f, 8.0f);
-			attackPower = 40.0f;
+		case EnemyName::DarkKnight:
+			setAttackMoveStopRange(3.0f, 15.0f);
+			attackPower = 20.0f;
 			break;
 		default:
 			std::cout << "Unknown enemy -\_/-\n";
@@ -133,7 +156,10 @@ void Enemy::attack()
 	if (getCurrentFrame() == 5 and !isDamageTaking)
 	{
 		isDamageTaking = true;
-		playerPtr->takeDamage(attackPower);
+		if (this->getSprite().getGlobalBounds().intersects(playerPtr->getBody().getGlobalBounds()))
+		{
+			playerPtr->takeDamage(attackPower);
+		}
 	}
 	if (getCurrentFrame() != 5)
 	{
@@ -147,27 +173,36 @@ void Enemy::initEnemy(EnemyName name)
 	{
 		case EnemyName::Skeleton:
 			attackType = 0;
+			personSpeed = SkeletonSpeed;
+			gravity = 0.003f;
 			break;
 		case EnemyName::Wizard:
 			attackType = 1;
+			personSpeed = WizardSpeed;
+			gravity = 0.002f;
 			break;
 		case EnemyName::Tank:
 			attackType = 0;
+			personSpeed = TankSpeed;
+			gravity = 0.005f;
 			break;
 		case EnemyName::Dragon:
 			attackType = 1;
 			personSpeed = DragonSpeed;
 			gravity = 0.002f;
+			health = HealthMax * 50 / 100;
 			break;
 		case EnemyName::Ghost:
 			attackType = 1;
 			personSpeed = GhostSpeed;
 			gravity = 0.001f;
+			health = HealthMax * 50 / 100;
 			break;
-		case EnemyName::darkKnight:
+		case EnemyName::DarkKnight:
 			attackType = 0;
 			personSpeed = DarkKnightSpeed;
 			gravity = 0.005f;
+			health = HealthMax * 50 / 100;
 			break;
 		default:
 			std::cout << "Unknown enemy -\_/-\n";
@@ -198,6 +233,11 @@ void Enemy::setAttackMoveStopRange(float attackSizeDiff, float moveSizeDiff)
 FloatRect Enemy::getAttackRange() const
 {
 	return attackRange;
+}
+
+const EnemyName& Enemy::getName() const
+{
+	return name;
 }
 
 

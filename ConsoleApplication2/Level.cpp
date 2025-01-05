@@ -1,13 +1,13 @@
 #include "Level.h"
 
-Level::Level() : ñomplete(false), numberOfLevel(0), tileSize(16, 16), tilesAmount(48, 48), \
+Level::Level() : levelState(LevelState::Passing), numberOfLevel(0), tileSize(16, 16), tilesAmount(48, 48), \
     mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y), levelSize(WindowWidth, WindowHeight)
 {
 }
 
 Level::Level(const std::string& filePathToCoinTexture, const std::string& filePathToBonusTexture, \
     const std::string& filePathToBackGroundTexture, int numberOfLevel) : \
-    ñomplete(false), numberOfLevel(numberOfLevel), tileSize(16, 16), tilesAmount(48, 48), \
+    levelState(LevelState::Passing), numberOfLevel(numberOfLevel), tileSize(16, 16), tilesAmount(48, 48), \
     mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y), levelSize(WindowWidth, WindowHeight)
 {
     loadTextures(filePathToCoinTexture, filePathToBonusTexture, filePathToBackGroundTexture);
@@ -27,6 +27,7 @@ Level::Level(const std::string& filePathToCoinTexture, const std::string& filePa
 
 void Level::update(float time, const View& levelView)
 {
+    checkPortal(getPlayerPosition());
     for (Object& coin : coins)
     {
         coin.updateAnimation(time, true);
@@ -47,7 +48,7 @@ void Level::update(float time, const View& levelView)
     healthBar.update(player.getHealth(), levelView.getCenter() - levelView.getSize() / 2.25f);
     energyBar.update(player.getEnergy(), levelView.getCenter() - levelView.getSize() / 2.25f \
         + Vector2f(0.0f, 6.0f));
-
+    updateEnemies();
 }
 
 void Level::draw(RenderWindow& window)
@@ -142,7 +143,7 @@ void Level::checkPortal(Vector2f playerPosition)
 {
     if (portal.getSprite().getGlobalBounds().contains(playerPosition))
     {
-        ñomplete = true;
+        levelState = LevelState::Complete;
     }
 }
 
@@ -231,7 +232,7 @@ void Level::updateEnemies()
         {
             enemy.setSpeed(0.0f);
         }
-        if (enemy.getBody().getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
+        if (enemy.getBody().getGlobalBounds().intersects(player.getAttackRange()))
         {
             player.addEnemy(&enemy);
         }
@@ -239,8 +240,8 @@ void Level::updateEnemies()
         {
             player.removeEnemy(&enemy);
         }
-    }
 
+    }
 }
 
 void Level::updateColliders(View& levelView, Collider& backCollider, Sprite& levelLimitViewSprite,\
@@ -271,27 +272,32 @@ void Level::initEnemies()
         switch (pair.first)
         {
         case EnemyName::Skeleton:
+            enemies.push_back(Enemy(&pair.second, Vector2f(70, 500), Vector2u(8, 4), 0.1f, pair.first, &player, \
+                Vector2f(10, 19)));
             break;
 
         case EnemyName::Wizard:
+            enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.1f, pair.first, &player, \
+                Vector2f(14, 20)));
             break;
 
         case EnemyName::Tank:
+            enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.1f, pair.first, &player, \
+                Vector2f(17, 17)));
             break;
 
         case EnemyName::Dragon:
-            enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.13f, pair.first, &player, \
+            enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.1f, pair.first, &player, \
                 Vector2f(24, 24)));
             break;
 
         case EnemyName::Ghost:
-            //enemies.push_back(Enemy(&pair.second, Vector2f(280, 480), Vector2u(8, 4), 0.1f, pair.first, &player));
-            //enemies.push_back(Enemy(&pair.second, Vector2f(380, 470), Vector2u(8, 4), 0.1f, pair.first, &player));
+            enemies.push_back(Enemy(&pair.second, Vector2f(280, 480), Vector2u(8, 4), 0.1f, pair.first, &player));
             break;
 
-        case EnemyName::darkKnight:
-            //enemies.push_back(Enemy(&pair.second, Vector2f(310, 480), Vector2u(8, 4), 0.1f, pair.first, &player, \
-            //    Vector2f(16, 16)));
+        case EnemyName::DarkKnight:
+            enemies.push_back(Enemy(&pair.second, Vector2f(310, 480), Vector2u(8, 4), 0.1f, pair.first, &player, \
+                Vector2f(12, 16)));
 
             break;
 
@@ -412,9 +418,9 @@ std::vector<Object>& Level::getCoins()
     return coins;
 }
 
-bool Level::getComplete() const
+LevelState Level::getState() const
 {
-    return ñomplete;
+    return levelState;
 }
 
 Vector2u Level::getSize() const
@@ -427,9 +433,9 @@ Vector2f Level::getCenter() const
     return backGroundSprite.getGlobalBounds().getSize() / 2.0f;
 }
 
-Player& Level::getPlayer()
+unsigned int Level::getNumber() const
 {
-    return player;
+    return numberOfLevel;
 }
 
 Vector2f Level::getPlayerPosition()
@@ -437,18 +443,5 @@ Vector2f Level::getPlayerPosition()
     return player.getPosition();
 }
 
-int Level::getPlayerEnergy()
-{
-    return player.getEnergy();
-}
 
-int Level::getPlayerHealth()
-{
-    return player.getHealth();
-}
-
-Collider Level::getPlayerSpriteCollider()
-{
-    return player.getSpriteCollider();
-}
 
