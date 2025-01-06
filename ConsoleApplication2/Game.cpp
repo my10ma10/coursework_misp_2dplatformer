@@ -107,6 +107,7 @@ void Game::update(float timeStep)
 		}
 		level.updatePlatfotmsCollide();
 		level.updateCoinCollecting();
+		level.updateBonuses();
 		level.updateColliders(levelView, backCollider, levelLimitViewSprite, \
 			playerAndViewCollideSprite, playerAndViewCollider);
 	}

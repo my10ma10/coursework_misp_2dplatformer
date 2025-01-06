@@ -12,7 +12,6 @@
 #include <unordered_map>
 #include <vector>
 
-enum class ObjectType { Coin, Potion, Bubble, Boot };
 enum class LevelState {Failed, Complete, Passing};
 
 class Level
@@ -30,8 +29,9 @@ public:
 	void checkPortal(Vector2f playerPosition);
 	void checkViewIntersect(View& view, const Vector2u& levelSize);
 	void updatePlatfotmsCollide();
+	void updateBonuses();
 	void updateCoinCollecting();
-	void updateEnemies();
+	void updateEnemies(float time);
 	void updateColliders(View& levelView, Collider& backCollider, Sprite& levelLimitViewSprite, \
 		Sprite& playerAndViewCollideSprite, Collider& playerColliderForView);
 
@@ -50,17 +50,17 @@ public:
 private:
 	void loadTextures(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
 		const std::string filePathToBackGroundTexture);
-	void loadEnemyTextures();
+	template <typename T>
+	void loadInMap(const std::string& path, std::unordered_map<T, Texture>& textures);
 	void initEnemies();
 	void initBackground();
 	void initBonuses();
-	void initCoins();
-	void initPlayer();
 	void initTileMap();
 
 	LevelState levelState;
-	std::vector<Platform> platforms; // size, position
+	std::vector<Platform> platforms;
 	std::vector<Object> coins;
+	std::vector<Object> potions;
 	std::vector<Object> bonuses;
 	std::vector<Enemy> enemies;
 	Object portal;
@@ -81,15 +81,15 @@ private:
 	Vector2u mapSize;
 
 	std::unordered_map<EnemyName, Texture> enemyTextures;
+	std::unordered_map<ObjectType, Texture> bonusTextures;
 	Texture enemyTexture;
-	Texture coinTexture;
 	Texture bonusTexture;
 	Texture backgroundTexture;
-	Texture portalTexture;
 	Texture playerTexture;
 
 	Vector2u levelSize;
 	Vector2f position;
 	int numberOfLevel;
 };
+
 

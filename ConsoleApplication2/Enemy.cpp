@@ -1,23 +1,21 @@
 #include "Enemy.h"
 
-Enemy::Enemy() : attackType(0), name(EnemyName::Basic)
+Enemy::Enemy() : name(EnemyName::Basic)
 {
 }
 
 Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, \
 	float switchTime, EnemyName name, Player* playerPtr, Vector2f size) : \
-	Person(texture, position, size, imageCount, switchTime), attackType(0)
+	Person(texture, position, size, imageCount, switchTime)
 {
 	this->health = HealthMax / 100;
 	this->name = name;
 	this->playerPtr = playerPtr;
 	initEnemy(name);
-
 }
 
 void Enemy::update(float time)
 {
-	updateHealth();
 	playerPtr->getPosition().x > this->getPosition().x ? faceRight = true : faceRight = false;
 	updateAnimation(time / 1.5f, faceRight);
 	body.setPosition(getPosition());
@@ -67,13 +65,15 @@ void Enemy::update(float time)
 	{
 		velocity.x = -personSpeed;
 	}
-	velocity.y += gravity * 10000 * time; // gravity
+	velocity.y += gravity * 10000 * time;
 	sprite.move(velocity * time);
 	changeRanges();
 	if (!life)
 	{
 		attackPower = 0.0f;
 	}
+	updateHealth();
+
 }
 
 void Enemy::updateHealth()
@@ -81,11 +81,8 @@ void Enemy::updateHealth()
 	if (health <= 0 and life)
 	{
 		row = 3;
-		if (getCurrentFrame() == 1)
-		{
-			killing = true;
-		}
-		if (getCurrentFrame() == 0 and killing)
+		killing = true;
+		if (getCurrentFrame() == 7 and killing)
 		{
 			life = false;
 		}
@@ -122,7 +119,7 @@ void Enemy::changeRanges()
 			attackPower = 20.0f;
 			break;
 		default:
-			std::cout << "Unknown enemy -\_/-\n";
+			std::cout << "Unknown enemy\n";
 			break;
 	}
 }
@@ -152,18 +149,22 @@ void Enemy::stoppingRect(const FloatRect& rectangel)
 
 void Enemy::attack()
 {
-	row = 2;
-	if (getCurrentFrame() == 5 and !isDamageTaking)
+	if (!killing)
 	{
-		isDamageTaking = true;
-		if (this->getSprite().getGlobalBounds().intersects(playerPtr->getBody().getGlobalBounds()))
+		row = 2;
+		if (getCurrentFrame() == 5 and !isDamageTaking)
 		{
-			playerPtr->takeDamage(attackPower);
+			isDamageTaking = true;
+			if (this->getAttackRange().intersects(FloatRect(playerPtr->getPosition() - playerPtr->getSize() / 2.0f, \
+				playerPtr->getSize())))
+			{
+				playerPtr->takeDamage(attackPower);
+			}
 		}
-	}
-	if (getCurrentFrame() != 5)
-	{
-		isDamageTaking = false;
+		if (getCurrentFrame() != 5)
+		{
+			isDamageTaking = false;
+		}
 	}
 }
 
@@ -172,55 +173,49 @@ void Enemy::initEnemy(EnemyName name)
 	switch (name) 
 	{
 		case EnemyName::Skeleton:
-			attackType = 0;
 			personSpeed = SkeletonSpeed;
 			gravity = 0.003f;
 			break;
 		case EnemyName::Wizard:
-			attackType = 1;
 			personSpeed = WizardSpeed;
 			gravity = 0.002f;
 			break;
 		case EnemyName::Tank:
-			attackType = 0;
 			personSpeed = TankSpeed;
 			gravity = 0.005f;
 			break;
 		case EnemyName::Dragon:
-			attackType = 1;
 			personSpeed = DragonSpeed;
 			gravity = 0.002f;
 			health = HealthMax * 50 / 100;
 			break;
 		case EnemyName::Ghost:
-			attackType = 1;
 			personSpeed = GhostSpeed;
 			gravity = 0.001f;
 			health = HealthMax * 50 / 100;
 			break;
 		case EnemyName::DarkKnight:
-			attackType = 0;
 			personSpeed = DarkKnightSpeed;
 			gravity = 0.005f;
 			health = HealthMax * 50 / 100;
 			break;
 		default:
-			std::cout << "Unknown enemy -\_/-\n";
+			std::cout << "Unknown enemy\n";
 			break;
 	}
 }
 
 void Enemy::setAttackMoveStopRange(float attackSizeDiff, float moveSizeDiff)
 {
-	attackRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * attackSizeDiff, \
-		getPosition().y - getSize().y / 2.0f), \
-		Vector2f(getSize().x * attackSizeDiff, getSize().y));
+	attackRange = FloatRect(Vector2f(getPosition().x - getBodySize().x / 2.0f * attackSizeDiff, \
+		getPosition().y - getBodySize().y / 2.0f), \
+		Vector2f(getBodySize().x * attackSizeDiff, getBodySize().y));
 	attackRange.top -= playerPtr->getJumpHeight();
 	attackRange.height += playerPtr->getJumpHeight();
 
-	moveRange = FloatRect(Vector2f(getPosition().x - getSize().x / 2.0f * moveSizeDiff, \
-		getPosition().y - getSize().y / 2.0f), \
-		Vector2f(getSize().x * moveSizeDiff, getSize().y));
+	moveRange = FloatRect(Vector2f(getPosition().x - getBodySize().x / 2.0f * moveSizeDiff, \
+		getPosition().y - getBodySize().y / 2.0f), \
+		Vector2f(getBodySize().x * moveSizeDiff, getBodySize().y));
 	moveRange.top -= playerPtr->getJumpHeight();
 	moveRange.height += playerPtr->getJumpHeight();
 
@@ -238,6 +233,11 @@ FloatRect Enemy::getAttackRange() const
 const EnemyName& Enemy::getName() const
 {
 	return name;
+}
+
+unsigned int Enemy::getRow() const
+{
+	return row;
 }
 
 

@@ -22,7 +22,7 @@ public:
 	void removeEnemy(Enemy* enemy);
 	void collectCoin(Object& coin);
 	void applyBonus(Object& bonus);
-	void applyHeart(Object& heart);
+	void applyPotion(Object& heart);
 	void jump(float time);
 	void updateBonuses();
 

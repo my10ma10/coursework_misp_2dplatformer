@@ -2,7 +2,6 @@
 #include "Person.h"
 #include "Player.h"
 
-
 class Enemy : public Person
 {
 public:
@@ -22,10 +21,10 @@ public:
 
 	FloatRect getAttackRange() const;
 	const EnemyName& getName() const;
+	unsigned int getRow() const;
 
 private:
 	EnemyName name;
-	bool attackType; // 0 - ближний, 1 - дальний
 	Player* playerPtr = nullptr;
 	FloatRect moveRange;
 	FloatRect stopRange;

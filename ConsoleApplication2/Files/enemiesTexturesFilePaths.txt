@@ -1,3 +1,4 @@
+Image\\rectangle_test.png
 Image\\skeleton-Sheet.png
 Image\\wizard-Sheet.png
 Image\\axe-Sheet.png

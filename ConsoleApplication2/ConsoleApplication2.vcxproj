@@ -166,7 +166,6 @@
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="TileMap.h" />
-    <ClInclude Include="View.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

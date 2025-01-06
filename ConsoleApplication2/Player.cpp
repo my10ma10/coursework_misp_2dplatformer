@@ -46,7 +46,6 @@ void Player::update(float time)
 		}
 	}
 
-
 	keyProcessing();
 	if (velocity.x == 0.0f)
 	{
@@ -284,13 +283,15 @@ void Player::applyBonus(Object& bonus)
 	}
 }
 
-void Player::applyHeart(Object& heart)
+void Player::applyPotion(Object& potion)
 {
-	if (heart.alive())
+	if (potion.alive())
 	{
 		if (health <= HealthMax)
-		health += 20;
-		// удалить сердечко
+		{
+			health = std::min(HealthMax, health + 20);
+			potion.kill();
+		}
 	}
 }
 

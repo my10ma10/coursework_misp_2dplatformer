@@ -2,7 +2,6 @@
 #include "Button.h"
 #include "Game.h"
 #include "Level.h"
-#include "View.h"
 #include "Menu.h"
 
 class Game

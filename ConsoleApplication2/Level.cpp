@@ -20,10 +20,8 @@ void Level::initLevel(int number)
     initTileMap();
     initBackground();
     initBonuses();
-    initCoins();
     initEnemies();
-    portal = Object(&portalTexture, Vector2f(470, 460), Vector2u(8, 1), 0.1f, Vector2f(20, 32));
-    player = Player(&playerTexture, Vector2f(180, 480), Vector2f(5.0f, 23.0f), Vector2u(12, 7), 0.1f);
+    player = Player(&playerTexture, Vector2f(580, 500), Vector2f(6.0f, 20.0f), Vector2u(12, 7), 0.1f);
     healthBar = Bar(Vector2f(32.0f, 4.0f), player.getPosition() + Vector2f(36.0f, -16.0f), Color::Red, HealthMax);
     energyBar = Bar(Vector2f(32.0f, 4.0f), player.getPosition() + Vector2f(30.0f, -16.0f), Color::Blue, EnergyMax);
 }
@@ -37,25 +35,21 @@ void Level::update(float time, const View& levelView)
     }
     for (Object& coin : coins)
     {
-        coin.updateAnimation(time, true);
+        coin.update(time);
     }
-    for (Object& bonus : bonuses)
+    for (Object& bonus : potions)
     {
-        bonus.updateAnimation(time, true);
+        bonus.update(time);
     }
-    for (Enemy& enemy : enemies)
-    {
-        enemy.update(time);
-    }
+    updateEnemies(time);
     enemies.erase(std::remove_if(enemies.begin(), enemies.end(), \
-        [](const Enemy& enemy) { return !enemy.alive(); }), enemies.end()); // erase dead enemies
+        [](const Enemy& enemy) { return !enemy.alive(); }), enemies.end());
 
     player.update(time*1000);
-    portal.updateAnimation(time, true); 
+    portal.update(time); 
     healthBar.update(player.getHealth(), levelView.getCenter() - levelView.getSize() / 2.25f);
     energyBar.update(player.getEnergy(), levelView.getCenter() - levelView.getSize() / 2.25f \
         + Vector2f(0.0f, 6.0f));
-    updateEnemies();
 }
 
 void Level::draw(RenderWindow& window)
@@ -71,7 +65,7 @@ void Level::draw(RenderWindow& window)
     {
         coin.draw(window);
     }
-    for (Object& bonus : bonuses)
+    for (Object& bonus : potions)
     {
         bonus.draw(window);
     }
@@ -88,10 +82,9 @@ void Level::draw(RenderWindow& window)
 void Level::restart() {
     levelState = LevelState::Passing;
     coins.clear();
-    bonuses.clear();
+    potions.clear();
     enemies.clear();
     platforms.clear();
-
     initLevel(numberOfLevel);
 }
 
@@ -108,17 +101,8 @@ void Level::loadTextures(const std::string filePathToCoinTexture, const std::str
     {
         std::cerr << "Can't load an image";
     }
-    bonusSprite.setTexture(bonusTexture);
 
-    if (!backgroundTexture.loadFromFile(filePathToBackGroundTexture))
-    {
-        std::cerr << "Can't load an image";
-    }
-    if (!coinTexture.loadFromFile(filePathToCoinTexture))
-    {
-        std::cerr << "Can't load an image";
-    }
-    if (!portalTexture.loadFromFile("Image\\portal-Sheet.png"))
+    if (!backgroundTexture.loadFromFile("Image\\back3.png"))
     {
         std::cerr << "Can't load an image";
     }
@@ -127,39 +111,31 @@ void Level::loadTextures(const std::string filePathToCoinTexture, const std::str
         std::cerr << "Can't load an image";
     }
 
-    loadEnemyTextures();
+    loadInMap("Files\\enemiesTexturesFilePaths.txt", enemyTextures);
+    loadInMap("Files\\bonusesTexturesFilePaths.txt", bonusTextures);
 }
 
-void Level::loadEnemyTextures()
+template<typename T>
+inline void Level::loadInMap(const std::string& path, std::unordered_map<T, Texture>& textures)
 {
-    std::queue <std::string> enemiesFilePaths;
-
-    std::ifstream pathsStream("Files\\enemiesTexturesFilePaths.txt");
+    std::ifstream pathsStream(path);
     if (!pathsStream.is_open())
     {
-        std::cerr << "Can't open a file";
+        std::cerr << "Can't open the file: " << path << std::endl;
         return;
     }
     std::string tempLine;
-    while (pathsStream >> tempLine)
-    {
-        enemiesFilePaths.push(tempLine);
-    }
-    pathsStream.close();
-
     int i = 0;
-    while (!enemiesFilePaths.empty()) {
-        std::string path = enemiesFilePaths.front();
+    while (std::getline(pathsStream, tempLine))
+    {
         Texture tempTexture;
-        if (!tempTexture.loadFromFile(path))
+        if (!tempTexture.loadFromFile(tempLine))
         {
-            std::cerr << "Can't load an image";
+            std::cerr << "Can't load the image: " << tempLine << std::endl;
         }
-        i++;
-        enemyTextures.insert(std::pair<EnemyName, Texture>(static_cast<EnemyName>(i), tempTexture));
-        enemiesFilePaths.pop();
+        textures.emplace(static_cast<T>(i), std::move(tempTexture));
+        ++i;
     }
-
 }
 
 void Level::checkPortal(Vector2f playerPosition)
@@ -205,7 +181,6 @@ void Level::checkViewIntersect(View& view, const Vector2u& levelSize)
     view.setCenter(viewCenter);
 }
 
-
 void Level::updatePlatfotmsCollide()
 {
     for (Platform& platform : platforms)
@@ -232,6 +207,17 @@ void Level::updatePlatfotmsCollide()
     }
 }
 
+void Level::updateBonuses()
+{
+    for (Object& potion : potions)
+    {
+        if (player.getBody().getGlobalBounds().intersects(potion.getBody().getGlobalBounds()))
+        {
+            player.applyPotion(potion);
+        }
+    }
+}
+
 void Level::updateCoinCollecting()
 {
     for (Object& coin : coins)
@@ -240,7 +226,7 @@ void Level::updateCoinCollecting()
     }
 }
 
-void Level::updateEnemies()
+void Level::updateEnemies(float time)
 {
     for (Enemy& enemy : enemies)
     {
@@ -263,6 +249,7 @@ void Level::updateEnemies()
         {
             player.removeEnemy(&enemy);
         }
+        enemy.update(time);
 
     }
 }
@@ -277,11 +264,11 @@ void Level::updateColliders(View& levelView, Collider& backCollider, Sprite& lev
     levelLimitViewSprite.setPosition(levelView.getCenter());
     levelLimitViewSprite.setTextureRect(IntRect(Vector2i(levelView.getCenter()), \
         Vector2i(levelView.getSize())));
-    backCollider.levelCollision(player.getSpriteCollider(), Vector2f(16.0f, 16.0f)); // магия
+    backCollider.levelCollision(player.getSpriteCollider(), player.getBody().getGlobalBounds().getSize());
 
     for (Enemy& enemy : enemies)
     {
-        backCollider.levelCollision(enemy.getSpriteCollider(), Vector2f(16.0f, 16.0f)); // магия
+        backCollider.levelCollision(enemy.getSpriteCollider(), enemy.getBody().getGlobalBounds().getSize());
     }
 
     levelView.setCenter(playerAndViewCollideSprite.getPosition());
@@ -298,32 +285,25 @@ void Level::initEnemies()
             enemies.push_back(Enemy(&pair.second, Vector2f(70, 500), Vector2u(8, 4), 0.1f, pair.first, &player, \
                 Vector2f(10, 19)));
             break;
-
         case EnemyName::Wizard:
             enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.1f, pair.first, &player, \
                 Vector2f(14, 20)));
             break;
-
         case EnemyName::Tank:
             enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.1f, pair.first, &player, \
                 Vector2f(17, 17)));
             break;
-
         case EnemyName::Dragon:
             enemies.push_back(Enemy(&pair.second, Vector2f(100, 500), Vector2u(8, 4), 0.1f, pair.first, &player, \
                 Vector2f(24, 24)));
             break;
-
         case EnemyName::Ghost:
             enemies.push_back(Enemy(&pair.second, Vector2f(280, 480), Vector2u(8, 4), 0.1f, pair.first, &player));
             break;
-
         case EnemyName::DarkKnight:
             enemies.push_back(Enemy(&pair.second, Vector2f(310, 480), Vector2u(8, 4), 0.1f, pair.first, &player, \
                 Vector2f(12, 16)));
-
             break;
-
         default:
             break;
         }
@@ -340,10 +320,33 @@ void Level::initBackground()
 
 void Level::initBonuses()
 {
+    for (auto& pair : bonusTextures)
+    {
+        switch (pair.first)
+        {
+        case ObjectType::Coin:
+            coins.push_back(Object(&pair.second, Vector2f(170, 496), Vector2u(8, 1), 0.1f, ObjectType::Coin));
+            coins.push_back(Object(&pair.second, Vector2f(200, 496), Vector2u(8, 1), 0.1f, ObjectType::Coin));
+            break;
+        case ObjectType::Potion:
+            potions.push_back(Object(&pair.second, Vector2f(660, 480), Vector2u(8, 1), 0.1f, ObjectType::Potion));
+            break;
+        case ObjectType::Armor:
+            break;
+        case ObjectType::Bubble:
+            break;
+        case ObjectType::Boot:
+            break;
+        case ObjectType::Portal:
+            portal = Object(&pair.second, Vector2f(470, 460), Vector2u(8, 1), 0.1f, ObjectType::Portal, Vector2f(20, 32));
+            break;
+        default:
+            break;
+        }
+    }
     switch (numberOfLevel)
     {
     case 1:
-        bonuses.push_back(Object(&bonusTexture, Vector2f(260, 400), Vector2u(8, 1), 0.1f));
         break;
     case 2:
         break;
@@ -357,37 +360,6 @@ void Level::initBonuses()
     case 5:
         break;
     }
-}
-
-void Level::initCoins()
-{
-    coinSprite.setTextureRect(IntRect(Vector2i(coinSprite.getPosition()),
-        Vector2i(16, 16)));
-    coinSprite.setTexture(coinTexture);
-    coinSprite.setPosition(Vector2f(200, 430));
-    switch (numberOfLevel)
-    {
-    case 1:
-        coins.push_back(Object(&coinTexture, Vector2f(170, 496), Vector2u(8, 1), 0.1f));
-        coins.push_back(Object(&coinTexture, Vector2f(200, 496), Vector2u(8, 1), 0.1f));
-        break;
-    case 2:
-        break;
-
-    case 3:
-        break;
-
-    case 4:
-        break;
-
-    case 5:
-        break;
-    }
-}
-
-void Level::initPlayer()
-{
-    player = Player(&playerTexture, Vector2f(180, 480), Vector2f(5.0f, 23.0f), Vector2u(12, 7), 0.1f);
 }
 
 void Level::initTileMap()

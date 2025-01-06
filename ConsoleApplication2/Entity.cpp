@@ -13,7 +13,7 @@ Entity::Entity(Texture* texture, Vector2f position, Vector2f bodySize, Vector2u 
 	Vector2f spriteSheetSize(sheetTexture.getSize());
 	sprite.setOrigin(spriteSheetSize.x / (imageCount.x * 2.0f), spriteSheetSize.y / (imageCount.y * 2.0f));
 	sprite.setTextureRect(IntRect(Vector2i(getPosition()),
-		Vector2i(getSize().x / imageCount.x, getSize().y / imageCount.y)));
+		Vector2i(getBodySize().x / imageCount.x, getBodySize().y / imageCount.y)));
 
 	body.setPosition(position);
 	body.setTextureRect(IntRect(Vector2i(position), Vector2i(bodySize)));
@@ -114,7 +114,7 @@ Vector2f Entity::getPosition() const
 	return sprite.getPosition();
 }
 
-Vector2f Entity::getSize() const
+Vector2f Entity::getBodySize() const
 {
 	return body.getGlobalBounds().getSize();
 }

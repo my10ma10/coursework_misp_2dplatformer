@@ -11,8 +11,6 @@ public:
 	Entity(Texture* texture, Vector2f position, Vector2f bodySize, Vector2u imageCount, float switchTime);
 
 	virtual void update(float time) = 0;
-	bool updateAnimation(float time, bool faceRight);
-
 	virtual void draw(RenderWindow& window);
 
 	void kill();
@@ -29,12 +27,14 @@ public:
 	IntRect getCurrentRect() const;
 	bool alive() const;
 	Vector2f getPosition() const;
-	Vector2f getSize() const;
+	Vector2f getBodySize() const;
 	Vector2f getSpriteSize() const;
 	Sprite& getSprite();
 	const Texture* getTexture() const;
 
 protected:
+	bool updateAnimation(float time, bool faceRight);
+
 	Animation animation;
 	Texture sheetTexture;
 	Sprite sprite;
