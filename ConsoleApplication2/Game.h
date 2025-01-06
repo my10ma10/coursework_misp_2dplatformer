@@ -18,11 +18,10 @@ private:
     void processEvents();
     void update(float timeStep);
     void render();
-
     void updateAvailables();
     void updateState();
-    void changeViewZoom(View& view);
-    void changeViewAspectRatio(const RenderWindow& window, View& view) const;
+    void initView();
+    void changeViewAspectRatio(View& view) const;
 
     RenderWindow window;
     View levelView;

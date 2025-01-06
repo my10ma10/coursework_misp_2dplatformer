@@ -12,9 +12,10 @@ public:
 	Button(const wchar_t* text, Color textColor, Color shapeColor, const Font& font, Vector2f size = Vector2f(0.0f, 0.0f), \
 		Vector2f position = Vector2f(0.0f, 0.0f));
 	void draw(RenderWindow& window);
-	void update(Vector2i mousePos);
+	void update(Vector2i mousePos, bool isButtonPressed);
 
 	void setClickable(bool pred);
+	void setPressed(bool pred);
 	void setFont(const std::string& fontPath);
 	void setShapeColor(Color color);
 

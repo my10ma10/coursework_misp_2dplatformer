@@ -4,9 +4,6 @@
 #include "Animation.h"
 #include <iostream>
 
-enum class KeyBoardKeys {
-};
-
 class Entity
 {
 public:

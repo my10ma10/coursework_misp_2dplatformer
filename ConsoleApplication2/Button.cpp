@@ -42,7 +42,7 @@ void Button::draw(RenderWindow& window)
 	window.draw(text);
 }
 
-void Button::update(Vector2i mousePos)
+void Button::update(Vector2i mousePos, bool isButtonPressed)
 {
 	mousePosition = mousePos;
 	if (isClickable) 
@@ -50,7 +50,7 @@ void Button::update(Vector2i mousePos)
 		if (shape.getGlobalBounds().contains(Vector2f(mousePosition)))
 		{
 			isHover = true;
-			if (Mouse::isButtonPressed(Mouse::Button::Left))
+			if (isButtonPressed)
 			{
 				isPressed = true;
 			}
@@ -62,6 +62,7 @@ void Button::update(Vector2i mousePos)
 		else
 		{
 			isHover = false;
+			isPressed = false;
 		}
 	}
 }
@@ -69,6 +70,11 @@ void Button::update(Vector2i mousePos)
 void Button::setClickable(bool pred)
 {
 	isClickable = pred;
+}
+
+void Button::setPressed(bool pred)
+{
+	isPressed = pred;
 }
 
 void Button::setFont(const std::string& fontPath)

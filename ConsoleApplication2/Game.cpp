@@ -3,7 +3,7 @@
 Game::Game(const std::string& iconPath, const std::string& coinSheetPath, const std::string& bonusSheetPath, \
 	const std::string& backgroundPath, unsigned int levelIndex) : currentLevel(levelIndex),
 	level(coinSheetPath, bonusSheetPath, backgroundPath, levelIndex),
-	window(VideoMode(1024, 1024), L"Игра", Style::Default),
+	window(VideoMode(1920, 1080), L"Игра", Style::Fullscreen),
 	gameState(GameState::Main),
 	menu(window),
 	timeStep(1.0f / 60.0f),
@@ -14,14 +14,13 @@ Game::Game(const std::string& iconPath, const std::string& coinSheetPath, const 
 	levelView(Vector2f(0.0f, 0.0f), Vector2f(LevelViewHeight, LevelViewHeight)),
 	menuView(Vector2f(0.0f, 0.0f), Vector2f(MenuViewHeight, MenuViewHeight))
 {
+	window.setVerticalSyncEnabled(true);
 	Image icon;
 	if (icon.loadFromFile(iconPath)) 
 	{
 		window.setIcon(512, 512, icon.getPixelsPtr());
 	}
-
-	levelView.setCenter(level.getPlayerPosition());
-
+	initView();
 	Vector2i viewRectSize(LevelViewHeight * 1.0f, LevelViewHeight * 1.0f);
 	IntRect viewRectBounds(Vector2i(level.getPlayerPosition().x - viewRectSize.x / 2.0f, \
 		level.getPlayerPosition().y - viewRectSize.y / 2.0f), viewRectSize);
@@ -59,15 +58,14 @@ void Game::processEvents()
 			window.close();
 			break;
 		case Event::Resized:
-			changeViewAspectRatio(window, levelView);
-			changeViewAspectRatio(window, menuView);
+			changeViewAspectRatio(levelView);
+			changeViewAspectRatio(menuView);
 			break;
 		case Event::KeyPressed:
 			if (event.key.code == Keyboard::Escape)
 			{
 				isProcessPaused = !isProcessPaused; 
 			}
-			changeViewZoom(levelView);
 			break;
 		default:
 			break;
@@ -78,6 +76,11 @@ void Game::processEvents()
 
 void Game::update(float timeStep)
 {
+	if (menu.getLevelNumber() != currentLevel)
+	{
+		currentLevel = menu.getLevelNumber();
+		level.changeLevel(currentLevel);
+	}
 	if (gameState == GameState::Game)
 	{
 		if (!isProcessPaused)
@@ -104,12 +107,15 @@ void Game::update(float timeStep)
 	}
 	else
 	{
+		if (level.getState() != LevelState::Passing and level.getPlayerLife() or gameState == GameState::GameOver)
+		{
+			level.restart();
+		}
 		menu.update(availableLevel, currentLevel);
 	}
 	updateAvailables();
 	currentLevel = level.getNumber();
 	updateState();
-	std::cout << static_cast<int>(menu.getState()) << std::endl;
 }
 
 void Game::render()
@@ -144,26 +150,23 @@ void Game::updateState()
 	gameState = menu.getState();
 }
 
-void Game::changeViewZoom(View& view)
+void Game::initView()
 {
-	if (Keyboard::isKeyPressed(Keyboard::Equal)) {
-		view.zoom(0.995f);
-	}
-	if (Keyboard::isKeyPressed(Keyboard::Dash)) {
-		view.zoom(1.005f);
-	}
+	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
+	levelView.setSize(aspectRatio * LevelViewWidth, LevelViewHeight);
+	menuView.setSize(aspectRatio * MenuViewWidth, MenuViewHeight);
 }
 
-void Game::changeViewAspectRatio(const RenderWindow& window, View& view) const
+void Game::changeViewAspectRatio(View& view) const
 {
 	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
 	if (gameState == GameState::Game)
 	{
-		view.setSize(aspectRatio * LevelViewHeight, LevelViewHeight);
+		view.setSize(aspectRatio * LevelViewWidth, LevelViewHeight);
 	}
 	else
 	{
-		view.setSize(aspectRatio * MenuViewHeight, MenuViewHeight);
+		view.setSize(aspectRatio * MenuViewWidth, MenuViewHeight);
 	}
 }
 

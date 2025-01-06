@@ -1,6 +1,7 @@
 #include "Menu.h"
 
-Menu::Menu(RenderWindow& window): window(window)
+Menu::Menu(RenderWindow& window): window(window), isClickable(true), prevState(GameState::Main), 
+    currentState(GameState::Main), levelNumber(1)
 {
     if (!this->font.loadFromFile("Fonts\\Rubik-VariableFont_wght.ttf"))
     {
@@ -42,17 +43,17 @@ void Menu::initLevelsMenu(Vector2f buttonSize)
 void Menu::initCompleteMenu(Vector2f buttonSize)
 {
     completeButtons.emplace_back(Button(L"Далее", textColor, shapeColor, font, \
-        buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f + buttonSize.y / 2.0f)));
-    completeButtons.emplace_back(Button(L"Главное меню", textColor, shapeColor, font, \
         buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f - buttonSize.y / 2.0f)));
+    completeButtons.emplace_back(Button(L"Главное меню", textColor, shapeColor, font, \
+        buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f + buttonSize.y / 2.0f)));
 }
 
 void Menu::initGameoverMenu(Vector2f buttonSize)
 {
     gameoverButtons.emplace_back(Button(L"Ещё раз", textColor, shapeColor, font, \
-        buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f + buttonSize.y / 2.0f)));
-    completeButtons.emplace_back(Button(L"Главное меню", textColor, shapeColor, font, \
         buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f - buttonSize.y / 2.0f)));
+    gameoverButtons.emplace_back(Button(L"Главное меню", textColor, shapeColor, font, \
+        buttonSize, Vector2f(WindowWidth / 2.0f, WindowHeight / 2.0f + buttonSize.y / 2.0f)));
 }
 
 void Menu::initAchievementsMenu(Vector2f buttonSize)
@@ -61,12 +62,21 @@ void Menu::initAchievementsMenu(Vector2f buttonSize)
 
 void Menu::update(unsigned int availableLevel, unsigned int currentLevel)
 {
+    if (!isClickable)
+    {
+        if (clickTimer.getElapsedTime() > clickDelay)
+        {
+            isClickable = true;
+        }
+        else
+        {
+            return;
+        }
+    }
     switch (currentState)
     {
     case GameState::Main:
         updateMainMenu();
-        break;
-    case GameState::Game:
         break;
     case GameState::Levels:
         updateLevelsMenu();
@@ -86,6 +96,7 @@ void Menu::update(unsigned int availableLevel, unsigned int currentLevel)
         break;
     }
     updateTransparent(availableLevel, currentLevel);
+    checkState();
 }
 
 void Menu::updateMainMenu()
@@ -94,8 +105,9 @@ void Menu::updateMainMenu()
     {
         for (auto& button : mainButtons)
         {
-            button.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))));
-            if (button.getPressed())
+            button.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))), \
+                Mouse::isButtonPressed(Mouse::Button::Left));
+            if (isClickable and button.getPressed())
             {
                 if (button.getText().getString() == L"Начать игру")
                 {
@@ -117,8 +129,9 @@ void Menu::updateLevelsMenu()
     {
         for (auto& button : levelsButtons)
         {
-            button.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))));
-            if (button.getPressed())
+            button.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))), \
+                Mouse::isButtonPressed(Mouse::Button::Left));
+            if (isClickable and button.getPressed())
             {// можно перебором строки 12345
                 if (button.getText().getString() == "1")
                 {
@@ -140,6 +153,7 @@ void Menu::updateLevelsMenu()
                 {
                     currentState = GameState::Game;
                 }
+                levelNumber = std::stoi(button.getText().getString().toAnsiString());
             }
         }
     }
@@ -151,12 +165,13 @@ void Menu::updateCompleteMenu()
     {
         for (auto& button : completeButtons)
         {
-            button.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))));
-            if (button.getPressed())
+            button.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))), \
+                Mouse::isButtonPressed(Mouse::Button::Left));
+            if (isClickable and button.getPressed())
             {
                 if (button.getText().getString() == L"Далее")
                 {
-                    // next level
+                    currentState = GameState::Game;
                 }
                 else if (button.getText().getString() == L"Главное меню")
                 {
@@ -169,18 +184,37 @@ void Menu::updateCompleteMenu()
 
 void Menu::updateGameoverMenu()
 {
+    if (!gameoverButtons.empty())
+    {
+        for (auto& button : gameoverButtons)
+        {
+            button.update(Vector2i(window.mapPixelToCoords(Mouse::getPosition(window))), \
+                Mouse::isButtonPressed(Mouse::Button::Left));
+            if (isClickable and button.getPressed())
+            {
+                if (button.getText().getString() == L"Ещё раз")
+                {
+                    currentState = GameState::Game;
+                }
+                else if (button.getText().getString() == L"Главное меню")
+                {
+                    currentState = GameState::Main;
+                }
+            }
+        }
+    }
 }
 
 void Menu::updateAchievementsMenu()
 {
 }
 
-// дебаг
 void Menu::updateTransparent(unsigned int availableLevel, unsigned int currentLevel)
 {
+    std::cout << availableLevel << currentLevel << "\n";
     for (auto& button : levelsButtons)
     {
-        unsigned int number = std::stoi(button.getText().getString().toAnsiString()); //@ номер уровня на этой кнопке
+        unsigned int number = std::stoi(button.getText().getString().toAnsiString()); // номер уровня на этой кнопке
         if (number > availableLevel)
         {
             button.setShapeColor(transparentShapeColor);
@@ -188,6 +222,7 @@ void Menu::updateTransparent(unsigned int availableLevel, unsigned int currentLe
         }
         else
         {
+            button.setShapeColor(shapeColor);
             button.setClickable(true);
         }
     }
@@ -204,6 +239,16 @@ void Menu::drawButtons(std::vector<Button> buttons)
     }
 }
 
+void Menu::checkState()
+{
+    if (prevState != currentState)
+    {
+        prevState = currentState;
+        isClickable = false;
+        clickTimer.restart();
+    }
+}
+
 void Menu::render()
 {
     switch (currentState)
@@ -217,6 +262,7 @@ void Menu::render()
         drawButtons(levelsButtons);
         break;
     case GameState::Achievements:
+        drawButtons(achievementsButtons);
         break;
     case GameState::Complete:
         drawButtons(completeButtons);
@@ -231,6 +277,11 @@ void Menu::render()
     }
 }
 
+unsigned int Menu::setNextLevel(unsigned int currentLevel)
+{
+    return currentLevel++;
+}
+
 void Menu::setState(GameState state)
 {
     currentState = state;
@@ -242,6 +293,11 @@ Vector2f Menu::getCenter() const
     {
         return Vector2f(button.getPosition().x + 120.0f, window.getSize().y / 2.0f - 80.0f); // магия
     }
+}
+
+unsigned int Menu::getLevelNumber() const
+{
+    return levelNumber;
 }
 
 GameState Menu::getState() const {

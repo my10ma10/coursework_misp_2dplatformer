@@ -21,9 +21,11 @@ public:
 	Level();
 	Level(const std::string& filePathToCoinTexture, const std::string& filePathToBonusTexture, \
 		const std::string& filePathToBackGroundTexture, int numberOfLevel);
-	
+	void initLevel(int number);
 	void update(float time, const View& levelView);
 	void draw(RenderWindow& window);
+	void restart();
+	void changeLevel(int number);
 
 	void checkPortal(Vector2f playerPosition);
 	void checkViewIntersect(View& view, const Vector2u& levelSize);
@@ -42,6 +44,7 @@ public:
 	Vector2f getCenter() const;
 
 	unsigned int getNumber() const;
+	bool getPlayerLife() const;
 	Vector2f getPlayerPosition();
 
 private:

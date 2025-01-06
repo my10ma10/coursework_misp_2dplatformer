@@ -11,7 +11,12 @@ Level::Level(const std::string& filePathToCoinTexture, const std::string& filePa
     mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y), levelSize(WindowWidth, WindowHeight)
 {
     loadTextures(filePathToCoinTexture, filePathToBonusTexture, filePathToBackGroundTexture);
+    initLevel(numberOfLevel);
+}
 
+void Level::initLevel(int number)
+{
+    this->numberOfLevel = number;
     initTileMap();
     initBackground();
     initBonuses();
@@ -21,13 +26,16 @@ Level::Level(const std::string& filePathToCoinTexture, const std::string& filePa
     player = Player(&playerTexture, Vector2f(180, 480), Vector2f(5.0f, 23.0f), Vector2u(12, 7), 0.1f);
     healthBar = Bar(Vector2f(32.0f, 4.0f), player.getPosition() + Vector2f(36.0f, -16.0f), Color::Red, HealthMax);
     energyBar = Bar(Vector2f(32.0f, 4.0f), player.getPosition() + Vector2f(30.0f, -16.0f), Color::Blue, EnergyMax);
-
 }
-
 
 void Level::update(float time, const View& levelView)
 {
+    std::cout << numberOfLevel << std::endl;
     checkPortal(getPlayerPosition());
+    if (!player.alive())
+    {
+        levelState = LevelState::Failed;
+    }
     for (Object& coin : coins)
     {
         coin.updateAnimation(time, true);
@@ -76,6 +84,22 @@ void Level::draw(RenderWindow& window)
     healthBar.draw(window);
     energyBar.draw(window);
 
+}
+
+void Level::restart() {
+    levelState = LevelState::Passing;
+    coins.clear();
+    bonuses.clear();
+    enemies.clear();
+    platforms.clear();
+
+    initLevel(numberOfLevel);
+}
+
+void Level::changeLevel(int number)
+{
+    numberOfLevel = number;
+    initLevel(number);
 }
 
 void Level::loadTextures(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
@@ -436,6 +460,11 @@ Vector2f Level::getCenter() const
 unsigned int Level::getNumber() const
 {
     return numberOfLevel;
+}
+
+bool Level::getPlayerLife() const
+{
+    return player.alive();
 }
 
 Vector2f Level::getPlayerPosition()
