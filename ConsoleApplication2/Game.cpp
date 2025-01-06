@@ -1,15 +1,15 @@
 #include "Game.h"
 
-Game::Game(const std::string& iconPath, const std::string& coinSheetPath, const std::string& bonusSheetPath, \
-	const std::string& backgroundPath, unsigned int levelIndex) : currentLevel(levelIndex),
+Game::Game(GameState& gameState, const std::string& iconPath, const std::string& coinSheetPath, 
+	const std::string& bonusSheetPath, const std::string& backgroundPath, unsigned int& levelIndex) : 
+	currentState(gameState),
+	currentLevel(levelIndex),
 	level(coinSheetPath, bonusSheetPath, backgroundPath, levelIndex),
-	window(VideoMode(1920, 1080), L"Игра", Style::Fullscreen),
-	gameState(GameState::Main),
-	menu(window),
+	window(VideoMode(1080, 1080), L"Игра", Style::Default),
+	prevState(GameState::Main),
+	menu(window, gameState, levelIndex),
 	timeStep(1.0f / 60.0f),
 	accumulator(0.0f),
-	isProcessPaused(false),
-	pauseState(true), 
 	availableLevel(1),
 	levelView(Vector2f(0.0f, 0.0f), Vector2f(LevelViewHeight, LevelViewHeight)),
 	menuView(Vector2f(0.0f, 0.0f), Vector2f(MenuViewHeight, MenuViewHeight))
@@ -27,6 +27,12 @@ Game::Game(const std::string& iconPath, const std::string& coinSheetPath, const 
 	playerAndViewCollideSprite.setTextureRect(viewRectBounds);
 	playerAndViewCollider = Collider(playerAndViewCollideSprite);
 	backCollider = Collider(levelLimitViewSprite);
+
+	menu.setCallback([this](bool pred) 
+		{
+			isProcessPaused = pred;
+		}
+	);
 }
 
 void Game::run()
@@ -57,10 +63,6 @@ void Game::processEvents()
 		case Event::Closed:
 			window.close();
 			break;
-		case Event::Resized:
-			changeViewAspectRatio(levelView);
-			changeViewAspectRatio(menuView);
-			break;
 		case Event::KeyPressed:
 			if (event.key.code == Keyboard::Escape)
 			{
@@ -76,54 +78,57 @@ void Game::processEvents()
 
 void Game::update(float timeStep)
 {
-	if (menu.getLevelNumber() != currentLevel)
+	changeViewAspectRatio(levelView);
+	changeViewAspectRatio(menuView);
+	if (isProcessPaused and currentState == GameState::Game)
 	{
-		currentLevel = menu.getLevelNumber();
-		level.changeLevel(currentLevel);
+		currentState = GameState::Paused;
 	}
-	if (gameState == GameState::Game)
+	else if (!isProcessPaused and currentState == GameState::Paused)
 	{
-		if (!isProcessPaused)
+		currentState = GameState::Game;
+
+	}
+	if (currentState == GameState::Game)
+	{
+		switch (level.getState())
 		{
-			switch (level.getState())
-			{
-			case LevelState::Failed:
-				menu.setState(GameState::GameOver);
-				break;
-			case LevelState::Complete:
-				menu.setState(GameState::Complete);
-				break;
-			case LevelState::Passing:
-				level.update(timeStep, levelView);
-				break;
-			default:
-				break;
-			}
-			level.updatePlatfotmsCollide();
-			level.updateCoinCollecting();
-			level.updateColliders(levelView, backCollider, levelLimitViewSprite, \
-				playerAndViewCollideSprite, playerAndViewCollider);
+		case LevelState::Failed:
+			currentState = GameState::GameOver;
+			break;
+		case LevelState::Complete:
+			currentState = GameState::Complete;
+			break;
+		case LevelState::Passing:
+			level.update(timeStep, levelView);
+			break;
+		default:
+			break;
 		}
+		level.updatePlatfotmsCollide();
+		level.updateCoinCollecting();
+		level.updateColliders(levelView, backCollider, levelLimitViewSprite, \
+			playerAndViewCollideSprite, playerAndViewCollider);
 	}
 	else
 	{
-		if (level.getState() != LevelState::Passing and level.getPlayerLife() or gameState == GameState::GameOver)
+		menu.update(currentState, availableLevel, currentLevel);
+		if (level.getState() != LevelState::Passing 
+			or currentState == GameState::Main and prevState == GameState::Paused)
 		{
 			level.restart();
 		}
-		menu.update(availableLevel, currentLevel);
+		checkState();
 	}
 	updateAvailables();
 	currentLevel = level.getNumber();
-	updateState();
 }
 
 void Game::render()
 {
 	window.clear(Color::White);
-
 	Font font;
-	if (gameState == GameState::Game)
+	if (currentState == GameState::Game)
 	{
 		window.setView(levelView);
 		level.draw(window);
@@ -132,7 +137,7 @@ void Game::render()
 	{
 		menuView.setCenter(menu.getCenter());
 		window.setView(menuView);
-		menu.render();
+		menu.render(currentState);
 	}
 	window.display();
 }
@@ -145,11 +150,6 @@ void Game::updateAvailables()
 	}
 }
 
-void Game::updateState()
-{
-	gameState = menu.getState();
-}
-
 void Game::initView()
 {
 	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
@@ -160,13 +160,22 @@ void Game::initView()
 void Game::changeViewAspectRatio(View& view) const
 {
 	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
-	if (gameState == GameState::Game)
+	if (currentState == GameState::Game)
 	{
 		view.setSize(aspectRatio * LevelViewWidth, LevelViewHeight);
 	}
 	else
 	{
 		view.setSize(aspectRatio * MenuViewWidth, MenuViewHeight);
+	}
+}
+
+void Game::checkState()
+{
+	if (prevState != currentState)
+	{
+		prevState = currentState;
+		menu.setClickable(false);
 	}
 }
 

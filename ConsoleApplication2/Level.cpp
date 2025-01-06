@@ -30,7 +30,6 @@ void Level::initLevel(int number)
 
 void Level::update(float time, const View& levelView)
 {
-    std::cout << numberOfLevel << std::endl;
     checkPortal(getPlayerPosition());
     if (!player.alive())
     {

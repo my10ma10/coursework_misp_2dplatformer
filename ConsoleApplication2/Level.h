@@ -12,7 +12,7 @@
 #include <unordered_map>
 #include <vector>
 
-enum class ObjectType { COIN, HEART, BONUS };
+enum class ObjectType { Coin, Potion, Bubble, Boot };
 enum class LevelState {Failed, Complete, Passing};
 
 class Level

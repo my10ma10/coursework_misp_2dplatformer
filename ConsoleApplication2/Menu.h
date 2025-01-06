@@ -1,8 +1,9 @@
 #pragma once
 #include "Button.h"
 #include "Consts.h"
-#include <SFML/Graphics.hpp>
+#include <functional>
 #include <vector>
+#include <SFML/Graphics.hpp>
 
 enum class GameState {
     Main,
@@ -11,22 +12,22 @@ enum class GameState {
     Achievements,
     Complete,
     GameOver,
-    Exit
+    Paused
 };
 
 class Menu
 {
 public:
-    Menu(RenderWindow& window);
-    void update(unsigned int availableLevel, unsigned int currentLevel);
-    void render();
+    Menu(RenderWindow& window, GameState& state, unsigned int& currLevel);
+    void update(GameState state, unsigned int availableLevel, unsigned int currentLevel);
+    void render(GameState state);
+    void restartTimer();
 
-    unsigned int setNextLevel(unsigned int currentLevel);
-    void setState(GameState state);
+    void setCallback(const std::function<void(bool)>& callback);
+    void setClickable(bool pred);
 
     Vector2f getCenter() const;
     unsigned int getLevelNumber() const;
-    GameState getState() const;
 
 private:
     void initMainMenu(Vector2f buttonSize);
@@ -34,14 +35,17 @@ private:
     void initCompleteMenu(Vector2f buttonSize);
     void initGameoverMenu(Vector2f buttonSize);
     void initAchievementsMenu(Vector2f buttonSize);
+    void initPauseMenu(Vector2f buttonSize);
     void updateMainMenu();
     void updateLevelsMenu();
     void updateCompleteMenu();
     void updateGameoverMenu();
     void updateAchievementsMenu();
+    void updatePauseMenu();
     void updateTransparent(unsigned int availableLevel, unsigned int currentLevel);
     void drawButtons(std::vector<Button> buttons);
-    void checkState();
+
+    std::function<void(bool)> pauseCallback;
 
     RenderWindow& window;
     std::vector<Button> mainButtons;
@@ -49,18 +53,17 @@ private:
     std::vector<Button> completeButtons;
     std::vector<Button> gameoverButtons;
     std::vector<Button> achievementsButtons;
-    GameState prevState;
-    GameState currentState;
+    std::vector<Button> pauseButtons;
     Texture backgroundTexture;
     Sprite backgroundSprite;
     Font font;
-
+    GameState& currentState;
     Clock clickTimer;
     Time clickDelay = milliseconds(200);
-    bool isClickable;
     Color shapeColor = Color(56, 60, 74);
     Color textColor = Color::White;
     Color transparentShapeColor = Color(shapeColor.r, shapeColor.g, shapeColor.b, shapeColor.a * 0.4);
-    unsigned int levelNumber;
+    unsigned int& levelNumber;
+    bool isClickable;
 };
 

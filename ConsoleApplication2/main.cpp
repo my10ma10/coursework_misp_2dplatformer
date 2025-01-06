@@ -2,8 +2,10 @@
 
 int main()
 {
-   Game game("Image\\icon.png", "Image\\coin-Sheet.png",
-        "Image\\potion-Sheet.png", "Image\\back3.png", 1);
+   GameState gameState = GameState::Main;
+   unsigned int levelNumber = 1;
+   Game game(gameState, "Image\\icon.png", "Image\\coin-Sheet.png",
+        "Image\\potion-Sheet.png", "Image\\back3.png", levelNumber);
     game.run();  
     return 0;
 }
