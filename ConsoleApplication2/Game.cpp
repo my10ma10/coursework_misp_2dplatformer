@@ -1,10 +1,9 @@
 #include "Game.h"
 
-Game::Game(GameState& gameState, const std::string& iconPath, const std::string& coinSheetPath, 
-	const std::string& bonusSheetPath, const std::string& backgroundPath, unsigned int& levelIndex) : 
+Game::Game(GameState& gameState, const std::string& iconPath, const std::string& backgroundPath, unsigned int& levelIndex) : 
 	currentState(gameState),
 	currentLevel(levelIndex),
-	level(coinSheetPath, bonusSheetPath, backgroundPath, levelIndex),
+	level(backgroundPath, levelIndex),
 	window(VideoMode(1080, 1080), L"Игра", Style::Default),
 	prevState(GameState::Main),
 	menu(window, gameState, levelIndex),

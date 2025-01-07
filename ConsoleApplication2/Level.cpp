@@ -5,12 +5,11 @@ Level::Level() : levelState(LevelState::Passing), numberOfLevel(0), tileSize(16,
 {
 }
 
-Level::Level(const std::string& filePathToCoinTexture, const std::string& filePathToBonusTexture, \
-    const std::string& filePathToBackGroundTexture, int numberOfLevel) : \
+Level::Level(const std::string& filePathToBackGroundTexture, int numberOfLevel) : \
     levelState(LevelState::Passing), numberOfLevel(numberOfLevel), tileSize(16, 16), tilesAmount(48, 48), \
     mapSize(tileSize.x * tilesAmount.x, tileSize.y * tilesAmount.y), levelSize(WindowWidth, WindowHeight)
 {
-    loadTextures(filePathToCoinTexture, filePathToBonusTexture, filePathToBackGroundTexture);
+    loadTextures(filePathToBackGroundTexture);
     initLevel(numberOfLevel);
 }
 
@@ -94,15 +93,9 @@ void Level::changeLevel(int number)
     initLevel(number);
 }
 
-void Level::loadTextures(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
-    const std::string filePathToBackGroundTexture)
+void Level::loadTextures(const std::string backGroundTexturePath)
 {
-    if (!bonusTexture.loadFromFile(filePathToBonusTexture))
-    {
-        std::cerr << "Can't load an image";
-    }
-
-    if (!backgroundTexture.loadFromFile("Image\\back3.png"))
+    if (!backgroundTexture.loadFromFile(backGroundTexturePath))
     {
         std::cerr << "Can't load an image";
     }

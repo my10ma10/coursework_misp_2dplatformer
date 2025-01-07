@@ -18,8 +18,7 @@ class Level
 {
 public:
 	Level();
-	Level(const std::string& filePathToCoinTexture, const std::string& filePathToBonusTexture, \
-		const std::string& filePathToBackGroundTexture, int numberOfLevel);
+	Level(const std::string& backGroundTexturePath, int numberOfLevel);
 	void initLevel(int number);
 	void update(float time, const View& levelView);
 	void draw(RenderWindow& window);
@@ -48,8 +47,7 @@ public:
 	Vector2f getPlayerPosition();
 
 private:
-	void loadTextures(const std::string filePathToCoinTexture, const std::string filePathToBonusTexture, \
-		const std::string filePathToBackGroundTexture);
+	void loadTextures(const std::string backGroundTexturePath);
 	template <typename T>
 	void loadInMap(const std::string& path, std::unordered_map<T, Texture>& textures);
 	void initEnemies();
@@ -65,9 +63,6 @@ private:
 	std::vector<Enemy> enemies;
 	Object portal;
 	Player player;
-	Sprite platformSprite;
-	Sprite coinSprite;
-	Sprite bonusSprite;
 	Sprite backGroundSprite;
 	Bar healthBar;
 	Bar energyBar;
@@ -82,13 +77,10 @@ private:
 
 	std::unordered_map<EnemyName, Texture> enemyTextures;
 	std::unordered_map<ObjectType, Texture> bonusTextures;
-	Texture enemyTexture;
-	Texture bonusTexture;
 	Texture backgroundTexture;
 	Texture playerTexture;
 
 	Vector2u levelSize;
-	Vector2f position;
 	int numberOfLevel;
 };
 

@@ -7,8 +7,7 @@
 class Game
 {
 public:
-    Game(GameState& gameState, const std::string& iconPath, const std::string& coinSheetPath, 
-        const std::string& bonusSheetPath, const std::string& backgroundPath, unsigned int& levelIndex);
+    Game(GameState& gameState, const std::string& iconPath, const std::string& backgroundPath, unsigned int& levelIndex);
     void run();
 
     unsigned int getCurrentLevel() const;
