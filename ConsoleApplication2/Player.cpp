@@ -3,8 +3,7 @@
 
 Player::Player(): Person()
 {
-	wasJumpKeyPressed = isJumpKeyPressed = isBlocking = bubbleBonusState = changedRow = false;
-
+	wasJumpKeyPressed = isJumpKeyPressed = isBlocking = changedRow = false;
 }
 
 Player::Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime) : \
@@ -12,14 +11,17 @@ Player::Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imag
 {
 	health = HealthMax;
 	energy = EnergyMax / 2.0f;
-	wasJumpKeyPressed = isJumpKeyPressed = isBlocking = bubbleBonusState = changedRow = false;
-	personSpeed = 0.075f;
-	if (!bubbleTexture.loadFromFile("Image\\bubble.png"))
-	{
-		std::cerr << "Can't load an image";
-	}
-	Sprite bubble = Sprite(bubbleTexture);
-	bubble.setScale(Vector2f(1.5f, 1.5f));
+	wasJumpKeyPressed = isJumpKeyPressed = isBlocking = changedRow = false;
+
+	bonusStates[ObjectType::Armor] = false;
+	bonusStates[ObjectType::Bubble] = false;
+	bonusStates[ObjectType::Boot] = false;
+	//if (!bubbleTexture.loadFromFile("Image\\bubble.png"))
+	//{
+	//	std::cerr << "Can't load an image";
+	//}
+	//Sprite bubble = Sprite(bubbleTexture);
+	//bubble.setScale(Vector2f(1.5f, 1.5f));
 }
 
 void Player::draw(RenderWindow& window)
@@ -27,10 +29,6 @@ void Player::draw(RenderWindow& window)
 	if (life)
 	{
 		window.draw(sprite);
-	}
-	if (bubbleBonusState)
-	{
-		//window.draw(bubble);
 	}
 }
 
@@ -45,7 +43,6 @@ void Player::update(float time)
 			removeEnemy(enemy);
 		}
 	}
-
 	keyProcessing();
 	if (velocity.x == 0.0f)
 	{
@@ -63,7 +60,7 @@ void Player::update(float time)
 			faceRight = false;
 		}
 	}
-	if (velocity.y > personSpeed)
+	if (velocity.y > speed)
 	{
 		canJump = false;
 	}
@@ -75,9 +72,9 @@ void Player::update(float time)
 
 	attackUpdate();
 	blockUpdate();
-	updateBonuses();
 	updateAnimation(time / 1000, faceRight);
 	updateHealth();
+	updateBonuses();
 	if (energy < EnergyMax)
 	{
 		energy += 0.2f;
@@ -90,12 +87,12 @@ void Player::attackUpdate()
 {
 	if (faceRight)
 	{
-		attackRange = FloatRect(Vector2f(getSprite().getPosition() - Vector2f(0, (getSpriteSize().y - getSize().y) / 2.0f)),
+		attackRange = FloatRect(Vector2f(getSprite().getPosition() - Vector2f(0, (getSpriteSize().y - getBodySize().y) / 2.0f)),
 			Vector2f(getSpriteSize() / 2.0f));
 	}
 	else
 	{
-		attackRange = FloatRect(Vector2f(getSprite().getPosition() - Vector2f(getSpriteSize().x / 2.0f, (getSpriteSize().y - getSize().y) / 2.0f)),
+		attackRange = FloatRect(Vector2f(getSprite().getPosition() - Vector2f(getSpriteSize().x / 2.0f, (getSpriteSize().y - getBodySize().y) / 2.0f)),
 			Vector2f(getSpriteSize() / 2.0f));
 	}
 
@@ -144,7 +141,12 @@ void Player::updateHealth()
 	{
 		life = false;
 	}
+	
 	health = std::max(0, health);
+	if (health < HealthMax)
+	{
+		health += 0.05f;
+	}
 }
 
 void Player::keyProcessing()
@@ -153,12 +155,12 @@ void Player::keyProcessing()
 	if ((Keyboard::isKeyPressed(Keyboard::Left) or Keyboard::isKeyPressed(Keyboard::A))
 		and !attackState and !superAttackState)
 	{
-		velocity.x -= personSpeed;
+		velocity.x -= speed;
 	}
 	if ((Keyboard::isKeyPressed(Keyboard::Right) or Keyboard::isKeyPressed(Keyboard::D))
 		and !attackState and !superAttackState)
 	{
-		velocity.x += personSpeed;
+		velocity.x += speed;
 	}
 }
 
@@ -268,7 +270,7 @@ void Player::removeEnemy(Enemy* enemy)
 
 void Player::collectCoin(Object& coin)
 {
-	if (body.getGlobalBounds().intersects(coin.getSprite().getGlobalBounds()) and coin.alive())
+	if (coin.alive())
 	{
 		coinCounter++;
 		coin.kill();
@@ -278,8 +280,8 @@ void Player::applyBonus(Object& bonus)
 {
 	if (bonus.alive()) 
 	{
-		// удалить бонус
-		// назначить бонус игроку (отдельный метод)
+		activateBonus(bonus.getType());
+		bonus.kill();
 	}
 }
 
@@ -295,6 +297,45 @@ void Player::applyPotion(Object& potion)
 	}
 }
 
+void Player::activateBonus(ObjectType type)
+{
+	bonusStates[type] = true;
+	if (type == ObjectType::Armor)
+	{
+		/*for (Enemy* enemy : enemiesPtr)
+		{
+			enemy.
+		}*/
+	}
+	if (type == ObjectType::Boot)
+	{
+		this->speed = PersonSpeed * 1.25f;
+		bootClock.restart().asSeconds();
+	}
+}
+
+void Player::deactivateBonus(ObjectType type)
+{
+	bonusStates[type] = false;
+	this->speed = PersonSpeed / 1.25f;
+}
+
+void Player::updateBonuses()
+{
+	if (armorClock.getElapsedTime().asSeconds() > bonusDeltaTime and bonusStates[ObjectType::Armor])
+	{
+		deactivateBonus(ObjectType::Armor);
+	}
+	else if (bubbleClock.getElapsedTime().asSeconds() > bonusDeltaTime and bonusStates[ObjectType::Bubble])
+	{
+		deactivateBonus(ObjectType::Bubble);
+	}
+	else if (bootClock.getElapsedTime().asSeconds() > bonusDeltaTime and bonusStates[ObjectType::Boot])
+	{
+		deactivateBonus(ObjectType::Boot);
+	}
+}
+
 void Player::jump(float time)
 {
 	if ((Keyboard::isKeyPressed(Keyboard::Up) or Keyboard::isKeyPressed(Keyboard::W)) and canJump)
@@ -302,11 +343,6 @@ void Player::jump(float time)
 		canJump = false;
 		velocity.y = -sqrtf(2.0f * gravity * jumpHeight);
 	}
-}
-
-void Player::updateBonuses()
-{
-	bubble.setPosition(getPosition() - Vector2f(24.0f, 25.0f)); // магия
 }
 
 const FloatRect& Player::getAttackRange() const
@@ -319,7 +355,17 @@ std::vector<Enemy*> Player::getEnemies() const
 	return enemiesPtr;
 }
 
-Vector2f Player::getSize() const
+bool Player::getInvulnerability()
+{
+	return bonusStates[ObjectType::Bubble];
+}
+
+bool Player::getProtection()
+{
+	return bonusStates[ObjectType::Armor];
+}
+
+Vector2f Player::getBodySize() const
 {
 	return body.getGlobalBounds().getSize();
 }

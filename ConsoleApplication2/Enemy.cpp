@@ -16,26 +16,26 @@ Enemy::Enemy(Texture* texture, Vector2f position, Vector2u imageCount, \
 
 void Enemy::update(float time)
 {
+	body.setPosition(sprite.getPosition());
 	playerPtr->getPosition().x > this->getPosition().x ? faceRight = true : faceRight = false;
 	updateAnimation(time / 1.5f, faceRight);
-	body.setPosition(getPosition());
 
-	if (moveRangeIntersect(FloatRect(playerPtr->getPosition() - playerPtr->getSize() / 2.0f, playerPtr->getSize())))
+	if (moveRangeIntersect(playerPtr->getBody().getGlobalBounds()))
 	{
 		if (!faceRight)
 		{
-			velocity.x = -personSpeed * time;
+			velocity.x = -speed * time;
 		}
 		else if (faceRight)
 		{
-			velocity.x = personSpeed * time;
+			velocity.x = speed * time;
 		}
 	}
 	else
 	{
 		velocity.x = 0.0f;
 	}
-	if (stopRangeIntersect(FloatRect(playerPtr->getPosition() - playerPtr->getSize() / 2.0f, playerPtr->getSize())))
+	if (stopRangeIntersect(FloatRect(playerPtr->getBody().getGlobalBounds())))
 	{
 		velocity.x = 0.0f;
 	}
@@ -57,13 +57,13 @@ void Enemy::update(float time)
 			faceRight = false;
 		}
 	}
-	if (velocity.x > personSpeed)
+	if (velocity.x > speed)
 	{
-		velocity.x = personSpeed;
+		velocity.x = speed;
 	}
-	if (velocity.x < -personSpeed)
+	if (velocity.x < -speed)
 	{
-		velocity.x = -personSpeed;
+		velocity.x = -speed;
 	}
 	velocity.y += gravity * 10000 * time;
 	sprite.move(velocity * time);
@@ -155,8 +155,7 @@ void Enemy::attack()
 		if (getCurrentFrame() == 5 and !isDamageTaking)
 		{
 			isDamageTaking = true;
-			if (this->getAttackRange().intersects(FloatRect(playerPtr->getPosition() - playerPtr->getSize() / 2.0f, \
-				playerPtr->getSize())))
+			if (this->getSprite().getGlobalBounds().intersects(playerPtr->getBody().getGlobalBounds()))
 			{
 				playerPtr->takeDamage(attackPower);
 			}
@@ -173,29 +172,29 @@ void Enemy::initEnemy(EnemyName name)
 	switch (name) 
 	{
 		case EnemyName::Skeleton:
-			personSpeed = SkeletonSpeed;
+			speed = SkeletonSpeed;
 			gravity = 0.003f;
 			break;
 		case EnemyName::Wizard:
-			personSpeed = WizardSpeed;
+			speed = WizardSpeed;
 			gravity = 0.002f;
 			break;
 		case EnemyName::Tank:
-			personSpeed = TankSpeed;
+			speed = TankSpeed;
 			gravity = 0.005f;
 			break;
 		case EnemyName::Dragon:
-			personSpeed = DragonSpeed;
+			speed = DragonSpeed;
 			gravity = 0.002f;
 			health = HealthMax * 50 / 100;
 			break;
 		case EnemyName::Ghost:
-			personSpeed = GhostSpeed;
+			speed = GhostSpeed;
 			gravity = 0.001f;
 			health = HealthMax * 50 / 100;
 			break;
 		case EnemyName::DarkKnight:
-			personSpeed = DarkKnightSpeed;
+			speed = DarkKnightSpeed;
 			gravity = 0.005f;
 			health = HealthMax * 50 / 100;
 			break;

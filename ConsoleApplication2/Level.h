@@ -7,7 +7,6 @@
 #include "TileMap.h"
 #include <cstdlib>
 #include <fstream>
-#include <queue>
 #include <sstream>
 #include <unordered_map>
 #include <vector>
@@ -28,16 +27,14 @@ public:
 	void checkPortal(Vector2f playerPosition);
 	void checkViewIntersect(View& view, const Vector2u& levelSize);
 	void updatePlatfotmsCollide();
-	void updateBonuses();
-	void updateCoinCollecting();
+	void updateBonuses(float time);
 	void updateEnemies(float time);
 	void updateColliders(View& levelView, Collider& backCollider, Sprite& levelLimitViewSprite, \
 		Sprite& playerAndViewCollideSprite, Collider& playerColliderForView);
 
 	Sprite getBackGroundSprite() const;
-	std::vector<Platform>& getPlatforms();
-	std::vector<Enemy>& getEnemies();
-	std::vector<Object>& getCoins();
+	std::vector<Platform>& getPlatforms(unsigned int number);
+	std::vector<Enemy>& getEnemies(unsigned int number);
 	LevelState getState() const;
 	Vector2u getSize() const;
 	Vector2f getCenter() const;
@@ -56,11 +53,9 @@ private:
 	void initTileMap();
 
 	LevelState levelState;
-	std::vector<Platform> platforms;
-	std::vector<Object> coins;
-	std::vector<Object> potions;
-	std::vector<Object> bonuses;
-	std::vector<Enemy> enemies;
+	std::vector<std::vector<Platform> > platforms;
+	std::vector<std::vector<Object> > bonuses;
+	std::vector<std::vector<Enemy> > enemies;
 	Object portal;
 	Player player;
 	Sprite backGroundSprite;
@@ -70,7 +65,7 @@ private:
 	Collider BackCollider;
 
 	TileMap tileMap;
-	std::vector<int> tileLevel;
+	std::vector<std::vector<int> > tileLevel;
 	Vector2u tileSize;
 	Vector2u tilesAmount;
 	Vector2u mapSize;
@@ -81,7 +76,8 @@ private:
 	Texture playerTexture;
 
 	Vector2u levelSize;
-	int numberOfLevel;
+	int levelNumber;
+	size_t levelIndex;
 };
 
 

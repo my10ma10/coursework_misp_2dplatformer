@@ -79,15 +79,10 @@ void Game::update(float timeStep)
 {
 	changeViewAspectRatio(levelView);
 	changeViewAspectRatio(menuView);
-	if (isProcessPaused and currentState == GameState::Game)
-	{
-		currentState = GameState::Paused;
-	}
-	else if (!isProcessPaused and currentState == GameState::Paused)
-	{
-		currentState = GameState::Game;
+	processPause();
 
-	}
+	currentLevel = menu.getLevelNumber();
+
 	if (currentState == GameState::Game)
 	{
 		switch (level.getState())
@@ -97,6 +92,8 @@ void Game::update(float timeStep)
 			break;
 		case LevelState::Complete:
 			currentState = GameState::Complete;
+			updateAvailables();
+			level.changeLevel(currentLevel);
 			break;
 		case LevelState::Passing:
 			level.update(timeStep, levelView);
@@ -104,24 +101,24 @@ void Game::update(float timeStep)
 		default:
 			break;
 		}
+
 		level.updatePlatfotmsCollide();
-		level.updateCoinCollecting();
-		level.updateBonuses();
-		level.updateColliders(levelView, backCollider, levelLimitViewSprite, \
+		level.updateColliders(levelView, backCollider, levelLimitViewSprite,
 			playerAndViewCollideSprite, playerAndViewCollider);
 	}
 	else
 	{
 		menu.update(currentState, availableLevel, currentLevel);
-		if (level.getState() != LevelState::Passing 
-			or currentState == GameState::Main and prevState == GameState::Paused)
+		if (level.getNumber() != menu.getLevelNumber())
 		{
-			level.restart();
+			level.changeLevel(currentLevel);
 		}
 		checkState();
+
 	}
-	updateAvailables();
-	currentLevel = level.getNumber();
+	//std::cout << "Level Num: " << level.getNumber() \
+	//	<< ", Available: " << availableLevel \
+	//	<< ", Menu num: " << menu.getLevelNumber() << std::endl;
 }
 
 void Game::render()
@@ -144,9 +141,9 @@ void Game::render()
 
 void Game::updateAvailables()
 {
-	if (level.getState() == LevelState::Complete and level.getNumber() == availableLevel and availableLevel <= 5)
+	if (level.getState() == LevelState::Complete and level.getNumber() == availableLevel)
 	{
-		availableLevel = level.getNumber() + 1;
+		availableLevel += 1;
 	}
 }
 
@@ -172,10 +169,27 @@ void Game::changeViewAspectRatio(View& view) const
 
 void Game::checkState()
 {
+	if (level.getState() != LevelState::Passing ||
+		(currentState == GameState::Main && prevState == GameState::Paused))
+	{
+		level.restart();
+	}
 	if (prevState != currentState)
 	{
 		prevState = currentState;
 		menu.setClickable(false);
+	}
+}
+
+void Game::processPause()
+{
+	if (isProcessPaused and currentState == GameState::Game)
+	{
+		currentState = GameState::Paused;
+	}
+	else if (!isProcessPaused and currentState == GameState::Paused)
+	{
+		currentState = GameState::Game;
 	}
 }
 

@@ -20,6 +20,7 @@ private:
     void initView();
     void changeViewAspectRatio(View& view) const;
     void checkState();
+    void processPause();
 
     RenderWindow window;
     View levelView;

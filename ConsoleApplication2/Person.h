@@ -32,7 +32,7 @@ protected:
 	bool killing;
 	Vector2f direction;
 	Vector2f velocity;
-	float personSpeed = 1.0f;
+	float speed;
 	float gravity = 0.001f;
 	FloatRect attackRange;
 };

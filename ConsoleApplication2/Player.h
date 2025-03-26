@@ -1,6 +1,8 @@
 #pragma once
 #include "Person.h"
 #include "Object.h"
+#include <functional>
+#include <unordered_map>
 
 class Player : public Person
 {
@@ -10,29 +12,34 @@ public:
 
 	void draw(RenderWindow& window);
 	void update(float time) override;
-	void attackUpdate();
-	void blockUpdate();
-	void updateHealth() override;
-	void keyProcessing();
 
 	void attack();
 	void superAttack();
-	void superAttackAnimation();
 	void addEnemy(Enemy* enemy);
 	void removeEnemy(Enemy* enemy);
 	void collectCoin(Object& coin);
 	void applyBonus(Object& bonus);
 	void applyPotion(Object& heart);
 	void jump(float time);
-	void updateBonuses();
 
 	const FloatRect& getAttackRange() const;
 	std::vector<Enemy*> getEnemies() const;
-	Vector2f getSize() const;
+	bool getInvulnerability();
+	bool getProtection();
+	Vector2f getBodySize() const;
 	unsigned int getAnimCount() const;
 	float getJumpHeight() const;
 
 private:
+	void attackUpdate();
+	void blockUpdate();
+	void updateHealth() override;
+	void keyProcessing();
+	void activateBonus(ObjectType type);
+	void deactivateBonus(ObjectType type);
+	void superAttackAnimation();
+	void updateBonuses();
+
 	float energyDelta = 15.0f;
 	unsigned int coinCounter = 0;
 	bool attacking = false;
@@ -40,14 +47,16 @@ private:
 	bool superAttackState = false;
 	bool attackState = false;
 	bool isBlocking;
-	bool bubbleBonusState;
 	bool isJumpKeyPressed;
 	bool wasJumpKeyPressed;
 	bool changedRow;
 	unsigned int superAttackRow = 1;
 	float jumpHeight = 36.0f;
-	Texture bubbleTexture;
-	Sprite bubble;
-	std::vector<Enemy*> enemiesPtr; // 
+	std::vector<Enemy*> enemiesPtr;
+	std::unordered_map<ObjectType, bool> bonusStates;
+	Clock armorClock;
+	Clock bootClock;
+	Clock bubbleClock;
+	float bonusDeltaTime = 10.0f;
 };
 

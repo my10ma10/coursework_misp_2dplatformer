@@ -187,6 +187,7 @@ void Menu::updateCompleteMenu()
                 if (button.getText().getString() == L"Далее")
                 {
                     currentState = GameState::Game;
+                    levelNumber += 1;
                 }
                 else if (button.getText().getString() == L"Главное меню")
                 {
