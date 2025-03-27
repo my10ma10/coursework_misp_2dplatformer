@@ -21,11 +21,12 @@ void Level::initLevel(int number)
     platforms.resize(5);
     bonuses.resize(5);
     enemies.resize(5);
+    initObjectsPositions();
     initTileMap();
     initBackground();
     initBonuses();
     initEnemies();
-    player = Player(&playerTexture, Vector2f(500, 100), Vector2f(8.0f, 20.0f), Vector2u(12, 7), 0.1f);
+    player = Player(&playerTexture, Vector2f(playerPosition), Vector2f(8.0f, 20.0f), Vector2u(12, 7), 0.1f);
     healthBar = Bar(Vector2f(32.0f, 4.0f), player.getPosition() + Vector2f(36.0f, -16.0f), Color::Red, HealthMax);
     energyBar = Bar(Vector2f(32.0f, 4.0f), player.getPosition() + Vector2f(30.0f, -16.0f), Color::Blue, EnergyMax);
 }
@@ -84,6 +85,24 @@ void Level::changeLevel(int number)
 {
     levelNumber = number;
     restart();
+}
+
+ObjectType Level::stringToObjectType(std::string nameString)
+{
+    static const std::map<std::string, ObjectType> objects = {
+        {"Coin", ObjectType::Coin},
+        {"Potion", ObjectType::Potion},
+        {"Armor", ObjectType::Armor},
+        {"Bubble", ObjectType::Bubble},
+        {"Boot", ObjectType::Boot},
+        {"Portal", ObjectType::Portal}
+    };
+
+    auto it = objects.find(nameString);
+    if (it == objects.end()) {
+        std::cerr << "An object doesn't find by name:" << nameString << "\n";
+    }
+    return it->second;
 }
 
 void Level::loadTextures(const std::string backGroundTexturePath)
@@ -274,6 +293,8 @@ void Level::updateColliders(View& levelView, Collider& backCollider, Sprite& lev
 
 void Level::initEnemies()
 {
+    std::string objName;
+    std::vector <Vector2i> vecPositions;
     for (auto& pair : enemyTextures)
     {
         switch (pair.first)
@@ -318,34 +339,18 @@ void Level::initBackground()
 
 void Level::initBonuses()
 {
-    for (auto& pair : bonusTextures)
+    std::map < ObjectType, std::vector <Vector2i> > levelObjectsPositions = allLevelsObjectsPositions[levelNumber];
+    for (auto& typeTexturePair : bonusTextures)
     {
-        switch (pair.first)
-        {
-        case ObjectType::Coin:
-            bonuses[levelIndex].push_back(Object(&pair.second, Vector2f(170, 496),
-                Vector2u(8, 1), 0.1f, pair.first));
-            bonuses[levelIndex].push_back(Object(&pair.second, Vector2f(200, 496),
-                Vector2u(8, 1), 0.1f, pair.first));
-            break;
-        case ObjectType::Potion:
-            bonuses[levelIndex].push_back(Object(&pair.second, Vector2f(660, 480),
-                Vector2u(8, 1), 0.1f, pair.first));
-            break;
-        case ObjectType::Armor:
-            break;
-        case ObjectType::Bubble:
-            break;
-        case ObjectType::Boot:
-            bonuses[levelIndex].push_back(Object(&pair.second, Vector2f(600, 480),
-                Vector2u(8, 1), 0.1f, pair.first));
-            break;
-        case ObjectType::Portal:
-            portal = Object(&pair.second, Vector2f(272, 256), Vector2u(8, 1), 0.1f, 
+        if (typeTexturePair.first == ObjectType::Portal) {
+            portal = Object(&typeTexturePair.second, Vector2f(portalPosition), Vector2u(8, 1), 0.1f,
                 ObjectType::Portal, Vector2f(20, 32));
-            break;
-        default:
-            break;
+        }
+
+        /// all other bonuses
+        for (Vector2i position : levelObjectsPositions[typeTexturePair.first /*vector of positions for type*/]) {
+            bonuses[levelIndex].push_back(Object(&typeTexturePair.second, Vector2f(position),
+                Vector2u(8, 1), 0.1f, typeTexturePair.first));
         }
     }
 }
@@ -395,7 +400,50 @@ void Level::initTileMap()
     }
 }
 
+void Level::initObjectsPositions()
+{
+    std::map <ObjectType, std::vector <Vector2i> > tempMap;
+    std::vector <Vector2i> coords;
+    std::string objectName, line;
+    ObjectType objType;
 
+    std::ifstream file("Files\\objectsLevel" + std::to_string(levelNumber) + ".txt");
+    if (!file.is_open()) {
+        std::cerr << "File Executer can't open a file\n";
+    }
+
+    std::getline(file, objectName);
+    file >> playerPosition.x >> playerPosition.y;
+    file.ignore();
+
+    std::getline(file, objectName);
+    file >> portalPosition.x >> portalPosition.y;
+    file.ignore();
+
+
+    for (int i = 1; i <= ExecutedObjectTypesCount; ++i) {
+        coords.clear();
+        tempMap.clear();
+
+        std::getline(file, objectName);
+        objType = stringToObjectType(objectName);
+
+
+        while (std::getline(file, line) && !line.empty() && std::any_of(line.begin(), line.end(), ::isdigit)) {
+            if (!line.empty()) {
+                Vector2i position;
+                std::istringstream iss(line);
+                iss >> position.x >> position.y;
+                coords.push_back(position);
+            }
+            else {
+                break;
+            }
+        }
+        allLevelsObjectsPositions[levelNumber][objType] = std::move(coords);
+    }
+    file.close();
+}
 
 Sprite Level::getBackGroundSprite() const
 {

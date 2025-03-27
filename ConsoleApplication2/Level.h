@@ -44,6 +44,8 @@ public:
 	Vector2f getPlayerPosition();
 
 private:
+	ObjectType stringToObjectType(std::string name);
+
 	void loadTextures(const std::string backGroundTexturePath);
 	template <typename T>
 	void loadInMap(const std::string& path, std::unordered_map<T, Texture>& textures);
@@ -51,6 +53,7 @@ private:
 	void initBackground();
 	void initBonuses();
 	void initTileMap();
+	void initObjectsPositions(); /// in constructor
 
 	LevelState levelState;
 	std::vector<std::vector<Platform> > platforms;
@@ -61,6 +64,7 @@ private:
 	Sprite backGroundSprite;
 	Bar healthBar;
 	Bar energyBar;
+	std::map <unsigned int, std::map <ObjectType, std::vector <Vector2i> > > allLevelsObjectsPositions;
 
 	Collider BackCollider;
 
@@ -69,6 +73,9 @@ private:
 	Vector2u tileSize;
 	Vector2u tilesAmount;
 	Vector2u mapSize;
+	Vector2u portalPosition;
+	Vector2u playerPosition;
+
 
 	std::unordered_map<EnemyName, Texture> enemyTextures;
 	std::unordered_map<ObjectType, Texture> bonusTextures;
@@ -78,6 +85,7 @@ private:
 	Vector2u levelSize;
 	int levelNumber;
 	size_t levelIndex;
+
 };
 
 

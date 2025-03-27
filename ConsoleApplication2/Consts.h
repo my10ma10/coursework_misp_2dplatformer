@@ -11,6 +11,7 @@ static const float PersonSpeed = 0.075f;
 static const int HealthMax = 100;
 static const int EnergyMax = 100;
 static const int PlayerAttackPower = 20;
+const int ExecutedObjectTypesCount = 5; // Coin, Potion, Armor, Bubble, Boot
 
 static const float SkeletonSpeed = 1800.0f;
 static const float WizardSpeed = 1300.0f;
