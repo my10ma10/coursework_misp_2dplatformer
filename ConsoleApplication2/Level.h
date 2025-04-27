@@ -44,7 +44,13 @@ public:
 	Vector2f getPlayerPosition();
 
 private:
-	ObjectType stringToObjectType(std::string name);
+	template<typename T>
+	T stringToType(const std::string& name);
+
+	template<>
+	ObjectType stringToType<ObjectType>(const std::string& name);
+	template<>
+	EnemyName stringToType<EnemyName>(const std::string& name);
 
 	void loadTextures(const std::string backGroundTexturePath);
 	template <typename T>
@@ -53,9 +59,10 @@ private:
 	void initBackground();
 	void initBonuses();
 	void initTileMap();
-	template<typename T>
-	void initEntitiesPositions(std::string filePath, 
-		std::map <unsigned int, std::map <T, std::vector <Vector2i> > >& positionsMap); /// in constructor
+	void initPositions(std::string filePath, 
+		std::map<unsigned int, std::map<ObjectType, std::vector<Vector2i>>>& positionsMap);
+	void initPositions(std::string filePath,
+		std::map<unsigned int, std::map<EnemyName, std::vector<Vector2i>>>& positionsMap);
 
 	LevelState levelState;
 	std::vector<std::vector<Platform> > platforms;
@@ -66,8 +73,8 @@ private:
 	Sprite backGroundSprite;
 	Bar healthBar;
 	Bar energyBar;
-	std::map <unsigned int, std::map <Enemy, std::vector <Vector2i> > > allLevelsEnemiesPositions;
 	std::map <unsigned int, std::map <ObjectType, std::vector <Vector2i> > > allLevelsObjectsPositions;
+	std::map <unsigned int, std::map <EnemyName, std::vector <Vector2i> > > allLevelsEnemiesPositions;
 
 	Collider BackCollider;
 
@@ -79,6 +86,7 @@ private:
 	Vector2u portalPosition;
 	Vector2u playerPosition;
 
+	std::map <EnemyName, Vector2i> enemiesSize;
 
 	std::unordered_map<EnemyName, Texture> enemyTextures;
 	std::unordered_map<ObjectType, Texture> bonusTextures;

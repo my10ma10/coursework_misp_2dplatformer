@@ -21,8 +21,8 @@ void Level::initLevel(int number)
     platforms.resize(5);
     bonuses.resize(5);
     enemies.resize(5);
-    initEntitiesPositions("Files\\objectsLevel", allLevelsObjectsPositions);
-    initEntitiesPositions("Files\\enemiesLevel", allLevelsEnemiesPositions);
+    initPositions("Files\\objectsLevel", allLevelsObjectsPositions);
+    initPositions("Files\\enemiesLevel", allLevelsEnemiesPositions);
     initTileMap();
     initBackground();
     initBonuses();
@@ -88,7 +88,8 @@ void Level::changeLevel(int number)
     restart();
 }
 
-ObjectType Level::stringToObjectType(std::string nameString)
+template<>
+ObjectType Level::stringToType<ObjectType>(const std::string& name)
 {
     static const std::map<std::string, ObjectType> objects = {
         {"Coin", ObjectType::Coin},
@@ -99,9 +100,31 @@ ObjectType Level::stringToObjectType(std::string nameString)
         {"Portal", ObjectType::Portal}
     };
 
-    auto it = objects.find(nameString);
+    auto it = objects.find(name);
     if (it == objects.end()) {
-        std::cerr << "An object doesn't find by name:" << nameString << "\n";
+        std::cerr << "An object doesn't find by name:" << name << "\n";
+        return ObjectType::Coin;
+    }
+    return it->second;
+}
+
+
+template<>
+EnemyName Level::stringToType<EnemyName>(const std::string& name)
+{
+    static const std::map<std::string, EnemyName> enemyEntities = {
+        {"Skeleton", EnemyName::Skeleton},
+        {"Tank", EnemyName::Tank},
+        {"Wizard", EnemyName::Wizard},
+        {"Ghost", EnemyName::Ghost},
+        {"Dragon", EnemyName::Dragon},
+        {"DarkKnight", EnemyName::DarkKnight}
+    };
+
+    auto it = enemyEntities.find(name);
+    if (it == enemyEntities.end()) {
+        std::cerr << "An enemy doesn't find by name:" << name << "\n";
+        return EnemyName::Basic; 
     }
     return it->second;
 }
@@ -294,7 +317,7 @@ void Level::updateColliders(View& levelView, Collider& backCollider, Sprite& lev
 
 void Level::initEnemies()
 {
-    std::string objName;
+    /*    std::string objName;
     std::vector <Vector2i> vecPositions;
     for (auto& pair : enemyTextures)
     {
@@ -326,6 +349,25 @@ void Level::initEnemies()
             break;
         default:
             break;
+        }
+    
+    }*/
+    enemiesSize = {
+        {EnemyName::Skeleton, Vector2i(10, 19)},
+        {EnemyName::Wizard, Vector2i(14, 20)},
+        {EnemyName::Tank, Vector2i(17, 17)},
+        {EnemyName::Dragon, Vector2i(24, 24)},
+        {EnemyName::Ghost, Vector2i(16, 16)},
+        {EnemyName::DarkKnight, Vector2i(12, 16)}
+    };
+
+
+    std::map < EnemyName, std::vector <Vector2i> > levelEnemiesPositions = allLevelsEnemiesPositions[levelNumber];
+    for (auto& typeTexturePair : enemyTextures)
+    {
+        for (Vector2i position : levelEnemiesPositions[typeTexturePair.first]) {
+            enemies[levelIndex].push_back(Enemy(&typeTexturePair.second, Vector2f(position),
+                Vector2u(8, 4), 0.1f, typeTexturePair.first, &player));
         }
     }
 }
@@ -401,9 +443,9 @@ void Level::initTileMap()
     }
 }
 
-template<typename T>
-void Level::initEntitiesPositions(std::string filePath, 
-    std::map <unsigned int, std::map <T, std::vector <Vector2i> > >& positionsMap)
+
+void Level::initPositions(std::string filePath, 
+    std::map<unsigned int, std::map<ObjectType, std::vector<Vector2i>>>& positionsMap)
 {
     std::map <ObjectType, std::vector <Vector2i> > tempMap;
     std::vector <Vector2i> coords;
@@ -429,7 +471,7 @@ void Level::initEntitiesPositions(std::string filePath,
         tempMap.clear();
 
         std::getline(file, objectName);
-        objType = stringToObjectType(objectName);
+        objType = stringToType<ObjectType>(objectName);
 
 
         while (std::getline(file, line) && !line.empty() && std::any_of(line.begin(), line.end(), ::isdigit)) {
@@ -443,10 +485,52 @@ void Level::initEntitiesPositions(std::string filePath,
                 break;
             }
         }
-        positionsMap[levelNumber][objType] = std::move(coords);
+        allLevelsObjectsPositions[levelNumber][objType] = std::move(coords);
     }
     file.close();
 }
+
+
+void Level::initPositions(std::string filePath,
+    std::map<unsigned int, std::map<EnemyName, std::vector<Vector2i>>>& positionsMap)
+{
+    std::map<EnemyName, std::vector<Vector2i>> tempMap;
+    std::vector<Vector2i> coords;
+    std::string entityName, line;
+    EnemyName entityType;
+
+    std::ifstream file(filePath + std::to_string(levelNumber) + ".txt");
+    if (!file.is_open()) {
+        std::cerr << "File Executer can't open a file\n";
+        return;
+    }
+
+    // ќжидаем только данные дл€ врагов (например, Skeleton, Tank)
+    size_t limit = 6; // ѕримерное количество врагов (можно изменить)
+    for (int i = 1; i <= limit; ++i) {
+        coords.clear();
+        tempMap.clear();
+
+        std::getline(file, entityName);
+        entityType = stringToType<EnemyName>(entityName);
+
+        while (std::getline(file, line) && !line.empty() && std::any_of(line.begin(), line.end(), ::isdigit)) {
+            if (!line.empty()) {
+                Vector2i position;
+                std::istringstream iss(line);
+                iss >> position.x >> position.y;
+                coords.push_back(position);
+            }
+            else {
+                break;
+            }
+        }
+        positionsMap[levelNumber][entityType] = std::move(coords);
+    }
+
+    file.close();
+}
+
 
 Sprite Level::getBackGroundSprite() const
 {

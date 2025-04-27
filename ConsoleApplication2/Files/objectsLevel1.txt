@@ -1,5 +1,5 @@
 Player
-16 276
+16 384
 Portal
 260 276
 Coin
