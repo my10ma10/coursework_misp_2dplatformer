@@ -13,6 +13,7 @@ public:
 	void draw(RenderWindow& window);
 	void update(float time) override;
 
+	void takeDamage(int damageAmount) override;
 	void attack();
 	void superAttack();
 	void addEnemy(Enemy* enemy);
@@ -50,10 +51,14 @@ private:
 	bool isJumpKeyPressed;
 	bool wasJumpKeyPressed;
 	bool changedRow;
+
+	Texture bubbleTexture;
+	Sprite bubble;
 	unsigned int superAttackRow = 1;
 	float jumpHeight = 36.0f;
 	std::vector<Enemy*> enemiesPtr;
 	std::unordered_map<ObjectType, bool> bonusStates;
+
 	Clock armorClock;
 	Clock bootClock;
 	Clock bubbleClock;

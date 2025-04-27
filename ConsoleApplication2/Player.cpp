@@ -16,12 +16,10 @@ Player::Player(Texture* texture, Vector2f position, Vector2f size, Vector2u imag
 	bonusStates[ObjectType::Armor] = false;
 	bonusStates[ObjectType::Bubble] = false;
 	bonusStates[ObjectType::Boot] = false;
-	//if (!bubbleTexture.loadFromFile("Image\\bubble.png"))
-	//{
-	//	std::cerr << "Can't load an image";
-	//}
-	//Sprite bubble = Sprite(bubbleTexture);
-	//bubble.setScale(Vector2f(1.5f, 1.5f));
+	if (!bubbleTexture.loadFromFile("Image\\bubble.png"))
+	{
+		std::cerr << "Can't load an image";
+	}
 }
 
 void Player::draw(RenderWindow& window)
@@ -29,6 +27,10 @@ void Player::draw(RenderWindow& window)
 	if (life)
 	{
 		window.draw(sprite);
+	}
+	if (bonusStates[ObjectType::Bubble])
+	{
+		window.draw(bubble);
 	}
 }
 
@@ -161,6 +163,18 @@ void Player::keyProcessing()
 		and !attackState and !superAttackState)
 	{
 		velocity.x += speed;
+	}
+}
+
+void Player::takeDamage(int damageAmount)
+{
+	if (bonusStates[ObjectType::Armor])
+	{
+		damageAmount /= 2.0f;
+	}
+	if (!bonusStates[ObjectType::Bubble])
+	{
+		health -= damageAmount;
 	}
 }
 
@@ -302,15 +316,16 @@ void Player::activateBonus(ObjectType type)
 	bonusStates[type] = true;
 	if (type == ObjectType::Armor)
 	{
-		/*for (Enemy* enemy : enemiesPtr)
-		{
-			enemy.
-		}*/
+		armorClock.restart().asSeconds();
 	}
 	if (type == ObjectType::Boot)
 	{
 		this->speed = PersonSpeed * 1.25f;
 		bootClock.restart().asSeconds();
+	}
+	if (type == ObjectType::Bubble)
+	{
+		bubbleClock.restart().asSeconds();
 	}
 }
 
@@ -333,6 +348,14 @@ void Player::updateBonuses()
 	else if (bootClock.getElapsedTime().asSeconds() > bonusDeltaTime and bonusStates[ObjectType::Boot])
 	{
 		deactivateBonus(ObjectType::Boot);
+	}
+
+	if (bonusStates[ObjectType::Bubble])
+	{
+		bubble = Sprite(bubbleTexture);
+		bubble.setPosition(Vector2f(
+			this->getPosition().x - this->getBodySize().x - 4.0f,
+			this->getPosition().y - this->getBodySize().y));
 	}
 }
 

@@ -1,0 +1,17 @@
+Skeleton
+16 276
+
+Wizard
+260 276
+
+Tank
+40 276
+
+Dragon
+70 276
+
+Ghost
+100 276
+
+DarkKnight
+150 276

@@ -20,6 +20,7 @@ public:
 	void setAttackMoveStopRange(float attackSizeDiff, float moveSizeDiff);
 
 	FloatRect getAttackRange() const;
+	float getAttachPower() const;
 	const EnemyName& getName() const;
 	unsigned int getRow() const;
 

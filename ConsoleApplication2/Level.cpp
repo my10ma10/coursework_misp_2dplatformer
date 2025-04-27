@@ -21,7 +21,8 @@ void Level::initLevel(int number)
     platforms.resize(5);
     bonuses.resize(5);
     enemies.resize(5);
-    initObjectsPositions();
+    initEntitiesPositions("Files\\objectsLevel", allLevelsObjectsPositions);
+    initEntitiesPositions("Files\\enemiesLevel", allLevelsEnemiesPositions);
     initTileMap();
     initBackground();
     initBonuses();
@@ -312,7 +313,7 @@ void Level::initEnemies()
                 Vector2u(8, 4), 0.1f, pair.first, &player, Vector2f(17, 17)));
             break;
         case EnemyName::Dragon:
-            enemies[levelIndex].push_back(Enemy(&pair.second, Vector2f(100, 500),
+            enemies[levelIndex].push_back(Enemy(&pair.second, Vector2f(156, 256),
                 Vector2u(8, 4), 0.1f, pair.first, &player, Vector2f(24, 24)));
             break;
         case EnemyName::Ghost:
@@ -400,14 +401,16 @@ void Level::initTileMap()
     }
 }
 
-void Level::initObjectsPositions()
+template<typename T>
+void Level::initEntitiesPositions(std::string filePath, 
+    std::map <unsigned int, std::map <T, std::vector <Vector2i> > >& positionsMap)
 {
     std::map <ObjectType, std::vector <Vector2i> > tempMap;
     std::vector <Vector2i> coords;
     std::string objectName, line;
     ObjectType objType;
 
-    std::ifstream file("Files\\objectsLevel" + std::to_string(levelNumber) + ".txt");
+    std::ifstream file(filePath + std::to_string(levelNumber) + ".txt");
     if (!file.is_open()) {
         std::cerr << "File Executer can't open a file\n";
     }
@@ -440,7 +443,7 @@ void Level::initObjectsPositions()
                 break;
             }
         }
-        allLevelsObjectsPositions[levelNumber][objType] = std::move(coords);
+        positionsMap[levelNumber][objType] = std::move(coords);
     }
     file.close();
 }

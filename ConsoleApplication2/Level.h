@@ -53,7 +53,9 @@ private:
 	void initBackground();
 	void initBonuses();
 	void initTileMap();
-	void initObjectsPositions(); /// in constructor
+	template<typename T>
+	void initEntitiesPositions(std::string filePath, 
+		std::map <unsigned int, std::map <T, std::vector <Vector2i> > >& positionsMap); /// in constructor
 
 	LevelState levelState;
 	std::vector<std::vector<Platform> > platforms;
@@ -64,6 +66,7 @@ private:
 	Sprite backGroundSprite;
 	Bar healthBar;
 	Bar energyBar;
+	std::map <unsigned int, std::map <Enemy, std::vector <Vector2i> > > allLevelsEnemiesPositions;
 	std::map <unsigned int, std::map <ObjectType, std::vector <Vector2i> > > allLevelsObjectsPositions;
 
 	Collider BackCollider;

@@ -229,6 +229,11 @@ FloatRect Enemy::getAttackRange() const
 	return attackRange;
 }
 
+float Enemy::getAttachPower() const
+{
+	return attackPower;
+}
+
 const EnemyName& Enemy::getName() const
 {
 	return name;

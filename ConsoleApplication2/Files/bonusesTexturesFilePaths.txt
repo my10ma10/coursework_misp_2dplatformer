@@ -1,6 +1,6 @@
 Image\\coin-Sheet.png
 Image\\potion-Sheet.png
 Image\\shield-Sheet.png
-Image\\bubble.png
+Image\\bubble-Sheet.png
 Image\\Boost-Sheet.png
 Image\\portal-Sheet.png

@@ -7,7 +7,7 @@ public:
 	Person();
 	Person(Texture* texture, Vector2f position, Vector2f size, Vector2u imageCount, float switchTime);
 
-	void takeDamage(int amount);
+	virtual void takeDamage(int damageAmount);
 	virtual void updateHealth() = 0;
 	void onCollition();
 
