@@ -41,8 +41,8 @@ void Level::update(float time, const View& levelView)
     }
     updateBonuses(time);
     updateEnemies(time);
-    enemies[levelNumber].erase(std::remove_if(enemies[levelNumber].begin(), enemies[levelNumber].end(), \
-        [](const Enemy& enemy) { return !enemy.alive(); }), enemies[levelNumber].end());
+    enemies[levelIndex].erase(std::remove_if(enemies[levelIndex].begin(), enemies[levelIndex].end(), \
+        [](const Enemy& enemy) { return !enemy.alive(); }), enemies[levelIndex].end());
 
     player.update(time*1000);
     portal.update(time); 
@@ -145,7 +145,7 @@ void Level::loadTextures(const std::string backGroundTexturePath)
 }
 
 template<typename T>
-inline void Level::loadInMap(const std::string& path, std::unordered_map<T, Texture>& textures)
+inline void Level::loadInMap(const std::string& path, std::map<T, Texture>& textures)
 {
     std::ifstream pathsStream(path);
     if (!pathsStream.is_open())
@@ -317,41 +317,6 @@ void Level::updateColliders(View& levelView, Collider& backCollider, Sprite& lev
 
 void Level::initEnemies()
 {
-    /*    std::string objName;
-    std::vector <Vector2i> vecPositions;
-    for (auto& pair : enemyTextures)
-    {
-        switch (pair.first)
-        {
-        case EnemyName::Skeleton:
-            enemies[levelIndex].push_back(Enemy(&pair.second, Vector2f(70, 500), 
-                Vector2u(8, 4), 0.1f, pair.first, &player, Vector2f(10, 19)));
-            break;
-        case EnemyName::Wizard:
-            enemies[levelIndex].push_back(Enemy(&pair.second, Vector2f(100, 500), 
-                Vector2u(8, 4), 0.1f, pair.first, &player, Vector2f(14, 20)));
-            break;
-        case EnemyName::Tank:
-            enemies[levelIndex].push_back(Enemy(&pair.second, Vector2f(100, 500),
-                Vector2u(8, 4), 0.1f, pair.first, &player, Vector2f(17, 17)));
-            break;
-        case EnemyName::Dragon:
-            enemies[levelIndex].push_back(Enemy(&pair.second, Vector2f(156, 256),
-                Vector2u(8, 4), 0.1f, pair.first, &player, Vector2f(24, 24)));
-            break;
-        case EnemyName::Ghost:
-            enemies[levelIndex].push_back(Enemy(&pair.second, Vector2f(310, 510),
-                Vector2u(8, 4), 0.1f, pair.first, &player));
-            break;
-        case EnemyName::DarkKnight:
-            enemies[levelIndex].push_back(Enemy(&pair.second, Vector2f(310, 480),
-                Vector2u(8, 4), 0.1f, pair.first, &player, Vector2f(12, 16)));
-            break;
-        default:
-            break;
-        }
-    
-    }*/
     enemiesSize = {
         {EnemyName::Skeleton, Vector2i(10, 19)},
         {EnemyName::Wizard, Vector2i(14, 20)},
@@ -362,7 +327,7 @@ void Level::initEnemies()
     };
 
 
-    std::map < EnemyName, std::vector <Vector2i> > levelEnemiesPositions = allLevelsEnemiesPositions[levelNumber];
+    std::map < EnemyName, std::vector <Vector2i> > levelEnemiesPositions = allLevelsEnemiesPositions[levelIndex];
     for (auto& typeTexturePair : enemyTextures)
     {
         for (Vector2i position : levelEnemiesPositions[typeTexturePair.first]) {
@@ -382,7 +347,7 @@ void Level::initBackground()
 
 void Level::initBonuses()
 {
-    std::map < ObjectType, std::vector <Vector2i> > levelObjectsPositions = allLevelsObjectsPositions[levelNumber];
+    std::map < ObjectType, std::vector <Vector2i> > levelObjectsPositions = allLevelsObjectsPositions[levelIndex];
     for (auto& typeTexturePair : bonusTextures)
     {
         if (typeTexturePair.first == ObjectType::Portal) {
@@ -406,7 +371,6 @@ void Level::initTileMap()
         std::cerr << "Can't open a file: Files\\tileMapLevel" + std::to_string(levelNumber) + ".txt\n";
         return;
     }
-    std::cout << "Opened the file: Files\\tileMapLevel" + std::to_string(levelNumber) + ".txt\n";
 
     std::vector<int> vec;
     int num = 0;
@@ -485,7 +449,7 @@ void Level::initPositions(std::string filePath,
                 break;
             }
         }
-        allLevelsObjectsPositions[levelNumber][objType] = std::move(coords);
+        allLevelsObjectsPositions[levelIndex][objType] = std::move(coords);
     }
     file.close();
 }
@@ -505,8 +469,8 @@ void Level::initPositions(std::string filePath,
         return;
     }
 
-    // ќжидаем только данные дл€ врагов (например, Skeleton, Tank)
-    size_t limit = 6; // ѕримерное количество врагов (можно изменить)
+
+    size_t limit = 6; 
     for (int i = 1; i <= limit; ++i) {
         coords.clear();
         tempMap.clear();
@@ -525,7 +489,7 @@ void Level::initPositions(std::string filePath,
                 break;
             }
         }
-        positionsMap[levelNumber][entityType] = std::move(coords);
+        positionsMap[levelIndex][entityType] = std::move(coords);
     }
 
     file.close();

@@ -85,3 +85,8 @@ int Person::getHealth() const
 {
 	return health;
 }
+
+bool Person::getFaceRight() const
+{
+	return faceRight;
+}

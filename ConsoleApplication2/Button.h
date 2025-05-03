@@ -18,14 +18,13 @@ public:
 	void setPressed(bool pred);
 	void setFont(const std::string& fontPath);
 	void setShapeColor(Color color);
+	void setText(std::string newText);
 
 	Vector2f getPosition() const;
 	Text getText() const;
 	bool getPressed() const;
 
 private:
-	
-
 	RectangleShape shape;
 	Text text;
 	Font font;

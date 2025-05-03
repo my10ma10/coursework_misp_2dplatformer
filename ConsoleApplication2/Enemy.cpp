@@ -104,7 +104,7 @@ void Enemy::changeRanges()
 			break;
 		case EnemyName::Tank:
 			setAttackMoveStopRange(2.0f, 11.0f);
-			attackPower = 10.0f;
+			attackPower = 4.0f;
 			break;
 		case EnemyName::Dragon:
 			setAttackMoveStopRange(4.0f, 8.0f);
@@ -174,14 +174,17 @@ void Enemy::initEnemy(EnemyName name)
 		case EnemyName::Skeleton:
 			speed = SkeletonSpeed;
 			gravity = 0.003f;
+			health = HealthMax * 20 / 100;
 			break;
 		case EnemyName::Wizard:
 			speed = WizardSpeed;
 			gravity = 0.002f;
+			health = HealthMax * 20 / 100;
 			break;
 		case EnemyName::Tank:
 			speed = TankSpeed;
 			gravity = 0.005f;
+			health = HealthMax * 100 / 100;
 			break;
 		case EnemyName::Dragon:
 			speed = DragonSpeed;
@@ -191,11 +194,11 @@ void Enemy::initEnemy(EnemyName name)
 		case EnemyName::Ghost:
 			speed = GhostSpeed;
 			gravity = 0.001f;
-			health = HealthMax * 50 / 100;
+			health = HealthMax * 30 / 100;
 			break;
 		case EnemyName::DarkKnight:
 			speed = DarkKnightSpeed;
-			gravity = 0.005f;
+			gravity = 0.010f;
 			health = HealthMax * 50 / 100;
 			break;
 		default:

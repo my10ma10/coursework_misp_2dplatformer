@@ -17,8 +17,7 @@ class Level
 {
 public:
 	Level();
-	Level(const std::string& backGroundTexturePath, int numberOfLevel);
-	void initLevel(int number);
+	Level(const std::string& backGroundTexturePath, int levelNumber);
 	void update(float time, const View& levelView);
 	void draw(RenderWindow& window);
 	void restart();
@@ -52,9 +51,10 @@ private:
 	template<>
 	EnemyName stringToType<EnemyName>(const std::string& name);
 
+	void initLevel(int number);
 	void loadTextures(const std::string backGroundTexturePath);
 	template <typename T>
-	void loadInMap(const std::string& path, std::unordered_map<T, Texture>& textures);
+	void loadInMap(const std::string& path, std::map<T, Texture>& textures);
 	void initEnemies();
 	void initBackground();
 	void initBonuses();
@@ -88,15 +88,14 @@ private:
 
 	std::map <EnemyName, Vector2i> enemiesSize;
 
-	std::unordered_map<EnemyName, Texture> enemyTextures;
-	std::unordered_map<ObjectType, Texture> bonusTextures;
+	std::map<EnemyName, Texture> enemyTextures;
+	std::map<ObjectType, Texture> bonusTextures;
 	Texture backgroundTexture;
 	Texture playerTexture;
 
 	Vector2u levelSize;
 	int levelNumber;
 	size_t levelIndex;
-
 };
 
 

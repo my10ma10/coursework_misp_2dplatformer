@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Entity" Collapsed="true">
-    <Position X="8.25" Y="0.5" Width="1.5" />
+    <Position X="8.25" Y="1.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>FCEAIAAAAsIAAgAAABIAAIACABAUAQAhAAAAAAAFAAA=</HashCode>
+      <HashCode>FGFCIAAAAkIQAgBABBICAIACBRABAAAgAAAAAAAEAAA=</HashCode>
       <FileName>Entity.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Object" Collapsed="true">
-    <Position X="8.25" Y="2.5" Width="1.5" />
+    <Position X="8.25" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <HashCode>AAAAAACAAAAACAAgAAIAAAAAAQAAAAAAAAAAACAEBAA=</HashCode>
       <FileName>Object.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -18,21 +18,19 @@
     <Position X="5.25" Y="1.25" Width="1.5" />
     <InheritanceLine Type="Entity" FixedFromPoint="true">
       <Path>
-        <Point X="8.25" Y="0.75" />
-        <Point X="7.875" Y="0.75" />
-        <Point X="7.875" Y="1.596" />
-        <Point X="6.75" Y="1.596" />
+        <Point X="8.25" Y="1.5" />
+        <Point X="6.75" Y="1.5" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AICAAAgAAAIAAAQAAAAAAAAAAAAAAgCAAAQACAAAAAg=</HashCode>
+      <HashCode>AIAAAAoAAAAAsAQABAAAACAICgAQAwCIIARASAQAAAg=</HashCode>
       <FileName>Person.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Player" Collapsed="true">
     <Position X="2.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAAgAAAAAgACAABIAIAQAAgAAAACAAABAAQAEAAA=</HashCode>
+      <HashCode>1CACgAIBAAAQBAeACA5gIEQEQMQRgISIABAAgUAUAgA=</HashCode>
       <FileName>Player.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -46,7 +44,7 @@
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AAAAAgAAAAAACAAAAAAAAAAAAAAEAACAAAAAAAAEAAA=</HashCode>
+      <HashCode>BAAAAgQAAAAAAAAAAACAAQgBQAAkAACIEBQEAAAEAAQ=</HashCode>
       <FileName>Enemy.h</FileName>
     </TypeIdentifier>
   </Class>

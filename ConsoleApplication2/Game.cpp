@@ -4,25 +4,31 @@ Game::Game(GameState& gameState, const std::string& iconPath, const std::string&
 	currentState(gameState),
 	currentLevel(levelIndex),
 	level(backgroundPath, levelIndex),
-	window(VideoMode(1080, 1080), L"Игра", Style::Default),
 	prevState(GameState::Main),
-	menu(window, gameState, levelIndex),
 	timeStep(1.0f / 60.0f),
 	accumulator(0.0f),
 	availableLevel(1),
+	menu(),
 	levelView(Vector2f(0.0f, 0.0f), Vector2f(LevelViewHeight, LevelViewHeight)),
 	menuView(Vector2f(0.0f, 0.0f), Vector2f(MenuViewHeight, MenuViewHeight))
 {
+	this->window.create(VideoMode(1080, 1080), L"2D-platformer", Style::Fullscreen);
+	this->menu.create(&window, &gameState, &levelIndex);
+
 	window.setVerticalSyncEnabled(true);
 	Image icon;
+
 	if (icon.loadFromFile(iconPath)) 
 	{
 		window.setIcon(512, 512, icon.getPixelsPtr());
 	}
+
 	initView();
+
 	Vector2i viewRectSize(LevelViewHeight * 1.0f, LevelViewHeight * 1.0f);
 	IntRect viewRectBounds(Vector2i(level.getPlayerPosition().x - viewRectSize.x / 2.0f, \
 		level.getPlayerPosition().y - viewRectSize.y / 2.0f), viewRectSize);
+
 	playerAndViewCollideSprite.setTextureRect(viewRectBounds);
 	playerAndViewCollider = Collider(playerAndViewCollideSprite);
 	backCollider = Collider(levelLimitViewSprite);
@@ -116,9 +122,6 @@ void Game::update(float timeStep)
 		checkState();
 
 	}
-	//std::cout << "Level Num: " << level.getNumber() \
-	//	<< ", Available: " << availableLevel \
-	//	<< ", Menu num: " << menu.getLevelNumber() << std::endl;
 }
 
 void Game::render()

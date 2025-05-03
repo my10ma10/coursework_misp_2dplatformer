@@ -90,6 +90,11 @@ void Button::setShapeColor(Color color)
 	shape.setFillColor(color);
 }
 
+void Button::setText(std::string newText)
+{
+	text.setString(newText);
+}
+
 
 Vector2f Button::getPosition() const
 {

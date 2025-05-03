@@ -20,6 +20,7 @@ public:
 	Vector2f getVelocity() const;
 	float getEnergy() const;
 	int getHealth() const;
+	bool getFaceRight() const;
 
 protected:
 	int health;

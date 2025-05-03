@@ -9,7 +9,6 @@ enum class GameState {
     Main,
     Game,
     Levels,
-    Achievements,
     Complete,
     GameOver,
     Paused
@@ -18,7 +17,9 @@ enum class GameState {
 class Menu
 {
 public:
+    Menu();
     Menu(RenderWindow& window, GameState& state, unsigned int& currLevel);
+    void create(RenderWindow* window, GameState* state, unsigned int* currLevel);
     void update(GameState state, unsigned int availableLevel, unsigned int currentLevel);
     void render(GameState state);
     void restartTimer();
@@ -34,36 +35,33 @@ private:
     void initLevelsMenu(Vector2f buttonSize);
     void initCompleteMenu(Vector2f buttonSize);
     void initGameoverMenu(Vector2f buttonSize);
-    void initAchievementsMenu(Vector2f buttonSize);
     void initPauseMenu(Vector2f buttonSize);
     void updateMainMenu();
     void updateLevelsMenu();
     void updateCompleteMenu();
     void updateGameoverMenu();
-    void updateAchievementsMenu();
     void updatePauseMenu();
     void updateTransparent(unsigned int availableLevel, unsigned int currentLevel);
     void drawButtons(std::vector<Button> buttons);
 
     std::function<void(bool)> pauseCallback;
 
-    RenderWindow& window;
+    RenderWindow* window = nullptr;
+    GameState* currentState = nullptr;
+    unsigned int* levelNumber = nullptr;
     std::vector<Button> mainButtons;
     std::vector<Button> levelsButtons;
     std::vector<Button> completeButtons;
     std::vector<Button> gameoverButtons;
-    std::vector<Button> achievementsButtons;
     std::vector<Button> pauseButtons;
     Texture backgroundTexture;
     Sprite backgroundSprite;
     Font font;
-    GameState& currentState;
     Clock clickTimer;
     Time clickDelay = milliseconds(200);
     Color shapeColor = Color(56, 60, 74);
     Color textColor = Color::White;
     Color transparentShapeColor = Color(shapeColor.r, shapeColor.g, shapeColor.b, shapeColor.a * 0.4);
-    unsigned int& levelNumber;
     bool isClickable;
 };
 

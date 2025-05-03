@@ -25,8 +25,6 @@ public:
 
 	const FloatRect& getAttackRange() const;
 	std::vector<Enemy*> getEnemies() const;
-	bool getInvulnerability();
-	bool getProtection();
 	Vector2f getBodySize() const;
 	unsigned int getAnimCount() const;
 	float getJumpHeight() const;
@@ -40,6 +38,7 @@ private:
 	void deactivateBonus(ObjectType type);
 	void superAttackAnimation();
 	void updateBonuses();
+	void updateBonusStates();
 
 	float energyDelta = 15.0f;
 	unsigned int coinCounter = 0;

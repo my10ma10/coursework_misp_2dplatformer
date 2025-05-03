@@ -45,7 +45,10 @@ void Player::update(float time)
 			removeEnemy(enemy);
 		}
 	}
+
+	updateBonusStates();
 	keyProcessing();
+
 	if (velocity.x == 0.0f)
 	{
 		row = 0;
@@ -77,6 +80,7 @@ void Player::update(float time)
 	updateAnimation(time / 1000, faceRight);
 	updateHealth();
 	updateBonuses();
+
 	if (energy < EnergyMax)
 	{
 		energy += 0.2f;
@@ -87,6 +91,7 @@ void Player::update(float time)
 
 void Player::attackUpdate()
 {
+	std::cout << speed << std::endl;
 	if (faceRight)
 	{
 		attackRange = FloatRect(Vector2f(getSprite().getPosition() - Vector2f(0, (getSpriteSize().y - getBodySize().y) / 2.0f)),
@@ -97,16 +102,26 @@ void Player::attackUpdate()
 		attackRange = FloatRect(Vector2f(getSprite().getPosition() - Vector2f(getSpriteSize().x / 2.0f, (getSpriteSize().y - getBodySize().y) / 2.0f)),
 			Vector2f(getSpriteSize() / 2.0f));
 	}
+	if (!attacking)
+	{
+		if (Keyboard::isKeyPressed(Keyboard::Space))
+		{
+			attackState = true;
+			superAttackState = false;
+			attacking = true;
+		}
 
-	if (Keyboard::isKeyPressed(Keyboard::Space))
-	{
-		attackState = true;
-		superAttackState = false;
-	}
-	if (Keyboard::isKeyPressed(Keyboard::LControl))
-	{
-		superAttackState = true;
-		attackState = false;
+		if (energy >= energyDelta * 5 && Keyboard::isKeyPressed(Keyboard::LControl) && canJump)
+		{
+			if (attackState)
+			{
+				attackState = false;
+				row = 0;
+			}
+			superAttackState = true;
+			attackState = false;
+			changedRow = false;
+		}
 	}
 	if (canJump)
 	{
@@ -116,10 +131,21 @@ void Player::attackUpdate()
 		}
 		if (attackState and !superAttackState)
 		{
-			velocity.x = 0.0f;
 			row = 3;
 			attack();
 		}
+	}
+	else
+	{
+		
+	}
+	if (canJump && attacking && getCurrentFrame() == 0)
+	{
+		attacking = false;
+		attackState = false;
+		superAttackState = false;
+		energyChanged = false;
+		isDamageTaking = false;
 	}
 }
 
@@ -132,7 +158,10 @@ void Player::blockUpdate()
 		velocity.x = 0.0f;
 		for (Enemy* enemy : enemiesPtr)
 		{
-			enemy->setAttackPower(0);
+			if (enemy->getFaceRight() != faceRight)
+			{
+				enemy->setAttackPower(0);
+			}
 		}
 	}
 }
@@ -154,13 +183,11 @@ void Player::updateHealth()
 void Player::keyProcessing()
 {
 	isJumpKeyPressed = Keyboard::isKeyPressed(Keyboard::W) or Keyboard::isKeyPressed(Keyboard::Up);
-	if ((Keyboard::isKeyPressed(Keyboard::Left) or Keyboard::isKeyPressed(Keyboard::A))
-		and !attackState and !superAttackState)
+	if ((Keyboard::isKeyPressed(Keyboard::Left) or Keyboard::isKeyPressed(Keyboard::A)))
 	{
 		velocity.x -= speed;
 	}
-	if ((Keyboard::isKeyPressed(Keyboard::Right) or Keyboard::isKeyPressed(Keyboard::D))
-		and !attackState and !superAttackState)
+	if ((Keyboard::isKeyPressed(Keyboard::Right) or Keyboard::isKeyPressed(Keyboard::D)))
 	{
 		velocity.x += speed;
 	}
@@ -180,30 +207,28 @@ void Player::takeDamage(int damageAmount)
 
 void Player::attack()
 {
-	if (energy > energyDelta)
-	{
-		attacking = true;
-	}
 	if (getCurrentFrame() == 0 and row == 1)
 	{
 		energy = std::max(0.0f, energy - energyDelta);
 		energyChanged = true;
 	}
-	if (enemiesPtr.size() != 0)
+
+	if (enemiesPtr.size() != 0 && getCurrentFrame() == 7 && !isDamageTaking && !superAttackState)
 	{
 		for (Enemy* enemy : enemiesPtr)
 		{
-			if (getCurrentFrame() == 7 and !isDamageTaking and enemy->alive())
+			if (enemy->alive())
 			{
 				enemy->takeDamage(attackPower);
-				isDamageTaking = true;
 			}
 		}
+		isDamageTaking = true;
 	}
 	if (getCurrentFrame() == 11)
 	{
 		attackState = false;
 		energyChanged = false;
+		attacking = false;
 	}
 	if (getCurrentFrame() != 7)
 	{
@@ -219,16 +244,16 @@ void Player::superAttack()
 	{
 		attacking = true;
 	}
-	if (enemiesPtr.size() != 0)
+	if (enemiesPtr.size() != 0 && getCurrentFrame() == 3 && !isDamageTaking && row != 5)
 	{
 		for (Enemy* enemy : enemiesPtr)
 		{
-			if (getCurrentFrame() == 3 and !isDamageTaking and enemy->alive() and row != 4)
+			if (enemy->alive())
 			{
 				enemy->takeDamage(attackPower);
-				isDamageTaking = true;
 			}
 		}
+		isDamageTaking = true;
 	}
 	if (getCurrentFrame() != 3)
 	{
@@ -250,6 +275,14 @@ void Player::superAttack()
 
 void Player::superAttackAnimation()
 {
+	if (!canJump)
+	{
+		superAttackRow = 1;
+		superAttackState = false;
+		changedRow = false;
+		row = 0;
+		return;
+	}
 	if (superAttackRow == 5)
 	{
 		superAttackRow = 1;
@@ -265,7 +298,6 @@ void Player::superAttackAnimation()
 		superAttackRow++;
 	}
 	
-	velocity.x = 0.0f;
 	row = superAttackRow;
 }
 
@@ -320,7 +352,6 @@ void Player::activateBonus(ObjectType type)
 	}
 	if (type == ObjectType::Boot)
 	{
-		this->speed = PersonSpeed * 1.25f;
 		bootClock.restart().asSeconds();
 	}
 	if (type == ObjectType::Bubble)
@@ -332,7 +363,6 @@ void Player::activateBonus(ObjectType type)
 void Player::deactivateBonus(ObjectType type)
 {
 	bonusStates[type] = false;
-	this->speed = PersonSpeed / 1.25f;
 }
 
 void Player::updateBonuses()
@@ -359,6 +389,33 @@ void Player::updateBonuses()
 	}
 }
 
+void Player::updateBonusStates()
+{
+	if (attackState or superAttackState)
+	{
+		speed = PersonSpeed / 3.0f;
+	}
+	else
+	{
+		if (bonusStates[ObjectType::Bubble] && bonusStates[ObjectType::Boot])
+		{
+			speed = PersonSpeed;
+		}
+		else if (bonusStates[ObjectType::Boot])
+		{
+			speed = PersonSpeed * 1.25f;
+		}
+		else if (bonusStates[ObjectType::Bubble])
+		{
+			speed = PersonSpeed / 1.25f;
+		}
+		else
+		{
+			speed = PersonSpeed;
+		}
+	}
+}
+
 void Player::jump(float time)
 {
 	if ((Keyboard::isKeyPressed(Keyboard::Up) or Keyboard::isKeyPressed(Keyboard::W)) and canJump)
@@ -376,16 +433,6 @@ const FloatRect& Player::getAttackRange() const
 std::vector<Enemy*> Player::getEnemies() const
 {
 	return enemiesPtr;
-}
-
-bool Player::getInvulnerability()
-{
-	return bonusStates[ObjectType::Bubble];
-}
-
-bool Player::getProtection()
-{
-	return bonusStates[ObjectType::Armor];
 }
 
 Vector2f Player::getBodySize() const
